@@ -215,26 +215,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/captionDefault"
+                android:id="@+id/captionPrimary"
+                android:textAlignment="center"
+                android:gravity="center"
                 android:textColor="#FFFFFF"
-                android:textSize="14dp"
+                android:textSize="17dp"
                 android:fontFamily="@font/adamina"
                 android:background="#000000"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text=" I have always wanted to Perform in front of a large audience I&#39;m going to make that audience ROCK!"
+                android:text=""
                 android:minHeight="75dp"
 
                 />
         </android.support.v7.widget.CardView>
         <android.support.v7.widget.CardView
+            android:id="@+id/secondCaption"
+            android:visibility="gone"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
             <TextView
-                android:id="@+id/captionSecond"
+                android:id="@+id/captionSecondary"
                 android:textColor="#FFFFFF"
                 android:textSize="14dp"
                 android:fontFamily="@font/adamina"
@@ -242,9 +246,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="I have always wanted to Perform in front of a large audience I&#39;m going to make that audience ROCK!"
+                android:text=""
                 android:minHeight="75dp"
-
                 />
         </android.support.v7.widget.CardView>
     </LinearLayout>
@@ -258,5 +261,21 @@
         ads:adSize="BANNER"
         ads:adUnitId="ca-app-pub-3787646629594216/7249545730">
     </com.google.android.gms.ads.AdView>
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/progress_drawable"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/ProgressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminate="true"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/progress_drawable" />
 </RelativeLayout>
 </LinearLayout>

@@ -1,5 +1,9 @@
 package ahmetcan.simin
 
+import ahmetcan.simin.Api.Track
+import ahmetcan.simin.Api.Transcript
+import ahmetcan.simin.Api.TranscriptList
+import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -28,7 +32,12 @@ import com.google.android.gms.ads.MobileAds
 class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener , YouTubePlayer.OnFullscreenListener {
     private var fullscreen: Boolean = false
     private var player:YouTubePlayer?=null
-    private var listenPlayerJob: Job?=null;
+    private var listenPlayerJob: Job?=null
+    private var videoId:String=""
+    private var transcriptList: TranscriptList?=null
+    private var defaultLanguge: Track?=null
+    private var secondLanguge: Track?=null
+    var primaryCaptionList: Transcript?=null
     protected val RESULT_SPEECH = 2
     companion object {
         const val  RECOVERY_DIALOG_REQUEST = 1;
@@ -46,21 +55,21 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
                 }
             }
-            delay(100)
+            delay(10)
         }
     }
     fun onPlayerTimeChanged(time:Int){
-        Log.i("A------------>",time.toString())
-        if(time > 6000){
-//            if(adIntercept){
-//                if(mInterstitialAd?.isLoaded==true){
-//                    adIntercept=false
-//                    player?.pause()
-//                    mInterstitialAd?.show()
-//                }
-//            }
-
+        primaryCaptionList.let {
+            it?.texts?.let {
+                for(item in it){
+                    if(time>=item.start&&time<=item.start+item.duration){
+                        captionPrimary.setText(item.sentence)
+                        return;
+                    }
+                }
+            }
         }
+        captionPrimary.setText("")
     }
     override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, pl: YouTubePlayer?, wasRestored: Boolean) {
         player=pl
@@ -70,7 +79,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             listenPlayerJob=listenPlayer(it)
         }
         if (!wasRestored) {
-            player?.loadVideo(intent.extras["videoid"] as? String);
+            player?.loadVideo(videoId as? String);
         }
     }
 
@@ -110,6 +119,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        videoId=intent.extras["videoid"] as String
 
         setContentView(R.layout.activity_preview_video)
 
@@ -151,6 +161,9 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             }
 
         })
+        async {
+            loadCaption()
+        }
     }
 
 
@@ -194,5 +207,27 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     override fun onDestroy() {
         super.onDestroy()
       //  listenPlayerJob?.cancel()
+    }
+
+    fun loadCaption() {
+
+        transcriptList = DiscoveryRepository.captionList(videoId)
+        if (transcriptList == null) {
+            TODO("load fail hatası verilecek")
+            return;
+        }
+        if (transcriptList?.tracks == null) {
+            TODO("CAPTİON NOT FOUND UYARISI VERİLECEK")
+            return;
+        }
+
+        for (item in transcriptList?.tracks!!){
+            if (item.langDefault == "true") {
+                defaultLanguge=item;
+                break;
+           }
+        }
+        primaryCaptionList =DiscoveryRepository.caption(videoId,defaultLanguge!!.langCode,"")
+
     }
 }
