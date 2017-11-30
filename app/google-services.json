@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "501134961346",
+    "firebase_url": "https://simin-a227a.firebaseio.com",
+    "project_id": "simin-a227a",
+    "storage_bucket": "simin-a227a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:501134961346:android:4dcd9daf9aaaaaa2",
+        "android_client_info": {
+          "package_name": "ahmetcan.simin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "501134961346-834fgrsklhq3md584sfs2tbbfviv1vtq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ahmetcan.simin",
+            "certificate_hash": "615c9b6c6d4cf12cbd5a6178c2920522d2abebf7"
+          }
+        },
+        {
+          "client_id": "501134961346-kp60omg8mgjt3vgg2371h322ivjs0jdq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkvmPjeW9CW8krh3PO7TX95UT3Hb8u8Y8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "501134961346-kp60omg8mgjt3vgg2371h322ivjs0jdq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
