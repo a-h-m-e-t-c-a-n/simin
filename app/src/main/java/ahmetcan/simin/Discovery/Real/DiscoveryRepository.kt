@@ -1,7 +1,5 @@
 package ahmetcan.simin.Discovery.Real
 
-import ahmetcan.simin.Api.Transcript
-import ahmetcan.simin.Api.TranscriptList
 import ahmetcan.simin.Api.YoutubeService
 import ahmetcan.simin.ApiKey
 import ahmetcan.simin.Discovery.Model.Paged
@@ -149,25 +147,7 @@ object DiscoveryRepository {
         return result
 
     }
-    fun captionList(videoId:String): TranscriptList? {
-
-        var list = YoutubeService.instance.caption_list(videoId).execute().body()
-        return list;
-
-    }
-    fun caption(videoId:String,languageCode:String,translateCode:String): Transcript? {
-        var caption = YoutubeService.instance.caption_text(videoId, languageCode, translateCode).execute().body()
-        caption?.texts?.forEach {
-            it.start*=1000
-            it.duration*=1000
-            it.sentence = if (Build.VERSION.SDK_INT >= 24) Html.fromHtml(it.sentence, Html.FROM_HTML_MODE_LEGACY).toString() else Html.fromHtml(it?.sentence).toString()
-
-        }
-        return caption;
-    }
-
-
-    //    fun DownloadCaption():SRTInfo{
+//    fun DownloadCaption():SRTInfo{
 //        var youtube= youtubeService()
 //        var output:ByteArrayOutputStream= ByteArrayOutputStream()
 //        var input=ByteArrayInputStream(output.toByteArray())
@@ -181,16 +161,16 @@ object DiscoveryRepository {
 //        return srtInfo
 //
 //    }
-//    fun downloadCaption(){
-//
-//    var list= YoutubeService.instance.caption_list("pGY5XH52GJo").execute().body()
-//    var caption= YoutubeService.instance.caption_text("Lp7E973zozc","en","").execute().body()
-//    caption?.texts?.forEach {
-//        it.sentence= if(Build.VERSION.SDK_INT >= 24) Html.fromHtml(it.sentence,Html.FROM_HTML_MODE_LEGACY).toString() else Html.fromHtml(it?.sentence).toString()
-//
-//    }
-//
-//    }
+    fun downloadCaption(){
+
+    var list= YoutubeService.instance.caption_list("pGY5XH52GJo").execute().body()
+    var caption= YoutubeService.instance.caption_text("Lp7E973zozc","en","").execute().body()
+    caption?.texts?.forEach {
+        it.sentence= if(Build.VERSION.SDK_INT >= 24) Html.fromHtml(it.sentence,Html.FROM_HTML_MODE_LEGACY).toString() else Html.fromHtml(it?.sentence).toString()
+
+    }
+
+    }
 //
 //    fun subscriptions():ArrayList<YoutubeVideoItem> {
 //        var result=ArrayList<YoutubeVideoItem>()
