@@ -1,5 +1,6 @@
 package ahmetcan.simin
 
+import ahmetcan.simin.Api.Text
 import ahmetcan.simin.Api.Track
 import ahmetcan.simin.Api.Transcript
 import ahmetcan.simin.Api.TranscriptList
@@ -27,6 +28,9 @@ import android.widget.CompoundButton
 import android.widget.RadioGroup
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
+import android.graphics.PorterDuff
+import android.R.attr.checked
+import android.content.res.ColorStateList
 
 
 class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener , YouTubePlayer.OnFullscreenListener {
@@ -38,6 +42,9 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     private var defaultLanguge: Track?=null
     private var secondLanguge: Track?=null
     var primaryCaptionList: Transcript?=null
+    var currentPrimaryText: Text?=null
+
+
     protected val RESULT_SPEECH = 2
     companion object {
         const val  RECOVERY_DIALOG_REQUEST = 1;
@@ -49,28 +56,47 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                 var playerTime=player.currentTimeMillis
                 if(playerTime!=currentTime){
                     currentTime=playerTime
-                    launch(UI) {
+                    onUI {
                         onPlayerTimeChanged(currentTime)
                     }
 
                 }
             }
-            delay(10)
+            delay(5)
         }
     }
+
+
     fun onPlayerTimeChanged(time:Int){
+        var primaryTextExist=false;
         primaryCaptionList.let {
             it?.texts?.let {
                 for(item in it){
                     if(time>=item.start&&time<=item.start+item.duration){
+                        primaryTextExist=true
                         captionPrimary.setText(item.sentence)
-                        return;
+                        if(item?.sentence.toString().compareTo(currentPrimaryText?.sentence.toString())!=0){
+//                            onCaptionChanged()
+                            currentPrimaryText=item
+
+                        }
+
+//                        Log.e("logoog----",item?.sentence?:""+" ---- "+currentPrimaryText?.sentence?:"")
+//                        Log.e("logoog2222222----",(item?.sentence.toString().compareTo(currentPrimaryText?.sentence.toString())).toString())
+
                     }
+
                 }
             }
         }
-        captionPrimary.setText("")
+        if(!primaryTextExist)captionPrimary.setText("")
+
+
+
     }
+//    fun onCaptionChanged(){
+//        if(currentPrimaryText==null)return
+//    }
     override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, pl: YouTubePlayer?, wasRestored: Boolean) {
         player=pl
         player?.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE)
@@ -148,19 +174,42 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         MobileAds.initialize(this, ApiKey.ADMOB_APPID);
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
-
-        video_delayButton.setOnCheckedChangeListener(object :CompoundButton.OnCheckedChangeListener{
-            override fun onCheckedChanged(button: CompoundButton?, state: Boolean) {
-                if(state){
-                    button?.setTextColor(Color.RED)
-                }
-                else{
-                    button?.setTextColor(Color.BLACK)
-                }
-
+        captionPrimary.setOnClickListener {
+            currentPrimaryText?.let {
+                player?.seekToMillis(it.start.toInt())
             }
 
-        })
+        }
+//        video_delayButton.setOnCheckedChangeListener(object :CompoundButton.OnCheckedChangeListener{
+//            override fun onCheckedChanged(button: CompoundButton?, state: Boolean) {
+//                if(state){
+//                    button?.setTextColor(Color.RED)
+//                }
+//                else{
+//                    button?.setTextColor(Color.BLACK)
+//                }
+//
+//            }
+//
+//        })
+//        video_delayButton.setOnCheckedChangeListener { compoundButton, b ->
+//            if(b==true){
+//                video_delayButtonText.setTextColor(Color.RED)
+//            }
+//            else{
+//                video_delayButtonText.setTextColor(Color.BLACK)
+//            }
+//        }
+//        video_delayButtonText.setOnClickListener {
+//            video_delayButton.toggle()
+//        }
+//        video_activeButton.setOnClickListener {
+//            primaryCaptionList?.let {
+//                it.texts?.let {
+//                    player?.seekToMillis(it[3].start.toInt())
+//                }
+//            }
+//        }
         async {
             loadCaption()
         }
@@ -210,8 +259,9 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     }
 
     fun loadCaption() {
-
+        onUI { progressBar1.visibility=View.VISIBLE }
         transcriptList = DiscoveryRepository.captionList(videoId)
+        onUI{ progressBar1.visibility=View.GONE }
         if (transcriptList == null) {
             TODO("load fail hatası verilecek")
             return;
