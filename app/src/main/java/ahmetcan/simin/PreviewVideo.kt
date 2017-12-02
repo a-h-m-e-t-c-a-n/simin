@@ -29,6 +29,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     private var fullscreen: Boolean = false
     private var player:YouTubePlayer?=null
     private var listenPlayerJob: Job?=null;
+    private var captionOff:Boolean=true
     protected val RESULT_SPEECH = 2
     companion object {
         const val  RECOVERY_DIALOG_REQUEST = 1;
