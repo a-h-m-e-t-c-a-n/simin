@@ -278,6 +278,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                     video_hardmodeButtonText?.setTextColor(Color.BLACK)
                     captionOffMode=false
                 }
+                fillCaptionList()
             }
         })
         video_hardmodeButtonText.setOnClickListener {

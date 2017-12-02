@@ -148,6 +148,15 @@
                             android:padding="0dp"
                             android:src="@drawable/ic_skip_next_black_48dp"
                             />
+                        <ImageButton
+                            android:id="@+id/video_subTitleSync"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="50dp"
+                            android:background="@android:color/transparent"
+                            android:padding="0dp"
+                            android:src="@drawable/ic_sync_black_48dp"
+                            />
                     </LinearLayout>
                     <ImageButton
                         android:id="@+id/video_SpeechTest"
