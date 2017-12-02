@@ -82,4 +82,6 @@
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="subscription_intro">Reklamlar bu uygulamanın geliştirilmesine katkıda bulunmaktadır.
         Eğer reklamlardan rahatsızlık duyuyorsunız  bu butonu tıklayarak reklamsız versiyonunu satın alabilirsiniz</string>
+    <string name="clicktoshow">[Press and hold to show]</string>
+    <string name="speakerror">Opps! Your device doesn\'t support Speech to Text</string>
 </resources>

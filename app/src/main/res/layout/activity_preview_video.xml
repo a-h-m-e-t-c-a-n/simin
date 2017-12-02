@@ -40,86 +40,41 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <ToggleButton
-                        android:id="@+id/video_seqButton"
-                        android:layout_width="40dp"
-                        android:layout_height="30dp"
-                        android:textAlignment="center"
-                        android:textColor="#000000"
-                        android:textAllCaps="false"
-                        android:padding="0dp"
-                        android:layout_margin="0dp"
-                        android:textOn=""
-                        android:textOff=""
-                        android:background="@drawable/sequental"
-                        android:backgroundTint="#000000"
-                        android:layout_gravity="center"
-                        />
+                    android:id="@+id/video_hardmodeButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textAllCaps="false"
+                    android:padding="0dp"
+                    android:layout_marginLeft="7dp"
+                    android:textOn=""
+                    android:textOff=""
+                    android:background="@drawable/delay"
+                    android:backgroundTint="#000000"
+                    android:layout_gravity="center"
+                    />
                     <TextView
-                        android:id="@+id/video_seqButtonText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:text="Seq"/>
+                    android:id="@+id/video_hardmodeButtonText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="3dp"
+                    android:text="Hard Mode"
+                    />
 
-                    <ToggleButton
-                        android:id="@+id/video_delayButton"
+                    <ImageButton
+                        android:id="@+id/video_translateButton"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:textAlignment="center"
-                        android:textColor="#000000"
-                        android:textAllCaps="false"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
                         android:padding="0dp"
-                        android:layout_marginLeft="7dp"
-                        android:textOn=""
-                        android:textOff=""
-                        android:background="@drawable/delay"
-                        android:backgroundTint="#000000"
-                        android:layout_gravity="center"
-                        />
-                    <TextView
-                        android:id="@+id/video_delayButtonText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="3dp"
-                        android:text="Delay"
-                        />
-                    <ToggleButton
-                        android:id="@+id/video_activeButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:textAlignment="center"
-                        android:textColor="#000000"
-                        android:textAllCaps="false"
-                        android:padding="0dp"
-                        android:layout_marginLeft="7dp"
-                        android:textOn=""
-                        android:textOff=""
-                        android:background="@drawable/active"
-                        android:backgroundTint="#000000"
-                        android:layout_gravity="center"
-                        />
-                    <TextView
-                        android:id="@+id/video_activeButtonText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="3dp"
-                        android:text="Active"/>
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/video_buyButton2"-->
-                        <!--android:layout_width="40dp"-->
-                        <!--android:layout_height="40dp"-->
-                        <!--android:background="@android:color/transparent"-->
-                        <!--android:scaleType="fitCenter"-->
-                        <!--android:padding="0dp"-->
-                        <!--android:src="@drawable/ic_settings_black_24dp"-->
-                        <!--android:layout_marginLeft="15dp"-->
-                        <!--android:text="" />-->
+                        android:src="@drawable/translate"
+                        android:text="" />
                     <ImageButton
                         android:id="@+id/video_settingsButton"
                         android:layout_width="40dp"
@@ -131,7 +86,6 @@
                         android:padding="0dp"
                         android:src="@drawable/ic_settings_black_24dp"
                         android:text="" />
-
                 </LinearLayout>
 
 
@@ -144,119 +98,167 @@
         android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-<RelativeLayout
-    android:id="@+id/info"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
-            android:layout_marginTop="1dp"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="0dp">
-            <RelativeLayout
-                android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_marginTop="1dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="0dp">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="5dp">
+                        <ImageButton
+                            android:layout_marginLeft="5dp"
+                            android:id="@+id/video_playButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@android:color/transparent"
+                            android:padding="0dp"
+                            android:src="@drawable/ic_pause_black_48dp"
+                            />
+                        <ImageButton
+                            android:id="@+id/video_SkipPrevious"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="25dp"
+                            android:background="@android:color/transparent"
+                            android:padding="0dp"
+                            android:src="@drawable/ic_skip_previous_black_48dp"
+                            />
+                        <ImageButton
+                            android:id="@+id/video_skipNext"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="25dp"
+                            android:background="@android:color/transparent"
+                            android:padding="0dp"
+                            android:src="@drawable/ic_skip_next_black_48dp"
+                            />
+                    </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/video_SpeechTest"
+                        android:layout_marginRight="7dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:color/transparent"
+                        android:padding="0dp"
+                        android:src="@drawable/ic_mic_black_48dp"
+                        />
+
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_marginTop="3dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="5dp">
-                    <ImageButton
-                        android:layout_marginLeft="5dp"
-                        android:id="@+id/video_playButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@android:color/transparent"
-                        android:padding="0dp"
-                        android:src="@drawable/ic_pause_black_48dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/captionPrimary"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17dp"
+                        android:fontFamily="@font/adamina"
+                        android:background="#000000"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text=""
+                        android:minHeight="75dp"
                         />
-                    <ImageButton
-                        android:id="@+id/video_SkipPrevious"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="25dp"
-                        android:background="@android:color/transparent"
-                        android:padding="0dp"
-                        android:src="@drawable/ic_skip_previous_black_48dp"
-                        />
-                    <ImageButton
-                        android:id="@+id/video_skipNext"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="25dp"
-                        android:background="@android:color/transparent"
-                        android:padding="0dp"
-                        android:src="@drawable/ic_skip_next_black_48dp"
+                    <TextView
+                        android:id="@+id/speakMatch"
+                        android:visibility="gone"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17dp"
+                        android:fontFamily="@font/adamina"
+                        android:background="#e6cf8b"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="xsdfdfddf"
+                        android:minHeight="75dp"
                         />
                 </LinearLayout>
-                <ImageButton
-                    android:id="@+id/video_SpeechTest"
-                    android:layout_marginRight="7dp"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentRight="true"
-                    android:background="@android:color/transparent"
-                    android:padding="0dp"
-                    android:src="@drawable/ic_mic_black_48dp"
-                    />
 
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:layout_marginTop="3dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/captionDefault"
-                android:textColor="#FFFFFF"
-                android:textSize="14dp"
-                android:fontFamily="@font/adamina"
-                android:background="#000000"
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/secondCaption"
+                android:visibility="gone"
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:text=" I have always wanted to Perform in front of a large audience I&#39;m going to make that audience ROCK!"
-                android:minHeight="75dp"
+                >
+                <TextView
+                    android:id="@+id/captionSecondary"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14dp"
+                    android:fontFamily="@font/adamina"
+                    android:background="#000000"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text=""
+                    android:minHeight="75dp"
+                    />
+            </android.support.v7.widget.CardView>
+            <ListView
+                android:id="@+id/allcaptions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF"
+                >
 
-                />
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:layout_marginTop="5dp"
+            </ListView>
+        </LinearLayout>
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
-            <TextView
-                android:id="@+id/captionSecond"
-                android:textColor="#FFFFFF"
-                android:textSize="14dp"
-                android:fontFamily="@font/adamina"
-                android:background="#000000"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:text="I have always wanted to Perform in front of a large audience I&#39;m going to make that audience ROCK!"
-                android:minHeight="75dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3787646629594216/7249545730">
+        </com.google.android.gms.ads.AdView>
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/progress_drawable"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-                />
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-3787646629594216/7249545730">
-    </com.google.android.gms.ads.AdView>
-</RelativeLayout>
+        <ProgressBar
+            android:id="@+id/ProgressBar"
+            style="?android:attr/progressBarStyleSmall"
+            android:visibility="gone"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:indeterminate="true"
+            android:layout_centerInParent="true"
+            android:indeterminateDrawable="@drawable/progress_drawable" />
+    </RelativeLayout>
 </LinearLayout>
