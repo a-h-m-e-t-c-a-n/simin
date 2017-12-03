@@ -8,6 +8,7 @@ import ahmetcan.simin.Discovery.Model.Paged
 import ahmetcan.simin.Discovery.Model.PlayListModel
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Model.persistent.Language
+import ahmetcan.simin.Discovery.Model.persistent.VideoViewState
 import ahmetcan.simin.Discovery.Model.persistent.YoutubePlaylist
 import ahmetcan.simin.Discovery.Model.persistent.YoutubePlaylistResult
 import android.os.Build
@@ -193,7 +194,25 @@ object DiscoveryRepository {
         return result
     }
 
+    fun getVideoViewState(videoId:String): VideoViewState?{
+        var result=Realm.getDefaultInstance().where(VideoViewState::class.java).equalTo("videoId",videoId).findFirst()
+        if(result==null)return null;
+        return Realm.getDefaultInstance().copyFromRealm(result)
+    }
+    fun persistVideoState(state: VideoViewState){
+        var instance= Realm.getDefaultInstance()
+        instance.beginTransaction()
+        instance.copyToRealmOrUpdate(state)
+        instance.commitTransaction()
+        instance.close()
 
+    }
+    fun deleteVideoState(videoId: String){
+        Realm.getDefaultInstance().executeTransaction {
+            var result=Realm.getDefaultInstance().where(VideoViewState::class.java).equalTo("videoId",videoId).findAll()
+            result.deleteAllFromRealm()
+        }
+    }
     //    fun DownloadCaption():SRTInfo{
 //        var youtube= youtubeService()
 //        var output:ByteArrayOutputStream= ByteArrayOutputStream()

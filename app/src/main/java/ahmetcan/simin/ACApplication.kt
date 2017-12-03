@@ -24,7 +24,6 @@ open class ACApplication : Application() {
         Realm.init(this);
         val config = RealmConfiguration.Builder()
                 .name("ahmetcanreal")
-                .schemaVersion(1)
                 .deleteRealmIfMigrationNeeded()
                 .build()
         Realm.setDefaultConfiguration(config)

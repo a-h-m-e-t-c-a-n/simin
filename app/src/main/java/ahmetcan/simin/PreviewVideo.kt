@@ -5,6 +5,7 @@ import ahmetcan.simin.Api.Track
 import ahmetcan.simin.Api.Transcript
 import ahmetcan.simin.Api.TranscriptList
 import ahmetcan.simin.Discovery.Model.persistent.Language
+import ahmetcan.simin.Discovery.Model.persistent.VideoViewState
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository.allLanguageges
 import android.app.Activity
@@ -36,9 +37,11 @@ import android.support.v7.widget.AppCompatButton
 import android.widget.*
 import android.widget.AbsListView
 import com.google.android.youtube.player.internal.l
+import io.realm.Realm
 
 
 class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener , YouTubePlayer.OnFullscreenListener {
+    private var state: VideoViewState?=null
     private var fullscreen: Boolean = false
     private var player:YouTubePlayer?=null
     private var listenPlayerJob: Job?=null
@@ -239,12 +242,12 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     }
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         videoId=intent.extras["videoid"] as String
 
         setContentView(R.layout.activity_preview_video)
-
 
 
         playerView.initialize(ApiKey.YOUTUBEDATAAPIV3_KEY, this);
@@ -341,11 +344,26 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                 }
                try {
                    fillCaptionList()
-               } catch (ex:Throwable){}
+               } catch (ex:Throwable){
+
+                   Log.e("AHMETCAN error ABSORBE",ex.toString())
+               }
         }
         video_FavoryButton.setOnClickListener {
+            if(state==null){
+                video_FavoryButton.setColorFilter(Color.RED)
+                //DrawableCompat.setTint(video_FavoryButton.background,Color.RED)
+                state= VideoViewState()
+            }
+            else{
+                video_FavoryButton.setColorFilter(Color.BLACK)
 
+                //DrawableCompat.setTint(video_FavoryButton.background,Color.BLACK)
+                state=null;
+            }
+            statePersist()
         }
+
         video_hardmodeButtonText.setOnClickListener {
             video_hardmodeButton.callOnClick()
         }
@@ -392,16 +410,52 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             }
         }
 
-        if(syncSubtitle==false){
-            video_subTitleSync.callOnClick()
-        }
+
 
         async {
             loadCaption()
+
+            onUI {
+                state=DiscoveryRepository.getVideoViewState(videoId)
+                state?.let {
+                    if(captionOffMode)video_hardmodeButton.callOnClick()
+                    captionIndex=it.captionIndex
+                    var secondaryIso=it.secondaryLanguageIso
+                    if(!secondaryIso.isNullOrEmpty()){
+                        secondaryLanguge=languages.filter { it.isoCode==secondaryIso }.firstOrNull()
+                        video_secondSubTitleShow.visibility=View.VISIBLE
+                    }
+                    if(it.showCaption)video_secondSubTitleShow.callOnClick()
+                    if(it.syncSubtitle)video_subTitleSync.callOnClick()
+                    if(it.showSecondSubtitle)video_secondSubTitleShow.callOnClick()
+                }
+                if(state!=null){
+                    video_FavoryButton.setColorFilter(Color.RED)
+                }
+                else if(syncSubtitle==false){
+                    video_subTitleSync.callOnClick()
+                }
+            }
+
         }
     }
 
+    fun statePersist(){
+        if(state==null){
+            DiscoveryRepository.deleteVideoState(videoId)
+        }
+        else{
+            state?.videoId=videoId
+            state?.captionOffMode=captionOffMode
+            state?.captionIndex=captionIndex
+            state?.secondaryLanguageIso=secondaryLanguge?.isoCode?:""
+            state?.showCaption=showCaption
+            state?.syncSubtitle=syncSubtitle
+            state?.showSecondSubtitle=showSecondSubtitle
 
+            DiscoveryRepository.persistVideoState(state!!)
+        }
+    }
     private fun doLayout() {
         val playerParams = playerView.getLayoutParams() as LinearLayout.LayoutParams
         if (fullscreen) {
@@ -444,6 +498,8 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     override fun onDestroy() {
         super.onDestroy()
         //  listenPlayerJob?.cancel()
+        statePersist()
+
     }
 
     fun fillCaptionList(){
@@ -461,7 +517,9 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     }
 
     fun loadCaption() {
+
         onUI { progressBar1.visibility=View.VISIBLE }
+
         languages = allLanguageges(videoId)
          if (languages.count() == 0) {
             TODO("CAPTİON NOT FOUND UYARISI VERİLECEK")
@@ -482,6 +540,8 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             fillCaptionList()
             progressBar1.visibility=View.GONE
         }
+
+
     }
     fun loadSecondaryCaption() {
         onUI { progressBar1.visibility=View.VISIBLE }
@@ -498,4 +558,5 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
         onUI{ progressBar1.visibility=View.GONE }
     }
+
 }
