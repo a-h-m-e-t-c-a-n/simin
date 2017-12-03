@@ -1,7 +1,11 @@
 package ahmetcan.simin
 
+import ahmetcan.simin.Discovery.Model.PlayListModel
+import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
+import ahmetcan.simin.Discovery.View.FavoritesAdapter
 import ahmetcan.simin.Discovery.View.YoutubeChannelAdapter
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
@@ -53,7 +57,13 @@ class ChannelFragment : FragmentBase()  {
             refresh()
             swipeRefreshLayout.isRefreshing=false
         }
-
+        adapter.onClickItem=object :  YoutubeChannelAdapter.OnItemClickListener{
+            override fun onClick(itemModel: PlayListModel) {
+                var intent= Intent(this@ChannelFragment.activity, VideoListActivity::class.java)
+                intent.putExtra("channelid",itemModel.playlistid)
+                startActivity(intent)
+            }
+        }
     }
     fun loadMore() =safeAsync {
         loading=true

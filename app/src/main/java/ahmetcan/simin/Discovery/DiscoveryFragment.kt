@@ -1,9 +1,13 @@
 package ahmetcan.simin.Discovery
 
+import ahmetcan.simin.Discovery.Model.PlayListModel
 import ahmetcan.simin.Discovery.Model.persistent.VideoViewState
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
+import ahmetcan.simin.Discovery.View.YoutubeChannelAdapter
 import ahmetcan.simin.FragmentBase
 import ahmetcan.simin.R
+import ahmetcan.simin.VideoListActivity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
@@ -31,7 +35,13 @@ class DiscoveryFragment : FragmentBase()  {
 
         rvList.setLayoutManager(linearLayoutManager)
         rvList.adapter=adapter
-
+        adapter.onClickItem=object :  YoutubePlaylistAdapter.OnItemClickListener{
+            override fun onClick(itemModel: PlayListModel) {
+                var intent= Intent(this@DiscoveryFragment.activity, VideoListActivity::class.java)
+                intent.putExtra("playlistid",itemModel.playlistid)
+                startActivity(intent)
+            }
+        }
         val callbacks = object : Paginate.Callbacks {
             override fun onLoadMore() {
                 loadMore()

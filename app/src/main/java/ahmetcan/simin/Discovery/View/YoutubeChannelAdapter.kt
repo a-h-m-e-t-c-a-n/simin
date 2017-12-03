@@ -1,6 +1,7 @@
 package ahmetcan.simin.Discovery.View
 
 import ahmetcan.simin.Discovery.Model.PlayListModel
+import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.R
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,6 +11,11 @@ import kotlinx.android.synthetic.main.item_channel.view.*
 
 open class YoutubeChannelAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items :ArrayList<PlayListModel> = ArrayList()
+    interface OnItemClickListener {
+        fun onClick(itemModel: PlayListModel)
+    }
+    public var onClickItem: OnItemClickListener? = null
+
 
     fun addData(data:ArrayList<PlayListModel>) {
         items.addAll(data)
@@ -34,8 +40,13 @@ open class YoutubeChannelAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>
         return DefaultItemHolder(view)
     }
 
-    class DefaultItemHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class DefaultItemHolder(view: View) : RecyclerView.ViewHolder(view) {
         lateinit var item: PlayListModel
+        init{
+            view.setOnClickListener {
+               if(onClickItem!=null)onClickItem?.onClick(items[adapterPosition])
+            }
+        }
         fun bindView(item: PlayListModel) {
             this.item = item
             with(item){

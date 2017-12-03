@@ -107,7 +107,7 @@ object DiscoveryRepository {
 
         result.isLastPage = ytobj?.nextPageToken.isNullOrEmpty()
         ytobj?.items?.forEach {
-            var playListModel = PlayListModel(it.cover, it.title, it.description, it.itemCount.toString())
+            var playListModel = PlayListModel(it.id, it.cover, it.title, it.description, it.itemCount.toString())
             result.items?.add(playListModel)
 
         }
@@ -145,7 +145,7 @@ object DiscoveryRepository {
                         plitem.cover =item.snippet.thumbnails?.standard?.url ?: item.snippet.thumbnails?.high?.url ?:item.snippet.thumbnails?.medium?.url ?:item.snippet.thumbnails?.default?.url
                         plitem.description = item.snippet.description
                         plitem.title = item.snippet.title
-                        plitem.id = item.id
+                        plitem.id = item.snippet.resourceId.channelId
                         plitem.itemCount = item.contentDetails.totalItemCount
                         ytResult.items?.add(plitem)
                     }catch (ex:Exception){
@@ -181,7 +181,7 @@ object DiscoveryRepository {
 
         result.isLastPage = ytobj?.nextPageToken.isNullOrEmpty()
         ytobj?.items?.forEach {
-            var playListModel = PlayListModel(it.cover, it.title, it.description, it.itemCount.toString())
+            var playListModel = PlayListModel(it.id,it.cover, it.title, it.description, it.itemCount.toString())
             result.items?.add(playListModel)
 
         }
@@ -209,6 +209,71 @@ object DiscoveryRepository {
         search.setQ(q)
         search.setVideoCaption("closedCaption")
 
+        search.setType("video")
+        nextPageToken?.let {
+            search.setPageToken(nextPageToken)
+        }
+        search.setMaxResults(25)
+        val searchResponse = search.execute()
+        searchResponse?.items?.forEach {
+            var model=VideoModel()
+            model.videoid=it.id.videoId
+            model.cover = it.snippet.thumbnails?.standard?.url ?: it.snippet.thumbnails?.high?.url ?:it.snippet.thumbnails?.medium?.url ?:it.snippet.thumbnails?.default?.url
+            model.topText=it.snippet.channelTitle
+            model.bottomText=it.snippet.title
+            model.title=it.snippet.channelTitle
+            model.description=it.snippet.title
+            result.items?.add(model)
+
+        }
+        result.isLastPage=searchResponse.nextPageToken.isNullOrEmpty()
+        if(result.isLastPage==false)result.index=searchResponse.nextPageToken
+
+        return result
+
+    }
+    fun playlistItems(playlistId:String,nextPageToken:String?):Paged<String,VideoModel>{
+        var result = Paged<String,VideoModel>("",items=ArrayList())
+
+        var youtube= youtubeService()
+
+        val search = youtube.playlistItems().list("id,snippet")
+
+        search.setKey(ApiKey.YOUTUBEDATAAPIV3_KEY)
+
+        search.setPlaylistId(playlistId)
+        nextPageToken?.let {
+            search.setPageToken(nextPageToken)
+        }
+        search.setMaxResults(25)
+        val searchResponse = search.execute()
+        searchResponse?.items?.forEach {
+            var model=VideoModel()
+            model.videoid=it.snippet.resourceId.videoId
+            model.cover = it.snippet.thumbnails?.standard?.url ?: it.snippet.thumbnails?.high?.url ?:it.snippet.thumbnails?.medium?.url ?:it.snippet.thumbnails?.default?.url
+            model.topText=it.snippet.channelTitle
+            model.bottomText=it.snippet.title
+            model.title=it.snippet.channelTitle
+            model.description=it.snippet.title
+            result.items?.add(model)
+
+        }
+        result.isLastPage=searchResponse.nextPageToken.isNullOrEmpty()
+        if(result.isLastPage==false)result.index=searchResponse.nextPageToken
+
+        return result
+
+    }
+    fun channelVideos(channelId:String,nextPageToken:String?):Paged<String,VideoModel>{
+        var result = Paged<String,VideoModel>("",items=ArrayList())
+
+        var youtube= youtubeService()
+
+        val search = youtube.search().list("id,snippet")
+
+        search.setKey(ApiKey.YOUTUBEDATAAPIV3_KEY)
+        search.setVideoCaption("closedCaption")
+        search.setChannelId(channelId)
         search.setType("video")
         nextPageToken?.let {
             search.setPageToken(nextPageToken)

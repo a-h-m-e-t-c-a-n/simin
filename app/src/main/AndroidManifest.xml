@@ -32,6 +32,10 @@
         <activity
             android:name=".LanguageActivity"
             android:label="@string/title_activity_language"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".VideoListActivity"
+            android:label="@string/title_activity_video_list"
             android:theme="@style/AppTheme"></activity>
     </application>
 

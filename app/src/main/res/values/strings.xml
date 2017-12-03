@@ -86,4 +86,5 @@
     <string name="speakerror">Opps! Your device doesn\'t support Speech to Text</string>
     <string name="title_activity_language">Language</string>
     <string name="none">none</string>
+    <string name="title_activity_video_list">VideoListActivity</string>
 </resources>

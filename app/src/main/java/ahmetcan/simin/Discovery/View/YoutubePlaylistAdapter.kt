@@ -10,7 +10,10 @@ import kotlinx.android.synthetic.main.item_playlist.view.*
 
 open class YoutubePlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items :ArrayList<PlayListModel> = ArrayList()
-
+    interface OnItemClickListener {
+        fun onClick(itemModel: PlayListModel)
+    }
+    public var onClickItem: OnItemClickListener? = null
     fun addData(data:ArrayList<PlayListModel>) {
         items.addAll(data)
     }
@@ -34,8 +37,13 @@ open class YoutubePlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
         return DefaultItemHolder(view)
     }
 
-    class DefaultItemHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class DefaultItemHolder(view: View) : RecyclerView.ViewHolder(view) {
         lateinit var item:PlayListModel
+        init{
+            view.setOnClickListener {
+                if(onClickItem!=null)onClickItem?.onClick(items[adapterPosition])
+            }
+        }
         fun bindView(item: PlayListModel) {
             this.item = item
             with(item){
