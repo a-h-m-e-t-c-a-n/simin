@@ -38,10 +38,22 @@ class FavoriesFragment : FragmentBase()  {
             }
 
         }
+        swipeRefreshLayout.setOnRefreshListener {
+            async {
+                var favs=DiscoveryRepository.favorites()
+                onUI {
+                    adapter.clearData()
+                    adapter.addData(favs)
+                    adapter.notifyDataSetChanged()
+                    swipeRefreshLayout.setRefreshing(false);
 
+                }
+            }
+        }
         async {
             var favs=DiscoveryRepository.favorites()
             onUI {
+                adapter.clearData()
                 adapter.addData(favs)
                 adapter.notifyDataSetChanged()
             }

@@ -27,8 +27,8 @@ import com.google.api.services.youtube.model.Video
 
 
 object DiscoveryRepository {
-    const val CHANNEL_ID = "UCAuUUnT6oDeKwE6v1NGQxug"
-    //  const val CHANNEL_ID = "UChk2As5_2Q_c_o5QiCJB8vw"
+    //const val CHANNEL_ID = "UCAuUUnT6oDeKwE6v1NGQxug" //TED
+    const val CHANNEL_ID = "UChk2As5_2Q_c_o5QiCJB8vw" //simin application channel
 
     private fun youtubeService(): YouTube {
         var youtube = YouTube.Builder(NetHttpTransport(), JacksonFactory(), object : HttpRequestInitializer {
