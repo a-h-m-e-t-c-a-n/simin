@@ -18,12 +18,9 @@ import kotlinx.coroutines.experimental.launch
 class FavoriesFragment : FragmentBase()  {
 
     var adapter= FavoritesAdapter()
-    var loading:Boolean=false
-    var isHasLoadedAll:Boolean=false
-    var page=0
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
 
         val linearLayoutManager = LinearLayoutManager(this@FavoriesFragment.context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
@@ -53,7 +50,7 @@ class FavoriesFragment : FragmentBase()  {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_discovery, container, false)
+        return inflater!!.inflate(R.layout.fragment_favories, container, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
