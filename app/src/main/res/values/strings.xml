@@ -84,4 +84,6 @@
         Eğer reklamlardan rahatsızlık duyuyorsunız  bu butonu tıklayarak reklamsız versiyonunu satın alabilirsiniz</string>
     <string name="clicktoshow">[Press and hold to show]</string>
     <string name="speakerror">Opps! Your device doesn\'t support Speech to Text</string>
+    <string name="title_activity_language">Language</string>
+    <string name="none">none</string>
 </resources>

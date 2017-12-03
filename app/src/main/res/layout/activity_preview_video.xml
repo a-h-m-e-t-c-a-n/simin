@@ -75,17 +75,17 @@
                         android:padding="0dp"
                         android:src="@drawable/translate"
                         android:text="" />
-                    <ImageButton
-                        android:id="@+id/video_settingsButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginRight="5dp"
-                        android:background="@android:color/transparent"
-                        android:scaleType="fitCenter"
-                        android:padding="0dp"
-                        android:src="@drawable/ic_settings_black_24dp"
-                        android:text="" />
+                    <!--<ImageButton-->
+                        <!--android:id="@+id/video_settingsButton"-->
+                        <!--android:layout_width="40dp"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:layout_marginLeft="30dp"-->
+                        <!--android:layout_marginRight="5dp"-->
+                        <!--android:background="@android:color/transparent"-->
+                        <!--android:scaleType="fitCenter"-->
+                        <!--android:padding="0dp"-->
+                        <!--android:src="@drawable/ic_settings_black_24dp"-->
+                        <!--android:text="" />-->
                 </LinearLayout>
 
 
@@ -152,10 +152,19 @@
                             android:id="@+id/video_subTitleSync"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_marginLeft="50dp"
+                            android:layout_marginLeft="45dp"
                             android:background="@android:color/transparent"
                             android:padding="0dp"
                             android:src="@drawable/ic_sync_black_48dp"
+                            />
+                        <ImageButton
+                            android:id="@+id/video_secondSubTitleShow"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="15dp"
+                            android:background="@android:color/transparent"
+                            android:padding="0dp"
+                            android:src="@drawable/ic_subtitles_black_48dp"
                             />
                     </LinearLayout>
                     <ImageButton
@@ -210,36 +219,50 @@
                         android:text="xsdfdfddf"
                         android:minHeight="75dp"
                         />
+                    <TextView
+                        android:id="@+id/captionSecondary"
+                        android:visibility="gone"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17dp"
+                        android:fontFamily="@font/adamina"
+                        android:background="#555555"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text=""
+                        android:minHeight="75dp"
+                        />
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:id="@+id/secondCaption"
-                android:visibility="gone"
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
-                <TextView
-                    android:id="@+id/captionSecondary"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14dp"
-                    android:fontFamily="@font/adamina"
-                    android:background="#000000"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text=""
-                    android:minHeight="75dp"
-                    />
-            </android.support.v7.widget.CardView>
+            <!--<android.support.v7.widget.CardView-->
+                <!--android:id="@+id/secondCaption"-->
+                <!--android:visibility="gone"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--&gt;-->
+                <!--<TextView-->
+                    <!--android:id="@+id/captionSecondary"-->
+                    <!--android:textColor="#FFFFFF"-->
+                    <!--android:textSize="14dp"-->
+                    <!--android:fontFamily="@font/adamina"-->
+                    <!--android:background="#000000"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="5dp"-->
+                    <!--android:text=""-->
+                    <!--android:minHeight="75dp"-->
+                    <!--/>-->
+            <!--</android.support.v7.widget.CardView>-->
             <ListView
                 android:id="@+id/allcaptions"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FFFFFF"
                 >
-
             </ListView>
         </LinearLayout>
         <com.google.android.gms.ads.AdView

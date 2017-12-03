@@ -7,6 +7,7 @@ import ahmetcan.simin.ApiKey
 import ahmetcan.simin.Discovery.Model.Paged
 import ahmetcan.simin.Discovery.Model.PlayListModel
 import ahmetcan.simin.Discovery.Model.VideoModel
+import ahmetcan.simin.Discovery.Model.persistent.Language
 import ahmetcan.simin.Discovery.Model.persistent.YoutubePlaylist
 import ahmetcan.simin.Discovery.Model.persistent.YoutubePlaylistResult
 import android.os.Build
@@ -19,6 +20,12 @@ import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.model.PlaylistListResponse
 import io.realm.Realm
 import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
+import com.google.android.youtube.player.internal.i
+import android.R.attr.name
+
+
 
 
 object DiscoveryRepository {
@@ -153,9 +160,9 @@ object DiscoveryRepository {
 
         var list = YoutubeService.instance.caption_list(videoId).execute().body()
         return list;
-
     }
     fun caption(videoId:String,languageCode:String,translateCode:String): Transcript? {
+        allLanguageges(videoId)
         var caption = YoutubeService.instance.caption_text(videoId, languageCode, translateCode).execute().body()
         caption?.texts?.forEach {
             it.start*=1000
@@ -164,6 +171,26 @@ object DiscoveryRepository {
 
         }
         return caption;
+    }
+
+    fun allLanguageges(videoId: String,displayLangIso:String="US"): List<Language> {
+        var result=ArrayList<Language>()
+        var available=captionList(videoId)
+
+        var codes=Locale.getISOLanguages()
+        for (item in codes){
+            val locale = Locale(item, displayLangIso)
+            var model=Language()
+            model.isoCode=item
+            model.DisplayName=locale.getDisplayLanguage(locale).toLowerCase()
+            var exist=available?.tracks?.filter { it.langCode.equals(model.isoCode) }?.firstOrNull()
+            exist?.let {
+                model.default=it.langDefault=="true"
+                model.available=true
+            }
+            result.add(model)
+        }
+        return result
     }
 
 

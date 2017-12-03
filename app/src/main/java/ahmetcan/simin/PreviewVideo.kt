@@ -4,7 +4,9 @@ import ahmetcan.simin.Api.Text
 import ahmetcan.simin.Api.Track
 import ahmetcan.simin.Api.Transcript
 import ahmetcan.simin.Api.TranscriptList
+import ahmetcan.simin.Discovery.Model.persistent.Language
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
+import ahmetcan.simin.Discovery.Real.DiscoveryRepository.allLanguageges
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -28,10 +30,11 @@ import android.graphics.PorterDuff
 import android.R.attr.checked
 import android.content.res.ColorStateList
 import android.provider.Settings
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.AppCompatButton
 import android.widget.*
 import android.widget.AbsListView
-
-
+import com.google.android.youtube.player.internal.l
 
 
 class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener , YouTubePlayer.OnFullscreenListener {
@@ -39,18 +42,22 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     private var player:YouTubePlayer?=null
     private var listenPlayerJob: Job?=null
     private var videoId:String=""
-    private var transcriptList: TranscriptList?=null
-    private var defaultLanguge: Track?=null
-    private var secondaryLanguge: Track?=null
+    private lateinit var languages: List<Language>
+    private lateinit var defaultLanguge: Language
+    private var secondaryLanguge: Language?=null
     var primaryCaptionList: Transcript?=null
+    var secondaryCaptionList: Transcript?=null
     var currentPrimaryText: Text?=null
+    var currentSecondaryText: Text?=null
     private var captionOffMode:Boolean=false
     private var showCaption:Boolean=false
     private var captionIndex=0
     lateinit var listAdapter: ArrayAdapter<String>
-
+    private var showSecondSubtitle: Boolean=false
+    private var syncSubtitle: Boolean=false
 
     protected val RESULT_SPEECH = 2
+    protected val RESULT_TRANSLATE = 3
     companion object {
         const val  RECOVERY_DIALOG_REQUEST = 1;
     }
@@ -73,7 +80,8 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
 
     fun onPlayerTimeChanged(time:Int){
-        var primaryTextExist=false;
+        var primaryTextExist=false
+        var secondaryTextExist=false
         primaryCaptionList.let {
             it?.texts?.let {
                 for((index, value) in it.withIndex()){
@@ -83,13 +91,31 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                             currentPrimaryText=value
                             captionIndex=index
                             onCaptionChanged()
+                            break;
                         }
                     }
-
                 }
             }
+            if(!primaryTextExist)captionPrimary.setText("")
+
+            if(secondaryLanguge!=null){
+                secondaryCaptionList.let {
+                    it?.texts?.let {
+                        for ((index, value) in it.withIndex()) {
+                            if (time >= value.start && time <= value.start + value.duration) {
+                                secondaryTextExist = true
+                                if (value?.sentence.toString().compareTo(currentSecondaryText?.sentence.toString()) != 0) {
+                                    currentSecondaryText = value
+                                    onSecondaryCaptionChanged()
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if(!secondaryTextExist)captionPrimary.setText("")
+            }
         }
-        if(!primaryTextExist)captionPrimary.setText("")
     }
     fun onCaptionChanged(){
         if(currentPrimaryText==null)return
@@ -105,10 +131,15 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         else{
             captionPrimary.setText(currentPrimaryText?.sentence?:"")
         }
-        primaryCaptionList?.let {
-            if(captionIndex+1<it.texts.count())allcaptions.setSelection(captionIndex+1)
+        if(syncSubtitle){
+            primaryCaptionList?.let {
+                if(captionIndex+1<it.texts.count())allcaptions.setSelection(captionIndex+1)
+            }
         }
-
+    }
+    fun onSecondaryCaptionChanged(){
+        if(currentSecondaryText==null)return
+        captionSecondary.setText(currentSecondaryText?.sentence?:"")
     }
     override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, pl: YouTubePlayer?, wasRestored: Boolean) {
         player=pl
@@ -166,14 +197,39 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                 if (resultCode == Activity.RESULT_OK) {
                     data?.let {
                         val text = it.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                        Log.e("AAAAA->>>>>>>>>>>>",text[0])
                         if(text.count()>0) {
                             speakMatch.setText(text[0])
                         }
                         speakMatch.visibility=View.VISIBLE
-
                     }
+                }
+            }
+            RESULT_TRANSLATE -> {
+                data?.let {
+                    if(resultCode==2){
+                        secondaryLanguge=null
+                        captionSecondary.visibility=View.GONE
+                        onUI {
+                            if(showSecondSubtitle){
+                                video_secondSubTitleShow.callOnClick()
+                            }
 
+                        }
+                    }
+                    else{
+                        var translateiso=it.extras["iso"]
+
+                        secondaryLanguge=languages.filter { it.isoCode==translateiso }.firstOrNull()
+                        onUI {
+                            if(!showSecondSubtitle){
+                                video_secondSubTitleShow.callOnClick()
+                            }
+
+                        }
+                        logAsync {
+                            loadSecondaryCaption()
+                        }
+                    }
 
                 }
             }
@@ -296,7 +352,40 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             }
 
         })
+         video_translateButton.setOnClickListener {
+             var intent=Intent(applicationContext,LanguageActivity::class.java)
+             intent.putExtra("videoid",videoId)
+             startActivityForResult(intent,RESULT_TRANSLATE)
+         }
+        video_secondSubTitleShow.setOnClickListener {
+            if(showSecondSubtitle){
+                showSecondSubtitle=false
+                video_secondSubTitleShow.setColorFilter(Color.BLACK)
+                captionSecondary.visibility=View.GONE
+            }
+            else{
+                if(secondaryLanguge!=null){
+                    showSecondSubtitle=true
+                    video_secondSubTitleShow.setColorFilter(Color.RED)
+                    captionSecondary.visibility=View.VISIBLE
 
+                }
+            }
+        }
+        video_subTitleSync.setOnClickListener {
+            if(syncSubtitle){
+                syncSubtitle=false
+                video_subTitleSync.setColorFilter(Color.BLACK)
+            }
+            else{
+                syncSubtitle=true
+                video_subTitleSync.setColorFilter(Color.RED)
+            }
+        }
+
+        if(syncSubtitle==false){
+            video_subTitleSync.callOnClick()
+        }
 
         async {
             loadCaption()
@@ -334,6 +423,8 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 //                baseLayout.setOrientation(LinearLayout.VERTICAL)
 //            }
         }
+
+
     }
 
     override fun onFullscreen(isFullscreen: Boolean) {
@@ -345,6 +436,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         super.onDestroy()
         //  listenPlayerJob?.cancel()
     }
+
     fun fillCaptionList(){
         listAdapter.clear()
         for ((index,item) in primaryCaptionList!!.texts.withIndex()){
@@ -361,27 +453,40 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
     fun loadCaption() {
         onUI { progressBar1.visibility=View.VISIBLE }
-        transcriptList = DiscoveryRepository.captionList(videoId)
-        onUI{ progressBar1.visibility=View.GONE }
-        if (transcriptList == null) {
-            TODO("load fail hatası verilecek")
-            return;
-        }
-        if (transcriptList?.tracks == null) {
+        languages = allLanguageges(videoId)
+         if (languages.count() == 0) {
             TODO("CAPTİON NOT FOUND UYARISI VERİLECEK")
             return;
         }
-
-        for (item in transcriptList?.tracks!!){
-            if (item.langDefault == "true") {
-                defaultLanguge=item;
-                break;
-            }
+        var default=languages.filter { it.default==true }.firstOrNull()
+        if(default==null){
+            default=languages.filter { it.available==true }.firstOrNull()
+            defaultLanguge= default!!
         }
-        primaryCaptionList =DiscoveryRepository.caption(videoId,defaultLanguge!!.langCode,"")
+        else{
+            defaultLanguge=default
+        }
+
+
+        primaryCaptionList =DiscoveryRepository.caption(videoId,defaultLanguge.isoCode,"")
         onUI {
             fillCaptionList()
+            progressBar1.visibility=View.GONE
+        }
+    }
+    fun loadSecondaryCaption() {
+        onUI { progressBar1.visibility=View.VISIBLE }
+        secondaryLanguge?.let {
+            if(it.available){
+                secondaryCaptionList =DiscoveryRepository.caption(videoId,it.isoCode,"")
+            }
+            else{
+                secondaryCaptionList =DiscoveryRepository.caption(videoId,defaultLanguge.isoCode,it.isoCode)
+            }
+
         }
 
+
+        onUI{ progressBar1.visibility=View.GONE }
     }
 }
