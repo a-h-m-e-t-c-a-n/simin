@@ -31,6 +31,7 @@ import android.R.attr.checked
 import android.content.res.ColorStateList
 import android.provider.Settings
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.AppCompatButton
 import android.widget.*
 import android.widget.AbsListView
@@ -209,6 +210,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                     if(resultCode==2){
                         secondaryLanguge=null
                         captionSecondary.visibility=View.GONE
+                        video_secondSubTitleShow.visibility=View.GONE
                         onUI {
                             if(showSecondSubtitle){
                                 video_secondSubTitleShow.callOnClick()
@@ -217,14 +219,14 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                         }
                     }
                     else{
+                        captionSecondary.visibility=View.VISIBLE
+                        video_secondSubTitleShow.visibility=View.VISIBLE
                         var translateiso=it.extras["iso"]
-
                         secondaryLanguge=languages.filter { it.isoCode==translateiso }.firstOrNull()
                         onUI {
                             if(!showSecondSubtitle){
                                 video_secondSubTitleShow.callOnClick()
                             }
-
                         }
                         logAsync {
                             loadSecondaryCaption()
@@ -324,23 +326,30 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             }
         }
 
-        video_hardmodeButton.setOnCheckedChangeListener(object :CompoundButton.OnCheckedChangeListener{
-            override fun onCheckedChanged(button: CompoundButton?, state: Boolean) {
-                if(state){
-                    video_hardmodeButtonText?.setTextColor(Color.RED)
-                    captionOffMode=true
-                }
-                else{
+        video_hardmodeButton.setOnClickListener {
+               if(captionOffMode){
                     video_hardmodeButtonText?.setTextColor(Color.BLACK)
+                    DrawableCompat.setTint(video_hardmodeButton.background,Color.BLACK)
+                   //video_hardmodeButton.setColorFilter(Color.BLACK,PorterDuff.Mode.MULTIPLY)
                     captionOffMode=false
                 }
-                fillCaptionList()
-            }
-        })
-        video_hardmodeButtonText.setOnClickListener {
-            video_hardmodeButton.toggle()
+                else{
+                    video_hardmodeButtonText?.setTextColor(Color.RED)
+                   DrawableCompat.setTint(video_hardmodeButton.background,Color.RED)
+//                    video_hardmodeButton.setColorFilter(Color.RED,PorterDuff.Mode.MULTIPLY)
+                    captionOffMode=true
+                }
+               try {
+                   fillCaptionList()
+               } catch (ex:Throwable){}
         }
-        if(captionOffMode)video_hardmodeButton.toggle()
+        video_FavoryButton.setOnClickListener {
+
+        }
+        video_hardmodeButtonText.setOnClickListener {
+            video_hardmodeButton.callOnClick()
+        }
+        if(captionOffMode)video_hardmodeButton.callOnClick()
 
         listAdapter =ArrayAdapter<String>(this, R.layout.transcript_listitem, arrayListOf(""))
         allcaptions.adapter=listAdapter
