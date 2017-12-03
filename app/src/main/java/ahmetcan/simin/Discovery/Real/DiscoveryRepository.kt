@@ -23,6 +23,7 @@ import kotlin.collections.ArrayList
 import com.google.android.youtube.player.internal.i
 import android.R.attr.name
 import com.google.api.services.youtube.model.SubscriptionListResponse
+import com.google.api.services.youtube.model.Video
 
 
 object DiscoveryRepository {
@@ -195,6 +196,8 @@ object DiscoveryRepository {
             realm.delete(YoutubeSubscriptionResult::class.java)
         }
     }
+
+
     fun search(q:String,nextPageToken:String?):Paged<String,VideoModel>{
         var result = Paged<String,VideoModel>("",items=ArrayList())
 
@@ -218,8 +221,8 @@ object DiscoveryRepository {
             model.cover = it.snippet.thumbnails?.standard?.url ?: it.snippet.thumbnails?.high?.url ?:it.snippet.thumbnails?.medium?.url ?:it.snippet.thumbnails?.default?.url
             model.topText=it.snippet.channelTitle
             model.bottomText=it.snippet.title
-            model.title=it.snippet.title
-            model.description=it.snippet.description
+            model.title=it.snippet.channelTitle
+            model.description=it.snippet.title
             result.items?.add(model)
 
         }
@@ -229,6 +232,26 @@ object DiscoveryRepository {
         return result
 
     }
+    fun favorites(): ArrayList<VideoModel> {
+
+        var realm: Realm = Realm.getDefaultInstance()
+        var result = ArrayList<VideoModel>()
+        var count = realm.where(VideoViewState::class.java).count()
+        var obj = realm.where(VideoViewState::class.java).findAll()
+        obj.forEach {
+            var videoModel = VideoModel()
+            videoModel.videoid=it.videoId
+            videoModel.title=it.title
+            videoModel.description=it.description
+            videoModel.cover=it.cover
+            videoModel.topText=it.title
+            videoModel.bottomText=it.description
+            result.add(videoModel)
+
+        }
+        return result
+    }
+
     fun captionList(videoId:String): TranscriptList? {
 
         var list = YoutubeService.instance.caption_list(videoId).execute().body()
