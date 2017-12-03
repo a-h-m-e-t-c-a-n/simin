@@ -5,5 +5,7 @@ open class VideoModel{
     var cover:String?=""
     var topText:String?=""
     var bottomText:String?=""
+    var title=""
+    var description=""
 
 }

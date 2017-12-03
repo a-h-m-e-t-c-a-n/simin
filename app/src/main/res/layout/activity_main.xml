@@ -95,8 +95,8 @@
             <android.support.design.widget.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="History"
-                android:tag="History"
+                android:text="Favories"
+                android:tag="Favories"
                 />
         </android.support.design.widget.TabLayout>
 

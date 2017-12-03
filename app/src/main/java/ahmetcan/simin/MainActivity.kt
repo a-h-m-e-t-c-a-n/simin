@@ -96,8 +96,8 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
                     tab.icon?.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
                     when (it.position) {
                         0 -> changeFragment(DiscoveryFragment())
-                        1 -> changeFragment(StudyFragment())
-                        2 -> changeFragment(ProfileFragment())
+                        1 -> changeFragment(ChannelFragment())
+                        2 -> changeFragment(FavoriesFragment())
                     }
 
                 }

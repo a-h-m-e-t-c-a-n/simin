@@ -151,6 +151,9 @@ class SearchActivity : ActivityBase() {
             override fun onClick(itemModel: VideoModel) {
                 var intent=Intent(this@SearchActivity, PreviewVideo::class.java)
                 intent.putExtra("videoid",itemModel.videoid)
+                intent.putExtra("title",itemModel.title)
+                intent.putExtra("description",itemModel.description)
+                intent.putExtra("cover",itemModel.cover)
                 startActivity(intent)
             }
 

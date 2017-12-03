@@ -59,6 +59,9 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     lateinit var listAdapter: ArrayAdapter<String>
     private var showSecondSubtitle: Boolean=false
     private var syncSubtitle: Boolean=false
+    private var title:String=""
+    private var description=""
+    private var cover=""
 
     protected val RESULT_SPEECH = 2
     protected val RESULT_TRANSLATE = 3
@@ -243,9 +246,13 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         videoId=intent.extras["videoid"] as String
+        title=intent.extras["title"] as String
+        description=intent.extras["description"] as String
+        cover=intent.extras["cover"] as String
 
         setContentView(R.layout.activity_preview_video)
 
@@ -419,7 +426,6 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                 state=DiscoveryRepository.getVideoViewState(videoId)
                 state?.let {
                     if(captionOffMode)video_hardmodeButton.callOnClick()
-                    captionIndex=it.captionIndex
                     var secondaryIso=it.secondaryLanguageIso
                     if(!secondaryIso.isNullOrEmpty()){
                         secondaryLanguge=languages.filter { it.isoCode==secondaryIso }.firstOrNull()
@@ -452,6 +458,9 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             state?.showCaption=showCaption
             state?.syncSubtitle=syncSubtitle
             state?.showSecondSubtitle=showSecondSubtitle
+            state?.title=title
+            state?.description=description
+            state?.cover=cover
 
             DiscoveryRepository.persistVideoState(state!!)
         }
@@ -539,6 +548,10 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         onUI {
             fillCaptionList()
             progressBar1.visibility=View.GONE
+            if(captionIndex>0){
+                var seekToCption=primaryCaptionList!!.texts[captionIndex]
+                player?.seekToMillis(seekToCption.start.toInt())
+            }
         }
 
 
