@@ -427,6 +427,8 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                         secondaryLanguge=languages.filter { it.isoCode==secondaryIso }.firstOrNull()
                         video_secondSubTitleShow.visibility=View.VISIBLE
                     }
+                    logAsync {loadSecondaryCaption()}
+
                     if(it.showCaption)video_secondSubTitleShow.callOnClick()
                     if(it.syncSubtitle)video_subTitleSync.callOnClick()
                     if(it.showSecondSubtitle)video_secondSubTitleShow.callOnClick()
@@ -438,7 +440,6 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                     video_subTitleSync.callOnClick()
                 }
             }
-            loadSecondaryCaption()
 
         }
     }
