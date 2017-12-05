@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,8 +23,10 @@
             android:layout_height="100dp"
             android:layout_gravity="top"
             android:layout_margin="15dp"
-            android:scaleType="centerCrop"
-            android:background="@android:color/black"
+            fresco:roundAsCircle="true"
+            fresco:roundingBorderColor="#FFFFFF"
+            android:scaleType="fitCenter"
+            android:background="@android:color/white"
             />
     <LinearLayout
         android:layout_width="match_parent"

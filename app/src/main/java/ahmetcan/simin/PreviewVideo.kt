@@ -283,24 +283,24 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         captionPrimary.setOnClickListener {
             currentPrimaryText?.let {
                 player?.seekToMillis(it.start.toInt())
-//                if(captionOffMode){
-//                    showCaption=true
-//                }
-                onCaptionChanged();
-            }
-
-        }
-        captionPrimary.setOnLongClickListener {
-            currentPrimaryText?.let {
-                player?.seekToMillis(it.start.toInt())
                 if(captionOffMode){
                     showCaption=true
                 }
                 onCaptionChanged();
             }
 
-            true
         }
+//        captionPrimary.setOnLongClickListener {
+//            currentPrimaryText?.let {
+//                player?.seekToMillis(it.start.toInt())
+//                if(captionOffMode){
+//                    showCaption=true
+//                }
+//                onCaptionChanged();
+//            }
+//
+//            true
+//        }
         if(captionOffMode){
             captionPrimary.setText(getString(R.string.clicktoshow))
             showCaption=false
