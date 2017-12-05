@@ -103,24 +103,20 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                     }
                 }
             }
-            if(!primaryTextExist)captionPrimary.setText("")
 
-            if(secondaryLanguge!=null){
-                secondaryCaptionList.let {
-                    it?.texts?.let {
-                        for ((index, value) in it.withIndex()) {
-                            if (time >= value.start && time <= value.start + value.duration) {
-                                secondaryTextExist = true
-                                if (value?.sentence.toString().compareTo(currentSecondaryText?.sentence.toString()) != 0) {
-                                    currentSecondaryText = value
-                                    onSecondaryCaptionChanged()
-                                    break;
-                                }
+            secondaryCaptionList.let {
+                it?.texts?.let {
+                    for ((index, value) in it.withIndex()) {
+                        if (time >= value.start && time <= value.start + value.duration) {
+                            secondaryTextExist = true
+                            if (value?.sentence.toString().compareTo(currentSecondaryText?.sentence.toString()) != 0) {
+                                currentSecondaryText = value
+                                onSecondaryCaptionChanged()
+                                break;
                             }
                         }
                     }
                 }
-                if(!secondaryTextExist)captionPrimary.setText("")
             }
         }
     }
@@ -442,6 +438,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                     video_subTitleSync.callOnClick()
                 }
             }
+            loadSecondaryCaption()
 
         }
     }
