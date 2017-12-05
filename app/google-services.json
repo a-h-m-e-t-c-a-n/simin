@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "501134961346-qa3jjduhkhf6b4j1f7lm34g2316940ph.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ahmetcan.simin",
+            "certificate_hash": "48f005b395ac082801416f9177da86dacff596b4"
+          }
+        },
+        {
           "client_id": "501134961346-834fgrsklhq3md584sfs2tbbfviv1vtq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

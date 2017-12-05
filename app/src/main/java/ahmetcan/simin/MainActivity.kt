@@ -24,6 +24,10 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
+
+
+
+
 class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastListener {
     var inappBillingNoAdv: InAppBillingNoAdv = InAppBillingNoAdv()
     var isSubscripted: Boolean = false
@@ -94,6 +98,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         val has: Boolean = subscription.getBoolean("has", false)
         return has;
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

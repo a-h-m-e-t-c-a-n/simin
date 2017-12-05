@@ -76,6 +76,7 @@ dependencies {
         transitive = true
         exclude module: 'com.google.android.gms'
     }
+    implementation 'com.google.firebase:firebase-core:11.6.0'
     compile 'com.github.vihtarb:tooltip:0.1.6'
 
 
