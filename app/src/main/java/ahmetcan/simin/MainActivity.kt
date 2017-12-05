@@ -2,6 +2,7 @@ package ahmetcan.simin
 
 import InAppBilling.IabBroadcastReceiver
 import ahmetcan.simin.Discovery.DiscoveryFragment
+import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.SearchActivity
 import android.content.Context
 import android.content.Intent
@@ -41,7 +42,30 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         edit.putBoolean("has", has)
         edit.commit()
     }
+    fun checkCache() {
+        val subscription = getSharedPreferences("cache", Context.MODE_PRIVATE)
+        var introTimeMs = subscription.getLong("time", 0)
 
+        if (introTimeMs > 0) {
+            var asDay = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().timeInMillis - introTimeMs)
+            if (asDay > 1) {
+
+                val edit = subscription.edit()
+                edit.putLong("time", Calendar.getInstance().timeInMillis)
+                edit.commit()
+
+                DiscoveryRepository.invalidateChannelLists()
+                DiscoveryRepository.invalidateLists()
+
+            }
+        }
+        else{
+            val edit = subscription.edit()
+            edit.putLong("time", Calendar.getInstance().timeInMillis)
+            edit.commit()
+        }
+
+    }
     fun fetchSubscriptionState(): Boolean {
         val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
         val has: Boolean = subscription.getBoolean("has", false)
@@ -81,6 +105,8 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         setSupportActionBar(toolbar)
 
         supportActionBar?.setDisplayShowTitleEnabled(false);
+
+        checkCache();
 
         tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabUnselected(tab: TabLayout.Tab?) {
