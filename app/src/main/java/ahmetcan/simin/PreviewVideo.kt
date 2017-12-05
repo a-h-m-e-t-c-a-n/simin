@@ -536,8 +536,11 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         }
         var default=languages.filter { it.default==true }.firstOrNull()
         if(default==null){
-            default=languages.filter { it.available==true }.firstOrNull()
-            defaultLanguge= default!!
+            default=languages.filter { it.isoCode=="en" }.firstOrNull()
+            if(default==null){
+                default=languages.filter { it.available==true }.firstOrNull()
+                defaultLanguge= default!!
+            }
         }
         else{
             defaultLanguge=default

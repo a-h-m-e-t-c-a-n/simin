@@ -323,9 +323,9 @@ object DiscoveryRepository {
         return list;
     }
     fun caption(videoId:String,languageCode:String,translateCode:String): Transcript? {
-        allLanguageges(videoId)
         var caption = YoutubeService.instance.caption_text(videoId, languageCode, translateCode).execute().body()
         caption?.texts?.forEach {
+            it.sentence=it.sentence?:""
             it.start*=1000
             it.duration*=1000
             it.sentence = if (Build.VERSION.SDK_INT >= 24) Html.fromHtml(it.sentence, Html.FROM_HTML_MODE_LEGACY).toString() else Html.fromHtml(it?.sentence).toString()
