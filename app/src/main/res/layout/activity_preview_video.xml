@@ -81,17 +81,7 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/translate"
                         android:text="" />
-                    <!--<ImageButton-->
-                    <!--android:id="@+id/video_settingsButton"-->
-                    <!--android:layout_width="40dp"-->
-                    <!--android:layout_height="40dp"-->
-                    <!--android:layout_marginLeft="30dp"-->
-                    <!--android:layout_marginRight="5dp"-->
-                    <!--android:background="@android:color/transparent"-->
-                    <!--android:scaleType="fitCenter"-->
-                    <!--android:padding="0dp"-->
-                    <!--android:src="@drawable/ic_settings_black_24dp"-->
-                    <!--android:text="" />-->
+
                 </LinearLayout>
 
 
@@ -231,7 +221,7 @@
                         android:gravity="center"
                         android:minHeight="75dp"
                         android:padding="5dp"
-                        android:text="xsdfdfddf"
+                        android:text=""
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
                         android:textSize="17dp"

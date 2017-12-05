@@ -25,13 +25,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!--<ImageView            android:id="@+id/ivCover"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:scaleType="centerCrop"-->
-            <!--android:background="@android:color/white"-->
-            <!--/>-->
-        <com.facebook.drawee.view.SimpleDraweeView
+         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/ivCover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

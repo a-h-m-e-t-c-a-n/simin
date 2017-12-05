@@ -83,19 +83,19 @@
             <android.support.design.widget.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="List" />
+                android:text="@string/list" />
 
             <android.support.design.widget.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Channels"
+                android:text="@string/channels"
                 android:tag="Channels"
                 />
 
             <android.support.design.widget.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Favories"
+                android:text="@string/favories"
                 android:tag="Favories"
                 />
         </android.support.design.widget.TabLayout>
