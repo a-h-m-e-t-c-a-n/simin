@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'realm-android'
 
-apply plugin: 'io.fabric'
+
 
 android {
     compileSdkVersion 27
@@ -15,20 +15,30 @@ android {
         applicationId "ahmetcan.simin"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
     }
+    signingConfigs {
+        release {
+            keyAlias 'ahmetcan'
+            keyPassword '45014501'
+            storeFile file('D:/workspace/keystore/canahmetdeveloper.jks')
+            storePassword 'oktisayi80.'
+        }
+    }
     buildTypes {
         release {
+            debuggable true
+            signingConfig signingConfigs.release
             postprocessing {
-                removeUnusedCode true
-                removeUnusedResources true
-                obfuscate true
+                removeUnusedCode false
+                removeUnusedResources false
+                obfuscate false
                 optimizeCode false
                 proguardFile 'proguard-rules.pro'
             }
@@ -74,21 +84,13 @@ dependencies {
     implementation 'com.facebook.fresco:fresco:+'
 
     implementation 'com.google.android.gms:play-services-ads:11.6.0'
-    compile 'com.github.vihtarb:tooltip:0.1.6'
-    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
-        transitive = true;
-    }
     implementation 'com.google.firebase:firebase-core:11.6.0'
+    implementation 'com.google.firebase:firebase-crash:11.6.0'
+    compile 'com.github.vihtarb:tooltip:0.1.6'
 
-//    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
-//        transitive = true
-//        exclude module: 'com.google.android.gms'
-//    }
-//    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
-//        transitive = true
-//        exclude module: 'com.google.android.gms'
-//    }
+
 }
+
 
 
 

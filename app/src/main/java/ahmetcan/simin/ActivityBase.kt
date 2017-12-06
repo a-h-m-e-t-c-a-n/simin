@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.coroutines.experimental.*
 import kotlin.coroutines.experimental.CoroutineContext
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import com.google.firebase.crash.FirebaseCrash
 
 
 open class ActivityBase : AppCompatActivity() {
@@ -16,18 +18,33 @@ open class ActivityBase : AppCompatActivity() {
                    block: suspend CoroutineScope.() -> Unit)
             : Job
     {
-        var job= logAsync(context, start, block)
-        //jobs.add(job)
-        //job.invokeOnCompletion {
-            //jobs.remove(job)
-        //}
+       // var job= logAsync(context, start, block)
+        var job=   async(context,start) {
+            try {
+
+                block()
+            }
+            catch (ex:Exception){
+                try{
+                    FirebaseCrash.log(ex.toString());
+                }
+                finally {
+                    Log.e("simin logAsync:",ex.toString())
+                    throw ex
+                }
+            }
+        }
+        jobs.add(job)
+        job.invokeOnCompletion {
+            jobs.remove(job)
+        }
         return job
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        jobs.forEach {it.cancel()}
+        jobs.forEach { it.cancel()}
     }
 
     fun hideSoftKeyboard() {

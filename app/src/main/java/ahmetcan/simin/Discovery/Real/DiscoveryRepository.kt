@@ -30,17 +30,17 @@ object DiscoveryRepository {
     //const val CHANNEL_ID = "UCAuUUnT6oDeKwE6v1NGQxug" //TED
     const val CHANNEL_ID = "UChk2As5_2Q_c_o5QiCJB8vw" //simin application channel
 
-    private fun youtubeService(): YouTube {
-        var youtube = YouTube.Builder(NetHttpTransport(), JacksonFactory(), object : HttpRequestInitializer {
-            @Throws(IOException::class)
-            override fun initialize(request: HttpRequest) {
-            }
-        }).setApplicationName("simin").build()
-        return youtube
-    }
+//    private fun youtubeService(): YouTube {
+//        var youtube = YouTube.Builder(NetHttpTransport(), JacksonFactory(), object : HttpRequestInitializer {
+//            @Throws(IOException::class)
+//            override fun initialize(request: HttpRequest) {
+//            }
+//        }).setApplicationName("simin").build()
+//        return youtube
+//    }
 
     private fun loadListOnline(nextToken: String? = null): PlaylistListResponse? {
-        var youtube = youtubeService()
+        var youtube = YoutubeApiHelper.YoutubeService()
         val search = youtube.playlists().list("id,snippet,contentDetails")
         search.setKey(ApiKey.YOUTUBEDATAAPIV3_KEY)
         search.setChannelId(CHANNEL_ID)
@@ -120,7 +120,7 @@ object DiscoveryRepository {
         }
     }
     private fun loadChannelListOnline(nextToken: String? = null): SubscriptionListResponse? {
-        var youtube = youtubeService()
+        var youtube = YoutubeApiHelper.YoutubeService()
         val search = youtube.subscriptions().list("id,snippet,contentDetails")
         search.setKey(ApiKey.YOUTUBEDATAAPIV3_KEY)
         search.setChannelId(CHANNEL_ID)
@@ -201,7 +201,7 @@ object DiscoveryRepository {
     fun search(q:String,nextPageToken:String?):Paged<String,VideoModel>{
         var result = Paged<String,VideoModel>("",items=ArrayList())
 
-        var youtube= youtubeService()
+        var youtube= YoutubeApiHelper.YoutubeService()
 
         val search = youtube.search().list("id,snippet")
 
@@ -235,7 +235,7 @@ object DiscoveryRepository {
     fun playlistItems(playlistId:String,nextPageToken:String?):Paged<String,VideoModel>{
         var result = Paged<String,VideoModel>("",items=ArrayList())
 
-        var youtube= youtubeService()
+        var youtube= YoutubeApiHelper.YoutubeService()
 
         val search = youtube.playlistItems().list("id,snippet")
 
@@ -267,7 +267,7 @@ object DiscoveryRepository {
     fun channelVideos(channelId:String,nextPageToken:String?):Paged<String,VideoModel>{
         var result = Paged<String,VideoModel>("",items=ArrayList())
 
-        var youtube= youtubeService()
+        var youtube= YoutubeApiHelper.YoutubeService()
 
         val search = youtube.search().list("id,snippet")
 

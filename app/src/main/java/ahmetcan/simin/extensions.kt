@@ -1,6 +1,7 @@
 package ahmetcan.simin
 
 import android.util.Log
+import com.google.firebase.crash.FirebaseCrash
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlin.coroutines.experimental.CoroutineContext
@@ -15,9 +16,13 @@ fun logLaunch(context: CoroutineContext = DefaultDispatcher,
                 block()
             }
             catch (ex:Exception){
-
-              //  Crashlytics.logException(ex)
-                throw ex
+                try{
+                    FirebaseCrash.log(ex.toString());
+                }
+                finally {
+                    Log.e("simin logAsync:",ex.toString())
+                    throw ex
+                }
             }
     }
 
@@ -32,8 +37,13 @@ fun logAsync(context: CoroutineContext = DefaultDispatcher,
         }
         catch (ex:Exception){
 
-           // Crashlytics.logException(ex)
-            Log.e("logAsync:",ex.toString())
+            try{
+                FirebaseCrash.log(ex.toString());
+            }
+            finally {
+                Log.e("simin logAsync:",ex.toString())
+                throw ex
+            }
             throw ex
         }
     }

@@ -7,6 +7,7 @@ import ahmetcan.simin.Discovery.View.YoutubeChannelAdapter
 import ahmetcan.simin.FragmentBase
 import ahmetcan.simin.R
 import ahmetcan.simin.VideoListActivity
+import ahmetcan.simin.onUI
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
