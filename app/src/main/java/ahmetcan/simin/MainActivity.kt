@@ -106,7 +106,6 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        FirebaseCrash.log("Activity created");
 
         requestWindowFeature(FEATURE_NO_TITLE)
 
@@ -161,6 +160,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         isSubscripted = fetchSubscriptionState(this)
 
         main_buyButton.setOnClickListener {
+
 
             logAsync {
 

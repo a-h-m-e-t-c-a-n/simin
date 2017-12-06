@@ -22,13 +22,12 @@ open class FragmentBase : Fragment() {
             catch (ex:Exception){
 
                 try{
-                    FirebaseCrash.log(ex.toString());
+                    FirebaseCrash.report(ex)
                 }
                 finally {
                     Log.e("simin logAsync:",ex.toString())
                     throw ex
                 }
-                throw ex
             }
         }
         jobs.add(job)

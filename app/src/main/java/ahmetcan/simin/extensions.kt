@@ -17,7 +17,7 @@ fun logLaunch(context: CoroutineContext = DefaultDispatcher,
             }
             catch (ex:Exception){
                 try{
-                    FirebaseCrash.log(ex.toString());
+                    FirebaseCrash.report(ex)
                 }
                 finally {
                     Log.e("simin logAsync:",ex.toString())
@@ -32,19 +32,18 @@ fun logAsync(context: CoroutineContext = DefaultDispatcher,
               block: suspend CoroutineScope.() -> Unit)
         : Job {
     return async(context,start) {
+        throw Exception("xxxxxx xxx aaa")
         try {
             block()
         }
         catch (ex:Exception){
-
             try{
-                FirebaseCrash.log(ex.toString());
+                FirebaseCrash.report(ex)
             }
             finally {
                 Log.e("simin logAsync:",ex.toString())
                 throw ex
             }
-            throw ex
         }
     }
 
