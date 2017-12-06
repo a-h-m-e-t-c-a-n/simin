@@ -80,8 +80,9 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
-    <string name="subscription_intro">Reklamlar bu uygulamanın geliştirilmesine katkıda bulunmaktadır.
-        Eğer reklamlardan rahatsızlık duyuyorsunız  bu butonu tıklayarak reklamsız versiyonunu satın alabilirsiniz</string>
+    <!--<string name="subscription_intro">Reklamlar bu uygulamanın geliştirilmesine katkıda bulunmaktadır.-->
+        <!--Eğer reklamlardan rahatsızlık duyuyorsunız  bu butonu tıklayarak reklamsız versiyonunu satın alabilirsiniz</string>  -->
+    <string name="subscription_intro">Advertisements contribute to the development of this app.If you are uncomfortable with the advertisements, you can purchase the ad-free version by clicking on this button</string>
     <string name="clicktoshow">[Press to show]</string>
     <string name="speakerror">Opps! Your device doesn\'t support Speech to Text</string>
     <string name="title_activity_language">Language</string>

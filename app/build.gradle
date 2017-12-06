@@ -15,8 +15,8 @@ android {
         applicationId "ahmetcan.simin"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 5
-        versionName "1.5"
+        versionCode 6
+        versionName "1.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -26,24 +26,23 @@ android {
 //    signingConfigs {
 //        release {
 //            keyAlias 'ahmetcan'
-//            keyPassword ''
+//            keyPassword '45014501'
 //            storeFile file('D:/workspace/keystore/canahmetdeveloper.jks')
-//            storePassword ''
+//            storePassword 'oktisayi80.'
 //        }
 //    }
     buildTypes {
         release {
-            //debuggable true
+         //   debuggable true
            // signingConfig signingConfigs.release
             postprocessing {
-                removeUnusedCode true
-                removeUnusedResources true
-                obfuscate true
+                removeUnusedCode false
+                removeUnusedResources false
+                obfuscate false
                 optimizeCode false
                 proguardFile 'proguard-rules.pro'
             }
         }
-
     }
     buildToolsVersion '27.0.1'
 }

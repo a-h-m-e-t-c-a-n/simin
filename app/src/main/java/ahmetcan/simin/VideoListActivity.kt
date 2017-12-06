@@ -25,6 +25,8 @@ import com.google.android.gms.ads.InterstitialAd
 import com.google.gson.JsonArray
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_video_list.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 
 class VideoListActivity : ActivityBase() {
     var adapter= YoutubeVideoAdapter()
@@ -138,7 +140,7 @@ class VideoListActivity : ActivityBase() {
         }
         nextPageToken=result.index
 
-        onUI{
+        launch(UI){
             result.items?.let {
                 adapter.addData(it)
                 adapter.notifyDataSetChanged()

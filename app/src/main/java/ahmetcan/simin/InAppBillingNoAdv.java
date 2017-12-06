@@ -26,9 +26,9 @@ public class InAppBillingNoAdv implements IabBroadcastReceiver.IabBroadcastListe
         onBuyCompleted = callback;
     }
 
-    static final String TAG = "Simin NoAdv Billing";
+    static final String TAG = "Simin NoAds Billing";
     public boolean isSubscriped = false;
-    static final String SKU_NOADV_MONTHLY = "noadvmonth";
+    static final String SKU_NOADV_MONTHLY = "noadssub";
 
     static final int RC_REQUEST = 10001;
 
@@ -51,7 +51,7 @@ public class InAppBillingNoAdv implements IabBroadcastReceiver.IabBroadcastListe
          * of their own and then fake messages from the server.
          */
         this.context = context;
-        String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApFqM0lIhnjw0s3XbiUExLEO7Twtn3HVs8pV3xS/E3iHqvSRpou9JFpoM9r6Nf/wV4FuwQ1VM6fwCq4+iBlMGYpY3Xf6t/CzpxJ2eavsXVE3YgRhhj4kL8MS3yHSywOksVkFp2+KMVzWpSaxJMft8tCnAbIGfHnl5yB7LrpIoAneSvUHImw9jJw6BU6NWMByB7TbbFbSPCSwYyLAxBrFsk4nCXHUIAvMR2Pn/ZyLoj8niRY1j3pbNnMmNmQQzA9B9YqZhF71bsQqg0+1d9gN2n6ekskJQs1PqY416ZgqIck5ZWhF3qBbqzh6gocRTuc1jQBFZ7vDCHCQUS7ptuhgmhwIDAQAB";
+        String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmkU/a3dumyBKKXQZLh4X6HAjtKXHoSnoEU3OU2/EBY1jX++vM5SV3tzgNDBp0Bonow2jyTZCQrFS8GuOWd6iG2mmjnGK92Y79RT+qQ+pMyJOzq3ChDvYNUQAyLeuAqQgWGkqnroSs8ENRngwbC1C5xARMs0Tiqr891ijw1tRgwXYvHl+FA/9ARtgc9mOCVh4i96JwcYirVlY9I98ciG1O5iMJGcOeRrqfJWWB6uxUEqGa++A9wb3k0YIIH0kS2FI3+fAVtuR3oAuv2sjM3VCAkYgFRAbhcb5kTjlZxwDVljFTPMTvt8KF3lSm8Q3OGjnxdbEN0GeVIK1504NGdKk/wIDAQAB";
 
 
         mHelper = new IabHelper(context, base64EncodedPublicKey);

@@ -32,7 +32,6 @@ fun logAsync(context: CoroutineContext = DefaultDispatcher,
               block: suspend CoroutineScope.() -> Unit)
         : Job {
     return async(context,start) {
-        throw Exception("xxxxxx xxx aaa")
         try {
             block()
         }

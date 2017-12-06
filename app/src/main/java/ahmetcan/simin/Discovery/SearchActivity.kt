@@ -190,7 +190,7 @@ class SearchActivity : ActivityBase() {
         }
         nextPageToken=result.index
 
-        onUI{
+        launch(UI){
             result.items?.let {
                 adapter.addData(it)
                 adapter.notifyDataSetChanged()

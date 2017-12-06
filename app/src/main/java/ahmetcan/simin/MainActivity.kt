@@ -151,6 +151,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         inappBillingNoAdv.setOnSubscriptionStateChanged {
             if (it) {
                 saveSubscriptionState(true)
+                main_buyButton.visibility = View.GONE
             } else {
                 saveSubscriptionState(false)
             }
