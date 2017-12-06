@@ -37,6 +37,11 @@
             android:name=".VideoListActivity"
             android:label="@string/title_activity_video_list"
             android:theme="@style/AppTheme"></activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="61224e652de234161c393420245ef0af6594c44e"
+            />
     </application>
 
 </manifest>

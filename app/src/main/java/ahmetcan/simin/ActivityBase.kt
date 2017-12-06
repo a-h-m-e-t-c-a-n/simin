@@ -17,10 +17,10 @@ open class ActivityBase : AppCompatActivity() {
             : Job
     {
         var job= logAsync(context, start, block)
-        jobs.add(job)
-        job.invokeOnCompletion {
-            jobs.remove(job)
-        }
+        //jobs.add(job)
+        //job.invokeOnCompletion {
+            //jobs.remove(job)
+        //}
         return job
     }
 

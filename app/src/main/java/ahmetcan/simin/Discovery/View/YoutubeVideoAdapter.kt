@@ -14,8 +14,6 @@ import com.google.android.gms.ads.AdView
 import android.widget.LinearLayout
 import ahmetcan.simin.R.id.adView
 import com.google.android.gms.ads.AdRequest
-import io.fabric.sdk.android.services.common.ApiKey
-import io.fabric.sdk.android.services.settings.IconRequest.build
 
 
 

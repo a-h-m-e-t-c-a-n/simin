@@ -21,3 +21,6 @@
 #-renamesourcefileattribute SourceFile
 
  -ignorewarnings
+
+-dontwarn com.facebook.infer.annotation.ReturnsOwnership
+-dontwarn com.facebook.infer.annotation.Functional

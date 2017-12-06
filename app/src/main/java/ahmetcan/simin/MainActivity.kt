@@ -17,11 +17,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.Window.FEATURE_NO_TITLE
+import com.crashlytics.android.Crashlytics
 import com.tooltip.Tooltip
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.async
 import java.util.*
 import java.util.concurrent.TimeUnit
+import io.fabric.sdk.android.Fabric
+
+
 
 
 
@@ -103,6 +107,8 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Fabric.with(this, Crashlytics())
+
         requestWindowFeature(FEATURE_NO_TITLE)
 
         setContentView(R.layout.activity_main)
@@ -112,6 +118,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         supportActionBar?.setDisplayShowTitleEnabled(false);
 
         checkCache();
+
 
         tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -144,7 +151,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
             startActivity(intent)
         }
         inappBillingNoAdv.setOnSubscriptionStateChanged {
-            if (!it) {
+            if (it) {
                 saveSubscriptionState(true)
             } else {
                 saveSubscriptionState(false)
@@ -155,7 +162,8 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         isSubscripted = fetchSubscriptionState(this)
 
         main_buyButton.setOnClickListener {
-            async {
+            throw  RuntimeException("This is a crash")
+            logAsync {
 
                 inappBillingNoAdv.setOnBuyCompleted {
                     if (it) {

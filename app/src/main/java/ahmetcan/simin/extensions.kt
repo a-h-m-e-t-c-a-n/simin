@@ -1,7 +1,6 @@
 package ahmetcan.simin
 
 import android.util.Log
-import com.crashlytics.android.Crashlytics
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlin.coroutines.experimental.CoroutineContext
@@ -17,7 +16,7 @@ fun logLaunch(context: CoroutineContext = DefaultDispatcher,
             }
             catch (ex:Exception){
 
-                Crashlytics.logException(ex)
+              //  Crashlytics.logException(ex)
                 throw ex
             }
     }
@@ -33,7 +32,7 @@ fun logAsync(context: CoroutineContext = DefaultDispatcher,
         }
         catch (ex:Exception){
 
-            Crashlytics.logException(ex)
+           // Crashlytics.logException(ex)
             Log.e("logAsync:",ex.toString())
             throw ex
         }

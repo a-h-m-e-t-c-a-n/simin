@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "501134961346",
-    "firebase_url": "https://simin-a227a.firebaseio.com",
-    "project_id": "simin-a227a",
-    "storage_bucket": "simin-a227a.appspot.com"
+    "project_number": "637375761352",
+    "firebase_url": "https://simin-firebase-d1a5d.firebaseio.com",
+    "project_id": "simin-firebase-d1a5d",
+    "storage_bucket": "simin-firebase-d1a5d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:501134961346:android:4dcd9daf9aaaaaa2",
+        "mobilesdk_app_id": "1:637375761352:android:4dcd9daf9aaaaaa2",
         "android_client_info": {
           "package_name": "ahmetcan.simin"
         }
       },
       "oauth_client": [
         {
-          "client_id": "501134961346-qa3jjduhkhf6b4j1f7lm34g2316940ph.apps.googleusercontent.com",
+          "client_id": "637375761352-30eppcsdacuavakc7ktfgos2805blars.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "ahmetcan.simin",
@@ -23,21 +23,13 @@
           }
         },
         {
-          "client_id": "501134961346-834fgrsklhq3md584sfs2tbbfviv1vtq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ahmetcan.simin",
-            "certificate_hash": "615c9b6c6d4cf12cbd5a6178c2920522d2abebf7"
-          }
-        },
-        {
-          "client_id": "501134961346-kp60omg8mgjt3vgg2371h322ivjs0jdq.apps.googleusercontent.com",
+          "client_id": "637375761352-joesk9grq7ru7ivf9g1il5i9clcdntf0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBkvmPjeW9CW8krh3PO7TX95UT3Hb8u8Y8"
+          "current_key": "AIzaSyC0f4pMWGNAJEwzizfbajKT7rATP3jj4Yc"
         }
       ],
       "services": {
@@ -48,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "501134961346-kp60omg8mgjt3vgg2371h322ivjs0jdq.apps.googleusercontent.com",
+              "client_id": "637375761352-joesk9grq7ru7ivf9g1il5i9clcdntf0.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
