@@ -162,7 +162,6 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         isSubscripted = fetchSubscriptionState(this)
 
         main_buyButton.setOnClickListener {
-            throw  RuntimeException("This is a crash")
             logAsync {
 
                 inappBillingNoAdv.setOnBuyCompleted {
