@@ -52,6 +52,7 @@
                         <ImageButton
                             android:id="@+id/main_buyButton"
                             android:layout_alignParentRight="true"
+                            android:layout_marginRight="25dp"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:background="@android:color/transparent"

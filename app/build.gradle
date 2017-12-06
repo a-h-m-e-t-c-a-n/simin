@@ -15,30 +15,30 @@ android {
         applicationId "ahmetcan.simin"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 4
-        versionName "1.4"
+        versionCode 5
+        versionName "1.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
     }
-    signingConfigs {
-        release {
-            keyAlias 'ahmetcan'
-            keyPassword '45014501'
-            storeFile file('D:/workspace/keystore/canahmetdeveloper.jks')
-            storePassword 'oktisayi80.'
-        }
-    }
+//    signingConfigs {
+//        release {
+//            keyAlias 'ahmetcan'
+//            keyPassword ''
+//            storeFile file('D:/workspace/keystore/canahmetdeveloper.jks')
+//            storePassword ''
+//        }
+//    }
     buildTypes {
         release {
-            debuggable true
-            signingConfig signingConfigs.release
+            //debuggable true
+           // signingConfig signingConfigs.release
             postprocessing {
-                removeUnusedCode false
-                removeUnusedResources false
-                obfuscate false
+                removeUnusedCode true
+                removeUnusedResources true
+                obfuscate true
                 optimizeCode false
                 proguardFile 'proguard-rules.pro'
             }
