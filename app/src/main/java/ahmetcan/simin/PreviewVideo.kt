@@ -48,7 +48,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     private var listenPlayerJob: Job?=null
     private var videoId:String=""
     private lateinit var languages: List<Language>
-    private lateinit var defaultLanguge: Language
+    private var defaultLanguge: Language=Language()
     private var secondaryLanguge: Language?=null
     var primaryCaptionList: Transcript?=null
     var secondaryCaptionList: Transcript?=null
@@ -262,10 +262,11 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         playerView.initialize(ApiKey.YOUTUBEDATAAPIV3_KEY, this);
 
         video_SpeechTest.setOnClickListener {
+           
             speakMatch.setText("")
             val intent = Intent( RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
 
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, defaultLanguge.toString())
+           if(!defaultLanguge.isoCode.isNullOrEmpty()) intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, defaultLanguge.isoCode)
 
             try {
                 startActivityForResult(intent, RESULT_SPEECH)
@@ -537,12 +538,11 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
         languages = allLanguageges(videoId)
          if (languages.count() == 0) {
-            TODO("CAPTİON NOT FOUND UYARISI VERİLECEK")
             return;
         }
         var default=languages.filter { it.default==true }.firstOrNull()
         if(default==null){
-            default=languages.filter { it.isoCode=="en" }.firstOrNull()
+            default=languages.filter {it.available==true && it.isoCode=="en" }.firstOrNull()
             if(default==null){
                 default=languages.filter { it.available==true }.firstOrNull()
                 defaultLanguge= default!!
