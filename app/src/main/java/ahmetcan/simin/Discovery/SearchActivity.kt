@@ -5,6 +5,7 @@ import ahmetcan.simin.Api.GoogleService
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -34,6 +35,11 @@ class SearchActivity : ActivityBase() {
     var loading:Boolean=false
     var isHasLoadedAll:Boolean=true
     var nextPageToken:String?=null
+    fun fetchSubscriptionState(): Boolean {
+        val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
+        val has: Boolean = subscription.getBoolean("has", false)
+        return has;
+    }
     private  var mInterstitialAd: InterstitialAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
@@ -121,17 +127,19 @@ class SearchActivity : ActivityBase() {
             Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
         }
         else{
-            mInterstitialAd = InterstitialAd(this@SearchActivity);
-            mInterstitialAd?.let {
-                it.setAdUnitId(ApiKey.ADMOB_PREVIEWVIDEO_UNIT)
-                it.loadAd(AdRequest.Builder().build())
-                it.adListener = object : AdListener() {
-                    override fun onAdLoaded() {
-                        super.onAdLoaded()
-                        it.show()
+            if(!fetchSubscriptionState()) {
+                mInterstitialAd = InterstitialAd(this@SearchActivity);
+                mInterstitialAd?.let {
+                    it.setAdUnitId(ApiKey.ADMOB_PREVIEWVIDEO_UNIT)
+                    it.loadAd(AdRequest.Builder().build())
+                    it.adListener = object : AdListener() {
+                        override fun onAdLoaded() {
+                            super.onAdLoaded()
+                            it.show()
+                        }
                     }
-                }
 
+                }
             }
         }
     }

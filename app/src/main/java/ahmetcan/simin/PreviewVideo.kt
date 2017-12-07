@@ -29,6 +29,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import android.graphics.PorterDuff
 import android.R.attr.checked
+import android.content.Context
 import android.content.res.ColorStateList
 import android.provider.Settings
 import android.support.v4.content.ContextCompat
@@ -67,6 +68,11 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     protected val RESULT_TRANSLATE = 3
     companion object {
         const val  RECOVERY_DIALOG_REQUEST = 1;
+    }
+    fun fetchSubscriptionState(): Boolean {
+        val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
+        val has: Boolean = subscription.getBoolean("has", false)
+        return has;
     }
     fun listenPlayer(player:YouTubePlayer)= async{
         var currentTime:Int=0
@@ -273,9 +279,11 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         backButton.setOnClickListener {
             finish()
         }
-        MobileAds.initialize(this, ApiKey.ADMOB_APPID);
-        val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
+        if(!fetchSubscriptionState()) {
+            MobileAds.initialize(this, ApiKey.ADMOB_APPID);
+            val adRequest = AdRequest.Builder().build()
+            adView.loadAd(adRequest)
+        }
         captionPrimary.setOnClickListener {
             currentPrimaryText?.let {
                 player?.seekToMillis(it.start.toInt())

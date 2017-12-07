@@ -5,6 +5,7 @@ import ahmetcan.simin.Discovery.Model.Paged
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -38,7 +39,11 @@ class VideoListActivity : ActivityBase() {
     lateinit var listAdapter: ArrayAdapter<String>
     private var channelid: String?=null
     private var playlistid: String?=null
-
+    fun fetchSubscriptionState(): Boolean {
+        val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
+        val has: Boolean = subscription.getBoolean("has", false)
+        return has;
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -61,17 +66,19 @@ class VideoListActivity : ActivityBase() {
             Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
         }
         else{
-            mInterstitialAd = InterstitialAd(this@VideoListActivity);
-            mInterstitialAd?.let {
-                it.setAdUnitId(ApiKey.ADMOB_PREVIEWVIDEO_UNIT)
-                it.loadAd(AdRequest.Builder().build())
-                it.adListener = object : AdListener() {
-                    override fun onAdLoaded() {
-                        super.onAdLoaded()
-                        it.show()
+            if(!fetchSubscriptionState()) {
+                mInterstitialAd = InterstitialAd(this@VideoListActivity);
+                mInterstitialAd?.let {
+                    it.setAdUnitId(ApiKey.ADMOB_PREVIEWVIDEO_UNIT)
+                    it.loadAd(AdRequest.Builder().build())
+                    it.adListener = object : AdListener() {
+                        override fun onAdLoaded() {
+                            super.onAdLoaded()
+                            it.show()
+                        }
                     }
-                }
 
+                }
             }
         }
     }
