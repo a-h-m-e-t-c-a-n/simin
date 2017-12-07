@@ -262,7 +262,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         playerView.initialize(ApiKey.YOUTUBEDATAAPIV3_KEY, this);
 
         video_SpeechTest.setOnClickListener {
-           
+
             speakMatch.setText("")
             val intent = Intent( RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
 
