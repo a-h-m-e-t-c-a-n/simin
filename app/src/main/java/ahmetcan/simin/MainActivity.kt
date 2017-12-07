@@ -154,11 +154,27 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
                 main_buyButton.visibility = View.GONE
             } else {
                 saveSubscriptionState(false)
+                if (doIShowIntro()) {
+                    val tooltip = Tooltip.Builder(this, main_buyButton)
+                            .setText(R.string.subscription_intro)
+                            .setPadding(30f)
+                            .setCornerRadius(10f)
+                            .setTextSize(13f)
+                            .setBackgroundColor(Color.rgb(170, 60, 57))
+                            .setDismissOnClick(true)
+                            .setCancelable(true)
+                            .show()
+
+                }
+
             }
         }
         inappBillingNoAdv.Init(this, this)
 
         isSubscripted = fetchSubscriptionState(this)
+        if (isSubscripted) {
+            main_buyButton.visibility = View.GONE
+        }
 
         main_buyButton.setOnClickListener {
 
@@ -178,23 +194,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
             true
         }
 
-        if (!isSubscripted) {
-            if (doIShowIntro()) {
-                val tooltip = Tooltip.Builder(this, main_buyButton)
-                        .setText(R.string.subscription_intro)
-                        .setPadding(30f)
-                        .setCornerRadius(10f)
-                        .setTextSize(13f)
-                        .setBackgroundColor(Color.rgb(170, 60, 57))
-                        .setDismissOnClick(true)
-                        .setCancelable(true)
-                        .show()
 
-            }
-
-        } else {
-            main_buyButton.visibility = View.GONE
-        }
     }
 
     override fun onStart() {
