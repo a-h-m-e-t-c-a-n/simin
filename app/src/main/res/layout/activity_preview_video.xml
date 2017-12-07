@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="3dp"
-                        android:text="@string/hard_mode"
+                        android:text="@string/challenge"
                         android:textColor="@android:color/black" />
 
                     <ImageButton
