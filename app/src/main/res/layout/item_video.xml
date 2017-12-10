@@ -65,7 +65,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="15dp"
-        android:fontFamily="@font/adamina"
         android:textColor="@android:color/white"
         android:textSize="13sp"
         android:textStyle="bold"

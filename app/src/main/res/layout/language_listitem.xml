@@ -6,7 +6,6 @@
     android:textSize="17dp"
     android:textAlignment="center"
     android:gravity="center"
-    android:fontFamily="@font/adamina"
     android:padding="10dp"
     android:text=""
     >
