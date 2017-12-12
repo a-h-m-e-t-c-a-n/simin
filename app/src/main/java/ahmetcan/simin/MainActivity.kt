@@ -107,6 +107,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         super.onCreate(savedInstanceState)
 
 
+
         requestWindowFeature(FEATURE_NO_TITLE)
 
         setContentView(R.layout.activity_main)
@@ -155,15 +156,21 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
             } else {
                 saveSubscriptionState(false)
                 if (doIShowIntro()) {
-                    val tooltip = Tooltip.Builder(this, main_buyButton)
-                            .setText(R.string.subscription_intro)
-                            .setPadding(30f)
-                            .setCornerRadius(10f)
-                            .setTextSize(13f)
-                            .setBackgroundColor(Color.rgb(170, 60, 57))
-                            .setDismissOnClick(true)
-                            .setCancelable(true)
-                            .show()
+                    try {
+                        val tooltip = Tooltip.Builder(this, main_buyButton)
+                                .setText(R.string.subscription_intro)
+                                .setPadding(30f)
+                                .setCornerRadius(10f)
+                                .setTextSize(13f)
+                                .setBackgroundColor(Color.rgb(170, 60, 57))
+                                .setDismissOnClick(true)
+                                .setCancelable(true)
+                                .show()
+                    }
+                    catch(ex:Exception){
+
+                    }
+
 
                 }
 

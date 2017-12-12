@@ -55,7 +55,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     var currentPrimaryText: Text?=null
     var currentSecondaryText: Text?=null
     private var captionOffMode:Boolean=false
-    private var showCaption:Boolean=false
+    private var showCaption:Int=0
     private var captionIndex=0
     lateinit var listAdapter: ArrayAdapter<String>
     private var showSecondSubtitle: Boolean=false
@@ -129,13 +129,15 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     fun onCaptionChanged(){
         if(currentPrimaryText==null)return
         if(captionOffMode){
-            if(showCaption){
+            if(showCaption>0){
                 captionPrimary.setText(currentPrimaryText?.sentence?:"")
+                showCaption--;
+
             }
             else{
                 captionPrimary.setText(captionIndex.toString()+" "+getString(R.string.clicktoshow))
             }
-            showCaption=false
+
         }
         else{
             captionPrimary.setText(currentPrimaryText?.sentence?:"")
@@ -289,9 +291,15 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             currentPrimaryText?.let {
                 player?.seekToMillis(it.start.toInt())
                 if(captionOffMode){
-                    showCaption=true
+                    if(showCaption>0){
+                        showCaption=0
+                    }
+                    else{
+                        showCaption=3
+
+                    }
                 }
-                onCaptionChanged();
+               // onCaptionChanged();
             }
 
         }
@@ -308,7 +316,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 //        }
         if(captionOffMode){
             captionPrimary.setText(getString(R.string.clicktoshow))
-            showCaption=false
+            showCaption=0
         }
         speakMatch.setOnClickListener {
             speakMatch.visibility=View.GONE
@@ -318,7 +326,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                 captionIndex--
                 var prev=primaryCaptionList!!.texts[captionIndex]
                 player?.seekToMillis(prev.start.toInt())
-                onCaptionChanged()
+               // onCaptionChanged()
             }
         }
         video_skipNext.setOnClickListener {
@@ -326,7 +334,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                 captionIndex++
                 var next=primaryCaptionList!!.texts[captionIndex]
                 player?.seekToMillis(next.start.toInt())
-                onCaptionChanged()
+              //  onCaptionChanged()
 
             }
         }
@@ -462,7 +470,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             state?.captionOffMode=captionOffMode
             state?.captionIndex=captionIndex
             state?.secondaryLanguageIso=secondaryLanguge?.isoCode?:""
-            state?.showCaption=showCaption
+            //state?.showCaption=showCaption
             state?.syncSubtitle=syncSubtitle
             state?.showSecondSubtitle=showSecondSubtitle
             state?.title=title
