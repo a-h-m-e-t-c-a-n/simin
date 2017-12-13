@@ -291,13 +291,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             currentPrimaryText?.let {
                 player?.seekToMillis(it.start.toInt())
                 if(captionOffMode){
-                    if(showCaption>0){
-                        showCaption=0
-                    }
-                    else{
-                        showCaption=3
-
-                    }
+                    showCaption=3
                 }
                 onCaptionChanged();
             }
