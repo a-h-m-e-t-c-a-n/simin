@@ -299,7 +299,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
                     }
                 }
-               // onCaptionChanged();
+                onCaptionChanged();
             }
 
         }
@@ -322,21 +322,32 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             speakMatch.visibility=View.GONE
         }
         video_SkipPrevious.setOnClickListener {
-            if(captionIndex>0){
-                captionIndex--
-                var prev=primaryCaptionList!!.texts[captionIndex]
-                player?.seekToMillis(prev.start.toInt())
-               // onCaptionChanged()
+            try {
+                if(captionIndex>0){
+                    captionIndex--
+                    var prev=primaryCaptionList!!.texts[captionIndex]
+                    player?.seekToMillis(prev.start.toInt())
+                   // onCaptionChanged()
+                }
+            }
+            catch (ex:Exception){
+                Log.w("Simin",ex.toString())
             }
         }
         video_skipNext.setOnClickListener {
-            if(captionIndex<primaryCaptionList!!.texts.count()){
-                captionIndex++
-                var next=primaryCaptionList!!.texts[captionIndex]
-                player?.seekToMillis(next.start.toInt())
-              //  onCaptionChanged()
+            try {
+                if(captionIndex<primaryCaptionList!!.texts.count()){
+                    captionIndex++
+                    var next=primaryCaptionList!!.texts[captionIndex]
+                    player?.seekToMillis(next.start.toInt())
+                    //  onCaptionChanged()
 
+                }
             }
+            catch (ex:Exception){
+                Log.w("Simin",ex.toString())
+            }
+
         }
         video_playButton.setOnClickListener {
             player?.let {
