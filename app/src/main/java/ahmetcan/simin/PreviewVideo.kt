@@ -359,6 +359,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                 }
             }
         }
+        DrawableCompat.setTint(video_hardmodeButton.background,Color.BLACK)
 
         video_hardmodeButton.setOnClickListener {
                if(captionOffMode){
