@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -227,7 +228,13 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
 
     override fun onDestroy() {
         super.onDestroy()
-        inappBillingNoAdv?.destroy()
+        try{
+            inappBillingNoAdv?.destroy()
+        }
+        catch (ex:Exception){
+            Log.e("Simin",ex.toString())
+        }
+
     }
 
     //InAppBilling
