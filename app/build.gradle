@@ -79,7 +79,7 @@ dependencies {
     implementation 'com.google.apis:google-api-services-youtube:v3-rev187-1.23.0'
     implementation 'com.github.markomilos:paginate:0.5.1'
 
-    implementation 'com.facebook.fresco:fresco:+'
+    implementation 'com.facebook.fresco:fresco:1.5.0'
 
     implementation 'com.google.android.gms:play-services-ads:11.6.0'
     implementation 'com.google.firebase:firebase-core:11.6.0'
