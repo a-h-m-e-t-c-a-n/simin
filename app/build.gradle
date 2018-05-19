@@ -11,7 +11,7 @@ apply plugin: 'realm-android'
 android {
     compileSdkVersion 27
     defaultConfig {
-        buildToolsVersion "27.0.2"
+        buildToolsVersion "27.0.3"
         applicationId "ahmetcan.simin"
         minSdkVersion 15
         targetSdkVersion 27
@@ -44,6 +44,7 @@ android {
             }
         }
     }
+    buildToolsVersion '27.0.3'
 }
 realm {
     syncEnabled = false;
@@ -84,7 +85,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:11.6.0'
     implementation 'com.google.firebase:firebase-core:11.6.0'
     implementation 'com.google.firebase:firebase-crash:11.6.0'
-    compile 'com.github.vihtarb:tooltip:0.1.6'
+    implementation 'com.github.vihtarb:tooltip:0.1.6'
 
 
 }
