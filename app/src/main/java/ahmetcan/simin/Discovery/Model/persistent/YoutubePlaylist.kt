@@ -4,7 +4,8 @@ import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
 open class YoutubePlaylist(): RealmObject(){
-
+    @PrimaryKey
+    var uid:String=""
     var id:String?=null
     var cover:String?=null
     var title:String?=null

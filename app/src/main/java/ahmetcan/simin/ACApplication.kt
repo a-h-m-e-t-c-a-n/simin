@@ -1,5 +1,6 @@
 package ahmetcan.simin
 
+import ahmetcan.simin.Discovery.Model.persistent.YoutubeSubscriptionResult
 import android.app.Application
 import android.util.Log
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -20,7 +21,8 @@ open class ACApplication : Application() {
 
         Realm.init(this);
         val config = RealmConfiguration.Builder()
-                .name("ahmetcanreal")
+                .name("ahmetcan3.realm")
+                .schemaVersion(1)
                 .deleteRealmIfMigrationNeeded()
                 .build()
         Realm.setDefaultConfiguration(config)

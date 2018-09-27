@@ -37,14 +37,14 @@ open class YoutubeVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     override fun getItemCount(): Int =items.count()
 
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
        if(position<items.count()) {
            (holder as DefaultItemHolder).bindView(items[position])
        }
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent?.context)
                 .inflate(R.layout.item_video, parent, false)
 //        if(viewType==1){

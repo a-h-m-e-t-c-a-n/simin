@@ -62,7 +62,7 @@ object DiscoveryRepository {
                 ytResult.totalResults = playListResponse.pageInfo.totalResults
                 for (item in playListResponse.items) {
                     try {
-                        var plitem = realm.createObject(YoutubePlaylist::class.java)
+                        var plitem = realm.createObject(YoutubePlaylist::class.java,UUID.randomUUID().toString())
                         plitem.cover =item.snippet.thumbnails?.standard?.url ?: item.snippet.thumbnails?.high?.url ?:item.snippet.thumbnails?.medium?.url ?:item.snippet.thumbnails?.default?.url
                         plitem.description = item.snippet.description
                         plitem.title = item.snippet.title
@@ -128,7 +128,8 @@ object DiscoveryRepository {
             search.pageToken = nextToken
         }
         search.setMaxResults(30)
-        return search.execute()
+        var result= search.execute()
+        return result;
     }
     private fun persistChannelList(index: Int, subscriptionResponse: SubscriptionListResponse): YoutubeSubscriptionResult {
         var realm: Realm = Realm.getDefaultInstance()
@@ -141,7 +142,7 @@ object DiscoveryRepository {
                 ytResult.totalResults = subscriptionResponse.pageInfo.totalResults
                 for (item in subscriptionResponse.items) {
                     try {
-                        var plitem = realm.createObject(YoutubeSubscriptionItem::class.java)
+                        var plitem = realm.createObject(YoutubeSubscriptionItem::class.java,UUID.randomUUID().toString())
                         plitem.cover =item.snippet.thumbnails?.standard?.url ?: item.snippet.thumbnails?.high?.url ?:item.snippet.thumbnails?.medium?.url ?:item.snippet.thumbnails?.default?.url
                         plitem.description = item.snippet.description
                         plitem.title = item.snippet.title
@@ -165,16 +166,18 @@ object DiscoveryRepository {
         var realm: Realm = Realm.getDefaultInstance()
         var ytobj: YoutubeSubscriptionResult?
         var result = Paged<Int,PlayListModel>(0,items=ArrayList())
-        var count = realm.where(YoutubeSubscriptionResult::class.java).count()
+        var resultDB=try {realm.where(YoutubeSubscriptionResult::class.java)}catch (ex:java.lang.Exception){null}
+
+        var count = resultDB?.count()?:0
 
         if (pageIndex < 0 || pageIndex > count) {
             throw Exception("Index değeri tutarsız")
         }
 
-        ytobj = realm.where(YoutubeSubscriptionResult::class.java).equalTo("id", pageIndex as Int).findFirst()
+        ytobj = resultDB?.equalTo("id", pageIndex as Int)?.findFirst()
 
         if (ytobj==null) {
-            var nextPageToken=realm.where(YoutubeSubscriptionResult::class.java).equalTo("id",pageIndex-1).findFirst()?.nextPageToken
+            var nextPageToken=resultDB?.equalTo("id",pageIndex-1)?.findFirst()?.nextPageToken
             ytobj = persistChannelList(pageIndex, loadChannelListOnline(nextPageToken)!!)
         }
 
