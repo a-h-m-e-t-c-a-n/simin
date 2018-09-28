@@ -8,12 +8,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.ads.AdSize
 import kotlinx.android.synthetic.main.item_video.view.*
-import com.google.android.gms.ads.AdView
 import android.widget.LinearLayout
-import ahmetcan.simin.R.id.adView
-import com.google.android.gms.ads.AdRequest
 
 
 

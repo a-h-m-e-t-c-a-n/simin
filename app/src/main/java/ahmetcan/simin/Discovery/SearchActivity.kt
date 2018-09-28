@@ -18,16 +18,15 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
 import com.google.gson.JsonArray
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import java.lang.Exception
+import com.startapp.android.publish.adsCommon.StartAppAd
+import com.startapp.android.publish.adsCommon.StartAppSDK
 
 
 class SearchActivity : ActivityBase() {
@@ -40,7 +39,7 @@ class SearchActivity : ActivityBase() {
         val has: Boolean = subscription.getBoolean("has", false)
         return has;
     }
-    private  var mInterstitialAd: InterstitialAd? = null
+   // private  var mInterstitialAd: InterstitialAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,23 +122,44 @@ class SearchActivity : ActivityBase() {
 
         InitList()
 
-        if (BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
         }
         else{
             if(!fetchSubscriptionState()) {
-                mInterstitialAd = InterstitialAd(this@SearchActivity);
-                mInterstitialAd?.let {
-                    it.setAdUnitId(ApiKey.ADMOB_PREVIEWVIDEO_UNIT)
-                    it.loadAd(AdRequest.Builder().build())
-                    it.adListener = object : AdListener() {
-                        override fun onAdLoaded() {
-                            super.onAdLoaded()
-                            it.show()
-                        }
-                    }
+                try {
+                    StartAppSDK.init(this, ApiKey.STARTAPP_APPID, true);
+
+                    StartAppAd.showAd(this);
 
                 }
+                catch (ex:Exception){
+                    ex.printStackTrace()
+                }
+//                   try {
+//                       mInterstitialAd = InterstitialAd(this@SearchActivity);
+//                       mInterstitialAd?.let {
+//                           it.setAdUnitId("ca-app-pub-3787646629594216/3604797501")
+//                           it.adListener = object : AdListener() {
+//                               override fun onAdLoaded() {
+//                                   super.onAdLoaded()
+//                                   it.show()
+//                               }
+//
+//                               override fun onAdFailedToLoad(p0: Int) {
+//                                   Log.e("SİMİN ADS",p0.toString())
+//                               }
+//                           }
+//                           it.loadAd(AdRequest.Builder()
+//                                   .addTestDevice("85740FA155239631C4A99E3CE816448E")
+//                                   .build())
+//
+//                       }
+//                   }catch (ex:Exception){
+//                       ex.printStackTrace()
+//                   }
+
+
             }
         }
     }

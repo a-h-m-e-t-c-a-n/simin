@@ -23,8 +23,8 @@ android {
 
     buildTypes {
         release {
-         //   debuggable true
-           // signingConfig signingConfigs.release
+            //   debuggable true
+            // signingConfig signingConfigs.release
             postprocessing {
                 removeUnusedCode false
                 removeUnusedResources false
@@ -70,14 +70,13 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:1.25.0'
     implementation 'com.google.apis:google-api-services-youtube:v3-rev205-1.25.0'
     implementation 'com.github.markomilos:paginate:0.5.1'
-
     implementation 'com.facebook.fresco:fresco:1.5.0'
-
-    implementation 'com.google.android.gms:play-services-ads:15.0.1'
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.google.firebase:firebase-crash:16.2.0'
     implementation 'com.github.vihtarb:tooltip:0.1.6'
+//    implementation files('libs/Airpush-SDK-X.jar')
 
+    implementation 'com.startapp:inapp-sdk:3.10.1'
 
 }
 

@@ -25,8 +25,6 @@ import kotlinx.coroutines.experimental.launch
 import android.content.ActivityNotFoundException
 import android.graphics.Color
 import android.speech.RecognizerIntent
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
 import android.graphics.PorterDuff
 import android.R.attr.checked
 import android.content.Context
@@ -38,6 +36,7 @@ import android.support.v7.widget.AppCompatButton
 import android.widget.*
 import android.widget.AbsListView
 import com.google.android.youtube.player.internal.l
+import com.startapp.android.publish.adsCommon.StartAppSDK
 import io.realm.Realm
 
 
@@ -258,6 +257,10 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         description=intent.extras["description"] as String
         cover=intent.extras["cover"] as String
 
+        if(!fetchSubscriptionState()) {
+            StartAppSDK.init(this, ApiKey.STARTAPP_APPID, true);
+        }
+
         setContentView(R.layout.activity_preview_video)
 
 
@@ -282,11 +285,11 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         backButton.setOnClickListener {
             finish()
         }
-        if(!fetchSubscriptionState()) {
-            MobileAds.initialize(this, ApiKey.ADMOB_APPID);
-            val adRequest = AdRequest.Builder().build()
-            adView.loadAd(adRequest)
-        }
+//        if(!fetchSubscriptionState()) {
+//            MobileAds.initialize(this, ApiKey.ADMOB_APPID);
+//            val adRequest = AdRequest.Builder().build()
+//            adView.loadAd(adRequest)
+//        }
         captionPrimary.setOnClickListener {
             currentPrimaryText?.let {
                 player?.seekToMillis(it.start.toInt())
