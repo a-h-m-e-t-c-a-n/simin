@@ -122,7 +122,7 @@ class SearchActivity : ActivityBase() {
 
         InitList()
 
-        if (!BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
         }
         else{
