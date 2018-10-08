@@ -5,12 +5,14 @@ import ahmetcan.simin.Discovery.DiscoveryFragment
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.SearchActivity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Gravity
@@ -24,12 +26,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.async
 import java.util.*
 import java.util.concurrent.TimeUnit
-
-
-
-
-
-
+import android.widget.Toast
+import android.content.ActivityNotFoundException
+import android.net.Uri
 
 
 class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastListener {
@@ -202,7 +201,32 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
             true
         }
 
+        button_privacypolicy.setOnClickListener {
+            AlertDialog.Builder(this)
+                    .setMessage("would you like to see the privacy policy ?")
+                    .setNegativeButton("Close",object:DialogInterface.OnClickListener{
+                        override fun onClick(p0: DialogInterface?, p1: Int) {
 
+                        }
+
+
+                    })
+                    .setPositiveButton("Go",object :DialogInterface.OnClickListener{
+                        override fun onClick(p0: DialogInterface?, p1: Int) {
+                            try {
+                                val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.freeprivacypolicy.com/privacy/view/cf6bb63fe3af021f517bc52e9b40c4f4"))
+                                startActivity(myIntent)
+                            } catch (e: ActivityNotFoundException) {
+                                Toast.makeText(this@MainActivity, "No application can handle this request." + " Please install a webbrowser", Toast.LENGTH_LONG).show()
+                                e.printStackTrace()
+                            }
+
+                        }
+
+
+                    }).show()
+
+        }
     }
 
     override fun onStart() {
