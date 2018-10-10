@@ -11,8 +11,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.ArrayAdapter
 import com.paginate.Paginate
-import com.startapp.android.publish.adsCommon.StartAppAd
-import com.startapp.android.publish.adsCommon.StartAppSDK
 import kotlinx.android.synthetic.main.activity_video_list.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -49,20 +47,7 @@ class VideoListActivity : ActivityBase() {
         listAdapter = ArrayAdapter<String>(this, R.layout.search_autocomplete_listitem, arrayListOf(""))
 
         InitList()
-        if (!BuildConfig.DEBUG) {
-            Log.e("SİMİN WARNING", "Debug olduğu  için reklam kaldırıldı")
-        } else {
-            if (!fetchSubscriptionState()) {
-                try {
-                    StartAppSDK.init(this, ApiKey.STARTAPP_APPID, true);
 
-                    StartAppAd.showAd(this);
-
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                }
-            }
-        }
 //        if (BuildConfig.DEBUG) {
 //            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
 //        }

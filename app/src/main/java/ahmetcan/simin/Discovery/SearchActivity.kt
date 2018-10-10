@@ -25,8 +25,6 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import java.lang.Exception
-import com.startapp.android.publish.adsCommon.StartAppAd
-import com.startapp.android.publish.adsCommon.StartAppSDK
 
 
 class SearchActivity : ActivityBase() {
@@ -122,20 +120,13 @@ class SearchActivity : ActivityBase() {
 
         InitList()
 
-        if (BuildConfig.DEBUG) {
-            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
-        }
-        else{
-            if(!fetchSubscriptionState()) {
-                try {
-                    StartAppSDK.init(this, ApiKey.STARTAPP_APPID, true);
+//        if (BuildConfig.DEBUG) {
+//            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
+//        }
+//        else{
+//            if(!fetchSubscriptionState()) {
+//
 
-                    StartAppAd.showAd(this);
-
-                }
-                catch (ex:Exception){
-                    ex.printStackTrace()
-                }
 //                   try {
 //                       mInterstitialAd = InterstitialAd(this@SearchActivity);
 //                       mInterstitialAd?.let {
@@ -160,8 +151,8 @@ class SearchActivity : ActivityBase() {
 //                   }
 
 
-            }
-        }
+//            }
+ //       }
     }
 
     override fun onStart() {

@@ -12,8 +12,8 @@ android {
         applicationId "ahmetcan.simin"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 24
-        versionName "1.24"
+        versionCode 27
+        versionName "1.27"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -74,10 +74,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.google.firebase:firebase-crash:16.2.0'
     implementation 'com.github.vihtarb:tooltip:0.1.6'
-//    implementation files('libs/Airpush-SDK-X.jar')
-
-    implementation 'com.startapp:inapp-sdk:3.10.1'
-
 }
 
 
