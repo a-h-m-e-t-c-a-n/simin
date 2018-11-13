@@ -10,6 +10,9 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.ArrayAdapter
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_video_list.*
 import kotlinx.coroutines.android.UI
@@ -20,7 +23,7 @@ class VideoListActivity : ActivityBase() {
     var loading: Boolean = false
     var isHasLoadedAll: Boolean = false
     var nextPageToken: String? = null
-    //private  var mInterstitialAd: InterstitialAd? = null
+    private  var mInterstitialAd: InterstitialAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
     private var channelid: String? = null
@@ -52,20 +55,20 @@ class VideoListActivity : ActivityBase() {
 //            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
 //        }
 //        else{
-//            if(!fetchSubscriptionState()) {
-//                mInterstitialAd = InterstitialAd(this@VideoListActivity);
-//                mInterstitialAd?.let {
-//                    it.setAdUnitId(ApiKey.ADMOB_PREVIEWVIDEO_UNIT)
-//                    it.loadAd(AdRequest.Builder().build())
-//                    it.adListener = object : AdListener() {
-//                        override fun onAdLoaded() {
-//                            super.onAdLoaded()
-//                            it.show()
-//                        }
-//                    }
-//
-//                }
-//            }
+            if(!fetchSubscriptionState()) {
+                mInterstitialAd = InterstitialAd(this@VideoListActivity);
+                mInterstitialAd?.let {
+                    it.setAdUnitId(getString(R.string.ads_inter))
+                    it.loadAd(AdRequest.Builder().build())
+                    it.adListener = object : AdListener() {
+                        override fun onAdLoaded() {
+                            super.onAdLoaded()
+                            it.show()
+                        }
+                    }
+
+                }
+            }
 //        }
     }
 

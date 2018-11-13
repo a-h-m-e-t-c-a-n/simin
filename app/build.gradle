@@ -12,8 +12,8 @@ android {
         applicationId "ahmetcan.simin"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 27
-        versionName "1.27"
+        versionCode 28
+        versionName "1.28"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -72,8 +72,8 @@ dependencies {
     implementation 'com.google.apis:google-api-services-youtube:v3-rev205-1.25.0'
     implementation 'com.github.markomilos:paginate:0.5.1'
     implementation 'com.facebook.fresco:fresco:1.5.0'
-    implementation 'com.google.firebase:firebase-core:16.+'
-    implementation 'com.google.firebase:firebase-crash:16.+'
+    implementation 'com.google.firebase:firebase-core:16.0.5'
+    implementation 'com.google.firebase:firebase-crash:16.2.1'
     implementation 'com.github.vihtarb:tooltip:0.1.6'
 
     implementation 'com.android.billingclient:billing:1.2'
@@ -87,4 +87,4 @@ dependencies {
 
 
 apply plugin: 'com.google.gms.google-services'
-com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+//com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
