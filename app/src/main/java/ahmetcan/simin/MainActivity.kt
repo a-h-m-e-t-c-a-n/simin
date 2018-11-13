@@ -1,47 +1,37 @@
 package ahmetcan.simin
 
-import InAppBilling.IabBroadcastReceiver
+import ahmetcan.echo.ACPremium
 import ahmetcan.simin.Discovery.DiscoveryFragment
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.SearchActivity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Gravity
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.Window.FEATURE_NO_TITLE
-import com.google.firebase.crash.FirebaseCrash
+import android.widget.Toast
 import com.tooltip.Tooltip
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.experimental.async
 import java.util.*
 import java.util.concurrent.TimeUnit
-import android.widget.Toast
-import android.content.ActivityNotFoundException
-import android.net.Uri
 
 
-class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastListener {
-    var inappBillingNoAdv: InAppBillingNoAdv = InAppBillingNoAdv()
+class MainActivity() : AppCompatActivity(){
+    lateinit var billing:ACPremium
     var isSubscripted: Boolean = false
-    override fun receivedBroadcast() {
-        inappBillingNoAdv.receivedBroadcast()
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        inappBillingNoAdv.onActivityResult(requestCode, resultCode, data)
-    }
+
 
     fun saveSubscriptionState(has: Boolean) {
         val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
@@ -106,6 +96,36 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        billing=ACPremium(this,object :ACPremium.IState{
+            override fun onPremiumChanged(isPremium: Boolean) {
+                if (isPremium) {
+                    saveSubscriptionState(true)
+                    main_buyButton.visibility = View.GONE
+                } else {
+                    saveSubscriptionState(false)
+                    if (doIShowIntro()) {
+                        try {
+                            val tooltip = Tooltip.Builder(this@MainActivity, main_buyButton)
+                                    .setText(R.string.subscription_intro)
+                                    .setPadding(30f)
+                                    .setCornerRadius(10f)
+                                    .setTextSize(13f)
+                                    .setBackgroundColor(Color.rgb(170, 60, 57))
+                                    .setDismissOnClick(true)
+                                    .setCancelable(true)
+                                    .show()
+                        }
+                        catch(ex:Exception){
+
+                        }
+
+
+                    }
+
+                }
+            }
+
+        })
 
 
         requestWindowFeature(FEATURE_NO_TITLE)
@@ -149,34 +169,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
             var intent: Intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
         }
-        inappBillingNoAdv.setOnSubscriptionStateChanged {
-            if (it) {
-                saveSubscriptionState(true)
-                main_buyButton.visibility = View.GONE
-            } else {
-                saveSubscriptionState(false)
-                if (doIShowIntro()) {
-                    try {
-                        val tooltip = Tooltip.Builder(this, main_buyButton)
-                                .setText(R.string.subscription_intro)
-                                .setPadding(30f)
-                                .setCornerRadius(10f)
-                                .setTextSize(13f)
-                                .setBackgroundColor(Color.rgb(170, 60, 57))
-                                .setDismissOnClick(true)
-                                .setCancelable(true)
-                                .show()
-                    }
-                    catch(ex:Exception){
 
-                    }
-
-
-                }
-
-            }
-        }
-        inappBillingNoAdv.Init(this, this)
 
         isSubscripted = fetchSubscriptionState(this)
         if (isSubscripted) {
@@ -184,21 +177,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
         }
 
         main_buyButton.setOnClickListener {
-
-
-            logAsync {
-
-                inappBillingNoAdv.setOnBuyCompleted {
-                    if (it) {
-                        main_buyButton.visibility = View.GONE;
-                    }
-                }
-                inappBillingNoAdv.Buy()
-
-
-            }
-
-            true
+            billing.buyPremium()
         }
 
         button_privacypolicy.setOnClickListener {
@@ -253,7 +232,7 @@ class MainActivity() : AppCompatActivity(), IabBroadcastReceiver.IabBroadcastLis
     override fun onDestroy() {
         super.onDestroy()
         try{
-            inappBillingNoAdv?.destroy()
+            billing.destroy()
         }
         catch (ex:Exception){
             Log.e("Simin",ex.toString())

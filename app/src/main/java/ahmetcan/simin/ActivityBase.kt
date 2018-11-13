@@ -1,25 +1,33 @@
 package ahmetcan.simin
 
-import android.support.v4.app.Fragment
+import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import kotlinx.coroutines.experimental.*
-import kotlin.coroutines.experimental.CoroutineContext
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import com.google.firebase.crash.FirebaseCrash
+import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.async
+import kotlin.coroutines.experimental.CoroutineContext
 
 
-open class ActivityBase : AppCompatActivity() {
-    private var jobs= arrayListOf<Job>()
+open class ActivityBase : AppCompatActivity(), CoroutineScope {
+    lateinit var job: Job
 
-    fun safeAsync(context: CoroutineContext = DefaultDispatcher,
-                   start: CoroutineStart = CoroutineStart.DEFAULT,
-                   block: suspend CoroutineScope.() -> Unit)
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        job = Job()
+    }
+
+    fun safeAsync(block: suspend CoroutineScope.() -> Unit)
             : Job
     {
-       // var job= logAsync(context, start, block)
-        var job=   async(context,start) {
+        // var job= logAsync(context, start, block)
+        return async(Dispatchers.IO)  {
             try {
 
                 block()
@@ -29,22 +37,18 @@ open class ActivityBase : AppCompatActivity() {
                     FirebaseCrash.report(ex)
                 }
                 finally {
-                    Log.e("simin logAsync:",ex.toString())
+                    Log.e("translationplayer logAsync:",ex.toString())
                     throw ex
                 }
             }
         }
-        jobs.add(job)
-        job.invokeOnCompletion {
-            jobs.remove(job)
-        }
-        return job
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        jobs.forEach { it.cancel()}
+        job.cancel()
     }
 
     fun hideSoftKeyboard() {

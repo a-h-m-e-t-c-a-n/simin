@@ -21,6 +21,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".Discovery.SearchActivity"
@@ -29,7 +30,14 @@
             android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".PreviewVideo"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".LanguageActivity"
             android:label="@string/title_activity_language"
@@ -43,31 +51,8 @@
             android:name="io.fabric.ApiKey"
             android:value="61224e652de234161c393420245ef0af6594c44e"
             />
-        <!--<meta-data-->
-            <!--android:name="com.google.android.gms.ads.APPLICATION_ID"-->
-            <!--android:value="ca-app-pub-3787646629594216~8582502456"/>-->
 
 
-        <activity android:name="com.startapp.android.publish.ads.list3d.List3DActivity"
-            android:theme="@android:style/Theme" />
-
-        <activity android:name="com.startapp.android.publish.adsCommon.activities.OverlayActivity"
-            android:theme="@android:style/Theme.Translucent"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-
-        <activity android:name="com.startapp.android.publish.adsCommon.activities.FullScreenActivity"
-            android:theme="@android:style/Theme"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-
-        <service android:name="com.startapp.android.publish.common.metaData.PeriodicMetaDataService" />
-        <service android:name="com.startapp.android.publish.common.metaData.InfoEventService" />
-        <service android:name="com.startapp.android.publish.common.metaData.PeriodicJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <receiver android:name="com.startapp.android.publish.common.metaData.BootCompleteListener" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

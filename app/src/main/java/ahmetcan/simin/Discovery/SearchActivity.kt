@@ -1,17 +1,19 @@
 package ahmetcan.simin.Discovery
 
-import ahmetcan.simin.*
+import ahmetcan.simin.ActivityBase
 import ahmetcan.simin.Api.GoogleService
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
+import ahmetcan.simin.PreviewVideo
+import ahmetcan.simin.R
+import ahmetcan.simin.onUI
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -22,9 +24,7 @@ import com.google.gson.JsonArray
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
-import java.lang.Exception
 
 
 class SearchActivity : ActivityBase() {
@@ -50,7 +50,7 @@ class SearchActivity : ActivityBase() {
         autocompleteEdit.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 //listAdapter.clear()
-                async {
+                safeAsync {
                     var result = GoogleService.instance.youtube_suggest(autocompleteEdit.text.toString()).execute().body()
                     onUI {
                         listAdapter.clear()

@@ -1,42 +1,34 @@
 package ahmetcan.simin
 
 import ahmetcan.simin.Api.Text
-import ahmetcan.simin.Api.Track
 import ahmetcan.simin.Api.Transcript
-import ahmetcan.simin.Api.TranscriptList
 import ahmetcan.simin.Discovery.Model.persistent.Language
 import ahmetcan.simin.Discovery.Model.persistent.VideoViewState
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository.allLanguageges
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.speech.RecognizerIntent
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.Toast
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import kotlinx.android.synthetic.main.activity_preview_video.*
+import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
-import android.content.ActivityNotFoundException
-import android.graphics.Color
-import android.speech.RecognizerIntent
-import android.graphics.PorterDuff
-import android.R.attr.checked
-import android.content.Context
-import android.content.res.ColorStateList
-import android.provider.Settings
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.AppCompatButton
-import android.widget.*
-import android.widget.AbsListView
-import com.google.android.youtube.player.internal.l
-import io.realm.Realm
 
 
 class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener , YouTubePlayer.OnFullscreenListener {
@@ -251,12 +243,26 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        videoId=intent.extras["videoid"] as String
-        title=intent.extras["title"] as String
-        description=intent.extras["description"] as String
-        cover=intent.extras["cover"] as String
 
+        if (intent.action == Intent.ACTION_SEND) {
 
+            var url=Uri.parse(intent.getStringExtra(Intent.EXTRA_TEXT))
+            var youtubeurl=intent.getStringExtra(Intent.EXTRA_TEXT)
+            if(youtubeurl.contains("youtu.be",true)){
+                videoId=url.path.replace("/","")
+                title=""
+                description=""
+                cover=""
+            }
+
+        }
+        else{
+            videoId=intent.extras["videoid"] as String
+            title=intent.extras["title"] as String
+            description=intent.extras["description"] as String
+            cover=intent.extras["cover"] as String
+
+        }
 
         setContentView(R.layout.activity_preview_video)
 
@@ -438,7 +444,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
 
 
 
-        async {
+        async(Dispatchers.IO) {
             loadCaption()
 
             onUI {

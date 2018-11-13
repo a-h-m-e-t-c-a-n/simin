@@ -39,7 +39,7 @@ class FavoriesFragment : FragmentBase()  {
 
         }
         swipeRefreshLayout.setOnRefreshListener {
-            async {
+            safeAsync {
                 var favs=DiscoveryRepository.favorites()
                 onUI {
                     adapter.clearData()
@@ -50,7 +50,7 @@ class FavoriesFragment : FragmentBase()  {
                 }
             }
         }
-        async {
+        safeAsync {
             var favs=DiscoveryRepository.favorites()
             onUI {
                 adapter.clearData()
