@@ -2,9 +2,9 @@ package ahmetcan.simin
 
 import android.util.Log
 import com.google.firebase.crash.FirebaseCrash
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.android.UI
+import kotlin.coroutines.CoroutineContext
 
 //async exception fırlattığında uygulama crash olmuyor ama launc da oluyor
 fun logLaunch(block: suspend CoroutineScope.() -> Unit)

@@ -11,9 +11,9 @@ import android.view.*
 import com.paginate.Paginate
 import com.simin.CategoryView.YoutubePlaylistAdapter
 import kotlinx.android.synthetic.main.fragment_favories.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.android.UI
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class FavoriesFragment : FragmentBase()  {
 

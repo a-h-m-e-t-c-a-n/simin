@@ -12,8 +12,8 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_video_list.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.android.UI
+import kotlinx.coroutines.launch
 
 class VideoListActivity : ActivityBase() {
     var adapter = YoutubeVideoAdapter()

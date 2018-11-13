@@ -50,7 +50,12 @@
             android:name="io.fabric.ApiKey"
             android:value="61224e652de234161c393420245ef0af6594c44e" />
 
-
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3353784488411814~2328933720"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

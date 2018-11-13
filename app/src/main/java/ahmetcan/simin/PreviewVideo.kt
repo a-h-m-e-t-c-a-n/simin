@@ -21,14 +21,18 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.google.android.gms.ads.AdRequest
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import kotlinx.android.synthetic.main.activity_preview_video.*
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import com.google.android.gms.ads.AdListener
+
+
 
 
 class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener , YouTubePlayer.OnFullscreenListener {
@@ -288,10 +292,35 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         backButton.setOnClickListener {
             finish()
         }
+
 //        if(!fetchSubscriptionState()) {
 //            MobileAds.initialize(this, ApiKey.ADMOB_APPID);
-//            val adRequest = AdRequest.Builder().build()
-//            adView.loadAd(adRequest)
+            val adRequest = AdRequest.Builder()
+            adRequest.addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
+            adView.setAdListener(object : AdListener() {
+            override fun onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            override fun onAdFailedToLoad(errorCode: Int) {
+                // Code to be executed when an ad request fails.
+            }
+
+            override fun onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            override fun onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            override fun onAdClosed() {
+                // Code to be executed when when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        })
+            adView.loadAd(adRequest.build())
 //        }
         captionPrimary.setOnClickListener {
             currentPrimaryText?.let {

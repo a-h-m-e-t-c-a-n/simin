@@ -4,6 +4,7 @@ import ahmetcan.simin.Discovery.Model.persistent.YoutubeSubscriptionResult
 import android.app.Application
 import android.util.Log
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.google.android.gms.ads.MobileAds
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
@@ -26,6 +27,8 @@ open class ACApplication : Application() {
                 .deleteRealmIfMigrationNeeded()
                 .build()
         Realm.setDefaultConfiguration(config)
+
+        MobileAds.initialize(this, "ca-app-pub-3353784488411814~2328933720");
 
 
 //        Thread.setDefaultUncaughtExceptionHandler(object: Thread.UncaughtExceptionHandler{

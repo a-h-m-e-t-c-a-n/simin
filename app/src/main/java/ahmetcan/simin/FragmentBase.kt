@@ -3,8 +3,8 @@ package ahmetcan.simin
 import android.support.v4.app.Fragment
 import android.util.Log
 import com.google.firebase.crash.FirebaseCrash
-import kotlinx.coroutines.experimental.*
-import kotlin.coroutines.experimental.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.*
 
 open class FragmentBase : Fragment() {
     private var jobs= arrayListOf<Job>()

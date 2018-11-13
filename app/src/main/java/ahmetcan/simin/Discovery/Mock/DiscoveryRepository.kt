@@ -6,9 +6,9 @@ import ahmetcan.simin.Discovery.Model.PlayListModel
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 object  DiscoveryRepository{
 

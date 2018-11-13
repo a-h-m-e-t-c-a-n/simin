@@ -16,9 +16,9 @@ import com.paginate.Paginate
 import com.simin.CategoryView.YoutubePlaylistAdapter
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_discovery.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.android.UI
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 class DiscoveryFragment : FragmentBase()  {

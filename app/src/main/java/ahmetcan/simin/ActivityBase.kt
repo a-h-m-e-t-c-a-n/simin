@@ -5,11 +5,11 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import com.google.firebase.crash.FirebaseCrash
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.async
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlin.coroutines.CoroutineContext
 
 
 open class ActivityBase : AppCompatActivity(), CoroutineScope {

@@ -14,17 +14,21 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.gson.JsonArray
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_search.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.android.UI
+import kotlinx.coroutines.launch
 
 
 class SearchActivity : ActivityBase() {
@@ -37,7 +41,7 @@ class SearchActivity : ActivityBase() {
         val has: Boolean = subscription.getBoolean("has", false)
         return has;
     }
-   // private  var mInterstitialAd: InterstitialAd? = null
+    private  var mInterstitialAd: InterstitialAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,7 +118,7 @@ class SearchActivity : ActivityBase() {
         })
         autocompleteEdit.requestFocus()
 
-//        MobileAds.initialize(this, ApiKey.ADMOB_APPID);
+
 //        val adRequest = AdRequest.Builder().build()
 //        adView.loadAd(adRequest)
 
@@ -124,34 +128,34 @@ class SearchActivity : ActivityBase() {
 //            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
 //        }
 //        else{
-//            if(!fetchSubscriptionState()) {
-//
-
-//                   try {
-//                       mInterstitialAd = InterstitialAd(this@SearchActivity);
-//                       mInterstitialAd?.let {
-//                           it.setAdUnitId("ca-app-pub-3787646629594216/3604797501")
-//                           it.adListener = object : AdListener() {
-//                               override fun onAdLoaded() {
-//                                   super.onAdLoaded()
-//                                   it.show()
-//                               }
-//
-//                               override fun onAdFailedToLoad(p0: Int) {
-//                                   Log.e("SİMİN ADS",p0.toString())
-//                               }
-//                           }
-//                           it.loadAd(AdRequest.Builder()
-//                                   .addTestDevice("85740FA155239631C4A99E3CE816448E")
-//                                   .build())
-//
-//                       }
-//                   }catch (ex:Exception){
-//                       ex.printStackTrace()
-//                   }
+            if(!fetchSubscriptionState()) {
 
 
-//            }
+                   try {
+                       mInterstitialAd = InterstitialAd(this@SearchActivity);
+                       mInterstitialAd?.let {
+                           it.setAdUnitId(getString(R.string.ads_inter))
+                           it.adListener = object : AdListener() {
+                               override fun onAdLoaded() {
+                                   super.onAdLoaded()
+                                   it.show()
+                               }
+
+                               override fun onAdFailedToLoad(p0: Int) {
+                                   Log.e("SİMİN ADS",p0.toString())
+                               }
+                           }
+                           it.loadAd(AdRequest.Builder()
+                                   .addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
+                                   .build())
+
+                       }
+                   }catch (ex:Exception){
+                       ex.printStackTrace()
+                   }
+
+
+            }
  //       }
     }
 
