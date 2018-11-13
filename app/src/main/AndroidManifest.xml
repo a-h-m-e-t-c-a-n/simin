@@ -7,6 +7,7 @@
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".ACApplication"
         android:allowBackup="true"
@@ -21,7 +22,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".Discovery.SearchActivity"
@@ -30,13 +30,12 @@
             android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".PreviewVideo"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" >
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".LanguageActivity"
@@ -49,8 +48,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="61224e652de234161c393420245ef0af6594c44e"
-            />
+            android:value="61224e652de234161c393420245ef0af6594c44e" />
 
 
     </application>
