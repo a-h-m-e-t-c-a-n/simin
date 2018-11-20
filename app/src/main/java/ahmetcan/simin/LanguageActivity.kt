@@ -31,7 +31,7 @@ class LanguageActivity :ActivityBase() {
         availableList.adapter=listAvailableAdapter
         availableList.setOnItemClickListener(object : AdapterView.OnItemClickListener{
             override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                availables?.let {
+                favailables?.let {
                     if(p2==0){
                         var resultIntent=Intent()
                         setResult(2,resultIntent)
@@ -51,7 +51,7 @@ class LanguageActivity :ActivityBase() {
         restList.adapter=listRestAdapter
         restList.setOnItemClickListener(object : AdapterView.OnItemClickListener{
             override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                rest?.let {
+                frest?.let {
                     var item = it[p2]
                     var resultIntent = Intent()
                     resultIntent.putExtra("iso", item.isoCode)

@@ -98,31 +98,34 @@ class MainActivity() : AppCompatActivity(){
 
         billing=ACPremium(this,object :ACPremium.IState{
             override fun onPremiumChanged(isPremium: Boolean) {
-                if (isPremium) {
-                    saveSubscriptionState(true)
-                    main_buyButton.visibility = View.GONE
-                } else {
-                    saveSubscriptionState(false)
-                    if (doIShowIntro()) {
-                        try {
-                            val tooltip = Tooltip.Builder(this@MainActivity, main_buyButton)
-                                    .setText(R.string.subscription_intro)
-                                    .setPadding(30f)
-                                    .setCornerRadius(10f)
-                                    .setTextSize(13f)
-                                    .setBackgroundColor(Color.rgb(170, 60, 57))
-                                    .setDismissOnClick(true)
-                                    .setCancelable(true)
-                                    .show()
-                        }
-                        catch(ex:Exception){
+                onUI {
+                    if (isPremium) {
+                        saveSubscriptionState(true)
+                        main_buyButton.visibility = View.GONE
+                    } else {
+                        saveSubscriptionState(false)
+                        if (doIShowIntro()) {
+                            try {
+                                val tooltip = Tooltip.Builder(this@MainActivity, main_buyButton)
+                                        .setText(R.string.subscription_intro)
+                                        .setPadding(30f)
+                                        .setCornerRadius(10f)
+                                        .setTextSize(13f)
+                                        .setBackgroundColor(Color.rgb(170, 60, 57))
+                                        .setDismissOnClick(true)
+                                        .setCancelable(true)
+                                        .show()
+                            }
+                            catch(ex:Exception){
+
+                            }
+
 
                         }
-
 
                     }
-
                 }
+
             }
 
         })
