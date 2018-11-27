@@ -128,35 +128,35 @@ class SearchActivity : ActivityBase() {
 //            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
 //        }
 //        else{
-            if(!fetchSubscriptionState()) {
-
-
-                   try {
-                       mInterstitialAd = InterstitialAd(this@SearchActivity);
-                       mInterstitialAd?.let {
-                           it.setAdUnitId(getString(R.string.ads_inter))
-                           it.adListener = object : AdListener() {
-                               override fun onAdLoaded() {
-                                   super.onAdLoaded()
-                                   it.show()
-                               }
-
-                               override fun onAdFailedToLoad(p0: Int) {
-                                   Log.e("SİMİN ADS",p0.toString())
-                               }
-                           }
-                           it.loadAd(AdRequest.Builder()
-                                   .addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
-                                   .build())
-
-                       }
-                   }catch (ex:Exception){
-                       ex.printStackTrace()
-                   }
-
-
-            }
- //       }
+//            if(!fetchSubscriptionState()) {
+//
+//
+//                   try {
+//                       mInterstitialAd = InterstitialAd(this@SearchActivity);
+//                       mInterstitialAd?.let {
+//                           it.setAdUnitId(getString(R.string.ads_inter))
+//                           it.adListener = object : AdListener() {
+//                               override fun onAdLoaded() {
+//                                   super.onAdLoaded()
+//                                   it.show()
+//                               }
+//
+//                               override fun onAdFailedToLoad(p0: Int) {
+//                                   Log.e("SİMİN ADS",p0.toString())
+//                               }
+//                           }
+//                           it.loadAd(AdRequest.Builder()
+//                                   .addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
+//                                   .build())
+//
+//                       }
+//                   }catch (ex:Exception){
+//                       ex.printStackTrace()
+//                   }
+//
+//
+//            }
+// //       }
     }
 
     override fun onStart() {

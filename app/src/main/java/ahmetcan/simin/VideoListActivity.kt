@@ -55,21 +55,21 @@ class VideoListActivity : ActivityBase() {
 //            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
 //        }
 //        else{
-            if(!fetchSubscriptionState()) {
-                mInterstitialAd = InterstitialAd(this@VideoListActivity);
-                mInterstitialAd?.let {
-                    it.setAdUnitId(getString(R.string.ads_inter))
-                    it.loadAd(AdRequest.Builder().build())
-                    it.adListener = object : AdListener() {
-                        override fun onAdLoaded() {
-                            super.onAdLoaded()
-                            it.show()
-                        }
-                    }
-
-                }
-            }
-//        }
+//            if(!fetchSubscriptionState()) {
+//                mInterstitialAd = InterstitialAd(this@VideoListActivity);
+//                mInterstitialAd?.let {
+//                    it.setAdUnitId(getString(R.string.ads_inter))
+//                    it.loadAd(AdRequest.Builder().build())
+//                    it.adListener = object : AdListener() {
+//                        override fun onAdLoaded() {
+//                            super.onAdLoaded()
+//                            it.show()
+//                        }
+//                    }
+//
+//                }
+//            }
+////        }
     }
 
     override fun onStart() {
