@@ -21,20 +21,25 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.google.android.gms.ads.AdRequest
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_preview_video.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import com.google.android.gms.ads.AdListener
 import kotlin.random.Random
+import android.util.StatsLog.logEvent
+
+
 
 
 class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener , YouTubePlayer.OnFullscreenListener {
+
+
+
     private var state: VideoViewState?=null
     private var fullscreen: Boolean = false
     private var player:YouTubePlayer?=null
@@ -247,6 +252,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         if (intent.action == Intent.ACTION_SEND) {
 
             var url=Uri.parse(intent.getStringExtra(Intent.EXTRA_TEXT))
@@ -298,6 +304,15 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                    banner_text.setText("Echo: WhatsApp Facebook Messenger Auto Quick Reply")
                    banner_logo.setImageResource(R.drawable.echo_logo)
                    banner.setOnClickListener {
+
+                       try{
+                           var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+                           val params = Bundle()
+                           params.putString("EchoClickedStr","strClick")
+                           firebaseAnalytics.logEvent("EchoClicked", params)
+
+                       }catch (ex:Exception){}
+
                        var link = "https://play.google.com/store/apps/details?id=ahmetcan.echo"
                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
                    }
@@ -306,6 +321,13 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                     banner_text.setText("Meta: Video Downloader For Facebook and Instagram")
                     banner_logo.setImageResource(R.drawable.metadownloader_logo)
                     banner.setOnClickListener {
+                        try{
+                            var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+                            val params = Bundle()
+                            params.putString("MetaClickedStr","strClick")
+                            firebaseAnalytics.logEvent("MetaClicked", params)
+
+                        }catch (ex:Exception){}
                         var link = "https://play.google.com/store/apps/details?id=ahmetcan.videodownloader"
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
                     }

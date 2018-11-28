@@ -21,6 +21,7 @@ import android.view.Menu
 import android.view.View
 import android.view.Window.FEATURE_NO_TITLE
 import android.widget.Toast
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.tooltip.Tooltip
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -97,6 +98,16 @@ class MainActivity() : AppCompatActivity(){
         super.onCreate(savedInstanceState)
 
         billing=ACPremium(this,object :ACPremium.IState{
+            override fun onUserCancelFlow() {
+                try{
+                    var firebaseAnalytics = FirebaseAnalytics.getInstance(this@MainActivity)
+                    val params = Bundle()
+                    params.putString("BillingUserCancelStr","BillingUserCancelStrValu")
+                    firebaseAnalytics.logEvent("BillingUserCancelEvent", params)
+
+                }catch (ex:Exception){}
+            }
+
             override fun onPremiumChanged(isPremium: Boolean) {
                 onUI {
                     if (isPremium) {
@@ -180,6 +191,15 @@ class MainActivity() : AppCompatActivity(){
         }
 
         main_buyButton.setOnClickListener {
+            try{
+                var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+                val params = Bundle()
+                params.putString("MainBuyClickedStr","strMainBuy")
+                firebaseAnalytics.logEvent("MainBuyEvent", params)
+
+            }catch (ex:Exception){}
+
+
             billing.buyPremium()
         }
 

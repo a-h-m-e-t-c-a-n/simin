@@ -10,9 +10,6 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.ArrayAdapter
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_video_list.*
 import kotlinx.coroutines.android.UI
@@ -23,7 +20,7 @@ class VideoListActivity : ActivityBase() {
     var loading: Boolean = false
     var isHasLoadedAll: Boolean = false
     var nextPageToken: String? = null
-    private  var mInterstitialAd: InterstitialAd? = null
+//    private  var mInterstitialAd: InterstitialAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
     private var channelid: String? = null
