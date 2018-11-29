@@ -480,9 +480,12 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         allcaptions.adapter=listAdapter
         allcaptions.setOnItemClickListener(object :AdapterView.OnItemClickListener{
             override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                var next=primaryCaptionList!!.texts[p2]
-                player?.seekToMillis(next.start.toInt())
-                onCaptionChanged()
+                primaryCaptionList?.let {
+                    var next=it.texts[p2]
+                    player?.seekToMillis(next.start.toInt())
+                    onCaptionChanged()
+                }
+
             }
 
         })
