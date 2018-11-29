@@ -284,10 +284,13 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
                speakMatch.setText("")
                val intent = Intent( RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
 
-               if(!defaultLanguge.isoCode.isNullOrEmpty()) intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, defaultLanguge.isoCode)
+               if(defaultLanguge.isoCode.isNotEmpty()){
+                   intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, defaultLanguge.isoCode)
+                   startActivityForResult(intent, RESULT_SPEECH)
+               }
 
 
-               startActivityForResult(intent, RESULT_SPEECH)
+
 
             } catch (a: ActivityNotFoundException) {
                 val t = Toast.makeText(applicationContext,getString(R.string.speakerror),Toast.LENGTH_SHORT)
