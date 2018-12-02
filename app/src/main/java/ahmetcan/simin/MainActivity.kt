@@ -102,6 +102,15 @@ class MainActivity() : AppCompatActivity(){
                 onUI {
                     saveSubscriptionState(true)
                     main_buyButton.visibility = View.GONE
+
+                    try{
+                        FirebaseAnalytics.getInstance(this@MainActivity).logEvent("BillingError", null)
+
+                    }
+                    catch (ex:Exception){
+
+
+                    }
                 }
             }
 
