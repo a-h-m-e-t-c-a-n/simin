@@ -400,8 +400,11 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             try {
                 if(captionIndex>0){
                     captionIndex--
-                    var prev=primaryCaptionList!!.texts[captionIndex]
-                    player?.seekToMillis(prev.start.toInt())
+                    primaryCaptionList?.let {
+                        var prev=it.texts[captionIndex]
+                        player?.seekToMillis(prev.start.toInt())
+                    }
+
                    // onCaptionChanged()
                 }
             }
@@ -411,13 +414,16 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         }
         video_skipNext.setOnClickListener {
             try {
-                if(captionIndex<primaryCaptionList!!.texts.count()){
-                    captionIndex++
-                    var next=primaryCaptionList!!.texts[captionIndex]
-                    player?.seekToMillis(next.start.toInt())
-                    //  onCaptionChanged()
+                primaryCaptionList?.let {
+                    if(captionIndex<it.texts.count()){
+                        captionIndex++
+                        var next=it.texts[captionIndex]
+                        player?.seekToMillis(next.start.toInt())
+                        //  onCaptionChanged()
 
+                    }
                 }
+
             }
             catch (ex:Exception){
                 Log.w("Simin",ex.toString())
@@ -567,7 +573,7 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             state?.description=description
             state?.cover=cover
 
-            DiscoveryRepository.persistVideoState(state!!)
+            state?.let {DiscoveryRepository.persistVideoState(it)}
         }
     }
     private fun doLayout() {
@@ -617,13 +623,16 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
     }
 
     fun fillCaptionList(){
-        listAdapter.clear()
-        for ((index,item) in primaryCaptionList!!.texts.withIndex()){
-            if(captionOffMode){
-                listAdapter.add(index.toString())
-            }
-            else{
-                listAdapter.add(item.sentence)
+        primaryCaptionList?.let {
+            listAdapter.clear()
+            for ((index,item) in it.texts.withIndex()){
+                if(captionOffMode){
+                    listAdapter.add(index.toString())
+                }
+                else{
+                    listAdapter.add(item.sentence)
+                }
+
             }
 
         }
@@ -642,8 +651,10 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
         if(default==null){
             default=languages.filter {it.available==true && it.isoCode=="en" }.firstOrNull()
             if(default==null){
-                default=languages.filter { it.available==true }.firstOrNull()
-                defaultLanguge= default!!
+                languages.filter { it.available==true }.firstOrNull()?.let {
+                    defaultLanguge=it
+                }
+
             }
         }
         else{
@@ -656,8 +667,11 @@ class PreviewVideo : YouTubeBaseActivity(),  YouTubePlayer.OnInitializedListener
             fillCaptionList()
             progressBar1.visibility=View.GONE
             if(captionIndex>0){
-                var seekToCption=primaryCaptionList!!.texts[captionIndex]
-                player?.seekToMillis(seekToCption.start.toInt())
+                primaryCaptionList?.let {
+                    var seekToCption=it.texts[captionIndex]
+                    player?.seekToMillis(seekToCption.start.toInt())
+                }
+
             }
         }
 
