@@ -98,6 +98,13 @@ class MainActivity() : AppCompatActivity(){
         super.onCreate(savedInstanceState)
 
         billing=ACPremium(this,object :ACPremium.IState{
+            override fun onError() {
+                onUI {
+                    saveSubscriptionState(true)
+                    main_buyButton.visibility = View.GONE
+                }
+            }
+
             override fun onUserCancelFlow() {
                 try{
                     var firebaseAnalytics = FirebaseAnalytics.getInstance(this@MainActivity)

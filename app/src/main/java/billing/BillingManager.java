@@ -89,6 +89,7 @@ public class BillingManager implements PurchasesUpdatedListener {
         void onConsumeFinished(String token, @BillingResponse int result);
         void onPurchasesUpdated(List<Purchase> purchases);
         void onUserCancelFlow();
+        void onError();
     }
 
     /**
@@ -127,10 +128,19 @@ public class BillingManager implements PurchasesUpdatedListener {
     @Override
     public void onPurchasesUpdated(int resultCode, List<Purchase> purchases) {
         if (resultCode == BillingResponse.OK) {
-            for (Purchase purchase : purchases) {
-                handlePurchase(purchase);
+            if(purchases!=null){
+                for (Purchase purchase : purchases) {
+                    handlePurchase(purchase);
+                }
             }
+            else{
+                mBillingUpdatesListener.onError();
+                Log.w(TAG, "Purchase list is null");
+                return;
+            }
+
             mBillingUpdatesListener.onPurchasesUpdated(mPurchases);
+
         } else if (resultCode == BillingResponse.USER_CANCELED) {
             Log.i(TAG, "onPurchasesUpdated() - user cancelled the purchase flow - skipping");
             mBillingUpdatesListener.onUserCancelFlow();

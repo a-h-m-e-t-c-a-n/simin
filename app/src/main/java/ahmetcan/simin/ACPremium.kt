@@ -10,9 +10,14 @@ class ACPremium(activity: Activity,callback:IState) {
     interface IState{
         fun onPremiumChanged(isPremium:Boolean)
         fun onUserCancelFlow()
+        fun onError()
     }
     var callback:IState=callback
     var billingManager = BillingManager(activity, object : BillingManager.BillingUpdatesListener {
+        override fun onError() {
+            callback.onError();
+        }
+
         override fun onBillingClientSetupFinished() {
         }
 
