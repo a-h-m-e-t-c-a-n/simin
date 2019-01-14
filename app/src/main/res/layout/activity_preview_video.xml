@@ -256,33 +256,22 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
 
-            <RelativeLayout
+            <Button
+                android:id="@+id/button_buy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/relativeLayout">
+                android:background="#FFD328"
+                android:text=" REMOVE ADS ONE TIME PURCHASE"
+                android:paddingBottom="15dp"
+                android:paddingTop="5dp"
+                android:textColor="#000000"
+                android:textSize="18dp"
+                android:drawableLeft="@drawable/hand_icon_50"
+                />
 
-                <Button
-                    android:id="@+id/button_buy"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#FFD328"
-                    android:text="REMOVE ADS ONE TIME PURCHASE"
-                    android:paddingBottom="15dp"
-                    android:paddingTop="15dp"
-                    android:textColor="#000000"
-                    android:textSize="20dp" />
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/hand_click"
-                    android:layout_centerInParent="true"
-                    />
-            </RelativeLayout>
 
             <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/adView"

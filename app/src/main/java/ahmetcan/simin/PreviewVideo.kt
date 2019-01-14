@@ -263,6 +263,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         super.onCreate(savedInstanceState)
 
 
+
         if (intent.action == Intent.ACTION_SEND) {
 
             var url = Uri.parse(intent.getStringExtra(Intent.EXTRA_TEXT))
@@ -426,6 +427,9 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         })
             adView.loadAd(adRequest.build())
         }
+
+
+
         captionPrimary.setOnClickListener {
             currentPrimaryText?.let {
                 player?.seekToMillis(it.start.toInt())
@@ -501,6 +505,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
             }
         }
         DrawableCompat.setTint(video_hardmodeButton.background, Color.BLACK)
+
 
         video_hardmodeButton.setOnClickListener {
             try {
