@@ -1,5 +1,6 @@
 package ahmetcan.simin
 
+import ahmetcan.echo.ACPremium
 import ahmetcan.simin.Api.Text
 import ahmetcan.simin.Api.Transcript
 import ahmetcan.simin.Discovery.Model.persistent.Language
@@ -32,10 +33,22 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 import android.util.StatsLog.logEvent
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.tooltip.Tooltip
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener, YouTubePlayer.OnFullscreenListener {
+    var billing: ACPremium?=null
 
+    fun saveSubscriptionState(has: Boolean) {
+        val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
+        val edit = subscription.edit()
+        edit.putBoolean("has", has)
+        edit.commit()
+    }
 
     private var state: VideoViewState? = null
     private var fullscreen: Boolean = false
@@ -295,75 +308,124 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         backButton.setOnClickListener {
             finish()
         }
-        if (!fetchSubscriptionState()) {
-            banner.visibility = View.VISIBLE
-            when (Random.nextInt() % 2) {
-                0 -> {
-                    banner_text.setText("Echo: WhatsApp Facebook Messenger Auto Quick Reply")
-                    banner_logo.setImageResource(R.drawable.echo_logo)
-                    banner.setOnClickListener {
+        button_buy.setOnClickListener{
+            try{
+                FirebaseAnalytics.getInstance(this).logEvent("PreviewBuyEvent",null)
 
-                        try {
-                            var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-                            val params = Bundle()
-                            params.putString("EchoClickedStr", "strClick")
-                            firebaseAnalytics.logEvent("EchoClicked", params)
+            }catch (ex:Exception){}
 
-                        } catch (ex: Exception) {
-                        }
 
-                        var link = "https://play.google.com/store/apps/details?id=ahmetcan.echo"
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
-                    }
-                }
-                1 -> {
-                    banner_text.setText("Meta: Video Downloader For Facebook and Instagram")
-                    banner_logo.setImageResource(R.drawable.metadownloader_logo)
-                    banner.setOnClickListener {
-                        try {
-                            var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-                            val params = Bundle()
-                            params.putString("MetaClickedStr", "strClick")
-                            firebaseAnalytics.logEvent("MetaClicked", params)
-
-                        } catch (ex: Exception) {
-                        }
-                        var link = "https://play.google.com/store/apps/details?id=ahmetcan.videodownloader"
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
-                    }
-                }
-            }
+            billing?.let { it.buyPremium()  }
         }
-
-//        if(!fetchSubscriptionState()) {
-//            MobileAds.initialize(this, ApiKey.ADMOB_APPID);
-//            val adRequest = AdRequest.Builder()
-//            adRequest.addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
-//            adView.setAdListener(object : AdListener() {
-//            override fun onAdLoaded() {
-//                // Code to be executed when an ad finishes loading.
-//            }
+//        if (!fetchSubscriptionState()) {
+//            banner.visibility = View.VISIBLE
+//            when (Random.nextInt() % 2) {
+//                0 -> {
+//                    banner_text.setText("Echo: WhatsApp Facebook Messenger Auto Quick Reply")
+//                    banner_logo.setImageResource(R.drawable.echo_logo)
+//                    banner.setOnClickListener {
 //
-//            override fun onAdFailedToLoad(errorCode: Int) {
-//                // Code to be executed when an ad request fails.
-//            }
+//                        try {
+//                            var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+//                            val params = Bundle()
+//                            params.putString("EchoClickedStr", "strClick")
+//                            firebaseAnalytics.logEvent("EchoClicked", params)
 //
-//            override fun onAdOpened() {
-//                // Code to be executed when an ad opens an overlay that
-//                // covers the screen.
-//            }
+//                        } catch (ex: Exception) {
+//                        }
 //
-//            override fun onAdLeftApplication() {
-//                // Code to be executed when the user has left the app.
-//            }
+//                        var link = "https://play.google.com/store/apps/details?id=ahmetcan.echo"
+//                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+//                    }
+//                }
+//                1 -> {
+//                    banner_text.setText("Meta: Video Downloader For Facebook and Instagram")
+//                    banner_logo.setImageResource(R.drawable.metadownloader_logo)
+//                    banner.setOnClickListener {
+//                        try {
+//                            var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+//                            val params = Bundle()
+//                            params.putString("MetaClickedStr", "strClick")
+//                            firebaseAnalytics.logEvent("MetaClicked", params)
 //
-//            override fun onAdClosed() {
-//                // Code to be executed when when the user is about to return
-//                // to the app after tapping on an ad.
+//                        } catch (ex: Exception) {
+//                        }
+//                        var link = "https://play.google.com/store/apps/details?id=ahmetcan.videodownloader"
+//                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+//                    }
+//                }
 //            }
-//        })
-//            adView.loadAd(adRequest.build())
 //        }
+
+        if(!fetchSubscriptionState()) {
+            billing=ACPremium(this,object :ACPremium.IState{
+                override fun onError() {
+                    onUI {
+                        saveSubscriptionState(true)
+                        adsView.visibility = View.GONE
+
+                        try{
+                            FirebaseAnalytics.getInstance(this@PreviewVideo).logEvent("PreviewBillingError", null)
+
+                        }
+                        catch (ex:Exception){
+
+
+                        }
+                    }
+                }
+
+                override fun onUserCancelFlow() {
+                    try{
+                        FirebaseAnalytics.getInstance(this@PreviewVideo).logEvent("PreivewBillingUserCancel", null)
+
+                    }catch (ex:Exception){}
+                }
+
+                override fun onPremiumChanged(isPremium: Boolean) {
+                    onUI {
+                        if (isPremium) {
+                            saveSubscriptionState(true)
+                            adsView.visibility = View.GONE
+                        } else {
+                            saveSubscriptionState(false)
+                        }
+                    }
+
+                }
+
+            })
+
+
+            adsView.visibility=View.VISIBLE
+            MobileAds.initialize(this, ApiKey.ADMOB_APPID);
+            val adRequest = AdRequest.Builder()
+            adRequest.addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
+            adView.setAdListener(object : AdListener() {
+            override fun onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            override fun onAdFailedToLoad(errorCode: Int) {
+                // Code to be executed when an ad request fails.
+            }
+
+            override fun onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            override fun onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            override fun onAdClosed() {
+                // Code to be executed when when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        })
+            adView.loadAd(adRequest.build())
+        }
         captionPrimary.setOnClickListener {
             currentPrimaryText?.let {
                 player?.seekToMillis(it.start.toInt())

@@ -1,13 +1,10 @@
 package ahmetcan.simin.Discovery
 
-import ahmetcan.simin.ActivityBase
+import ahmetcan.simin.*
 import ahmetcan.simin.Api.GoogleService
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
-import ahmetcan.simin.PreviewVideo
-import ahmetcan.simin.R
-import ahmetcan.simin.onUI
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -21,6 +18,9 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.gson.JsonArray
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_search.*
@@ -38,7 +38,7 @@ class SearchActivity : ActivityBase() {
         val has: Boolean = subscription.getBoolean("has", false)
         return has;
     }
-//    private  var mInterstitialAd: InterstitialAd? = null
+    private  var mInterstitialAd: InterstitialAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,39 +121,39 @@ class SearchActivity : ActivityBase() {
 
         InitList()
 
-//        if (BuildConfig.DEBUG) {
-//            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
-//        }
-//        else{
-//            if(!fetchSubscriptionState()) {
-//
-//
-//                   try {
-//                       mInterstitialAd = InterstitialAd(this@SearchActivity);
-//                       mInterstitialAd?.let {
-//                           it.setAdUnitId(getString(R.string.ads_inter))
-//                           it.adListener = object : AdListener() {
-//                               override fun onAdLoaded() {
-//                                   super.onAdLoaded()
-//                                   it.show()
-//                               }
-//
-//                               override fun onAdFailedToLoad(p0: Int) {
-//                                   Log.e("SİMİN ADS",p0.toString())
-//                               }
-//                           }
-//                           it.loadAd(AdRequest.Builder()
-//                                   .addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
-//                                   .build())
-//
-//                       }
-//                   }catch (ex:Exception){
-//                       ex.printStackTrace()
-//                   }
-//
-//
-//            }
-// //       }
+        if (BuildConfig.DEBUG) {
+            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
+        }
+        else{
+            if(!fetchSubscriptionState()) {
+
+
+                   try {
+                       mInterstitialAd = InterstitialAd(this@SearchActivity);
+                       mInterstitialAd?.let {
+                           it.setAdUnitId(getString(R.string.ads_inter))
+                           it.adListener = object : AdListener() {
+                               override fun onAdLoaded() {
+                                   super.onAdLoaded()
+                                   it.show()
+                               }
+
+                               override fun onAdFailedToLoad(p0: Int) {
+                                   Log.e("SİMİN ADS",p0.toString())
+                               }
+                           }
+                           it.loadAd(AdRequest.Builder()
+                                   .addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
+                                   .build())
+
+                       }
+                   }catch (ex:Exception){
+                       ex.printStackTrace()
+                   }
+
+
+            }
+        }
     }
 
     override fun onStart() {

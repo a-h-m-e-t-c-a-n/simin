@@ -48,7 +48,7 @@
                         android:background="@android:color/transparent"
                         android:padding="0dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_favorite_black_48dp"/>
+                        android:src="@drawable/ic_favorite_black_48dp" />
 
                     <ImageButton
                         android:id="@+id/video_hardmodeButton"
@@ -58,8 +58,7 @@
                         android:layout_marginLeft="25dp"
                         android:background="@drawable/delay"
                         android:padding="0dp"
-                        android:scaleType="fitCenter"
-                         />
+                        android:scaleType="fitCenter" />
 
                     <TextView
                         android:id="@+id/video_hardmodeButtonText"
@@ -126,8 +125,8 @@
                             android:layout_height="40dp"
                             android:layout_marginLeft="5dp"
                             android:background="@android:color/transparent"
-                            android:scaleType="fitCenter"
                             android:padding="0dp"
+                            android:scaleType="fitCenter"
                             android:src="@drawable/ic_pause_black_48dp" />
 
                         <ImageButton
@@ -135,9 +134,9 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginLeft="25dp"
-                            android:scaleType="fitCenter"
                             android:background="@android:color/transparent"
                             android:padding="0dp"
+                            android:scaleType="fitCenter"
                             android:src="@drawable/ic_skip_previous_black_48dp" />
 
                         <ImageButton
@@ -145,9 +144,9 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginLeft="25dp"
-                            android:scaleType="fitCenter"
                             android:background="@android:color/transparent"
                             android:padding="0dp"
+                            android:scaleType="fitCenter"
                             android:src="@drawable/ic_skip_next_black_48dp" />
 
                         <ImageButton
@@ -162,14 +161,14 @@
 
                         <ImageButton
                             android:id="@+id/video_secondSubTitleShow"
-                            android:visibility="gone"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginLeft="15dp"
                             android:background="@android:color/transparent"
-                            android:scaleType="fitCenter"
                             android:padding="0dp"
-                            android:src="@drawable/ic_subtitles_black_48dp" />
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_subtitles_black_48dp"
+                            android:visibility="gone" />
                     </LinearLayout>
 
                     <ImageButton
@@ -178,9 +177,9 @@
                         android:layout_height="40dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="7dp"
-                        android:scaleType="fitCenter"
                         android:background="@android:color/transparent"
                         android:padding="0dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_mic_black_48dp" />
 
 
@@ -241,7 +240,7 @@
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
-            
+
             <ListView
                 android:id="@+id/allcaptions"
                 android:layout_width="match_parent"
@@ -249,60 +248,94 @@
                 android:background="#FFFFFF"></ListView>
         </LinearLayout>
 
-        <!--<com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"-->
-            <!--android:id="@+id/adView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-            <!--ads:adSize="BANNER"-->
-            <!--ads:adUnitId="ca-app-pub-3353784488411814/7476909502"></com.google.android.gms.ads.AdView>-->
 
         <LinearLayout
-            android:visibility="gone"
-            android:orientation="horizontal"
-            android:id="@+id/banner"
+            android:id="@+id/adsView"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="#FFD328"
-            android:clickable="true"
-            >
-            <ImageView
-                android:id="@+id/banner_logo"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:src="@drawable/metadownloader_logo"
-                android:scaleType="fitCenter"
-                />
+            android:orientation="vertical"
+            android:visibility="visible">
+
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:id="@+id/relativeLayout">
 
-                <TextView
-                    android:id="@+id/banner_text"
-                    android:padding="10dp"
+                <Button
+                    android:id="@+id/button_buy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="15dp"
+                    android:background="#FFD328"
+                    android:text="REMOVE ADS ONE TIME PURCHASE"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
                     android:textColor="#000000"
-                    android:textStyle="bold"
-                    android:gravity="center|center_vertical"
-                    android:text="Meta: Video Downloader For Facebook and Instagram"
-                    />
+                    android:textSize="21dp" />
+
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/hand_click"
                     android:scaleType="fitCenter"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentBottom="true"
-
+                    android:src="@drawable/hand_click"
+                    android:layout_centerInParent="true"
                     />
-            </RelativeLayout>>
+            </RelativeLayout>
 
+            <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                ads:adUnitId="ca-app-pub-3353784488411814/7476909502"></com.google.android.gms.ads.AdView>
         </LinearLayout>
+        <!--<LinearLayout-->
+        <!--android:visibility="gone"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:id="@+id/banner"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="75dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:background="#FFD328"-->
+        <!--android:clickable="true"-->
+        <!--&gt;-->
+        <!--<ImageView-->
+        <!--android:id="@+id/banner_logo"-->
+        <!--android:layout_width="75dp"-->
+        <!--android:layout_height="75dp"-->
+        <!--android:src="@drawable/metadownloader_logo"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--/>-->
+        <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/banner_text"-->
+        <!--android:padding="10dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textSize="15dp"-->
+        <!--android:textColor="#000000"-->
+        <!--android:textStyle="bold"-->
+        <!--android:gravity="center|center_vertical"-->
+        <!--android:text="Meta: Video Downloader For Facebook and Instagram"-->
+        <!--/>-->
+        <!--<ImageView-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:src="@drawable/hand_click"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentBottom="true"-->
+
+        <!--/>-->
+        <!--</RelativeLayout>>-->
+
+        <!--</LinearLayout>-->
 
         <ProgressBar
             android:id="@+id/progressBar1"
