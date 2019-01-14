@@ -256,7 +256,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
 
             <Button
