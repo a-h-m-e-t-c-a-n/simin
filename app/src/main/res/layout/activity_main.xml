@@ -57,6 +57,7 @@
                             android:layout_alignParentRight="true"
                             >
                             <ImageButton
+                                android:visibility="gone"
                                 android:id="@+id/button_privacypolicy"
 
                                 android:layout_marginRight="25dp"

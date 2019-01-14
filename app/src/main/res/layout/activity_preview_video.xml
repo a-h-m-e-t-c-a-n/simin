@@ -256,7 +256,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
 
             <RelativeLayout
@@ -273,7 +273,7 @@
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
                     android:textColor="#000000"
-                    android:textSize="21dp" />
+                    android:textSize="20dp" />
 
                 <ImageView
                     android:layout_width="50dp"
