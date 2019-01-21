@@ -358,77 +358,81 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
 //            }
 //        }
 
-        if(!fetchSubscriptionState()) {
-            billing=ACPremium(this,object :ACPremium.IState{
-                override fun onError() {
-                    onUI {
-                        saveSubscriptionState(true)
-                        adsView.visibility = View.GONE
-
-                        try{
-                            FirebaseAnalytics.getInstance(this@PreviewVideo).logEvent("PreviewBillingError", null)
-
-                        }
-                        catch (ex:Exception){
-
-
-                        }
-                    }
-                }
-
-                override fun onUserCancelFlow() {
-                    try{
-                        FirebaseAnalytics.getInstance(this@PreviewVideo).logEvent("PreivewBillingUserCancel", null)
-
-                    }catch (ex:Exception){}
-                }
-
-                override fun onPremiumChanged(isPremium: Boolean) {
-                    onUI {
-                        if (isPremium) {
+        if (BuildConfig.DEBUG) {
+            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
+        }
+        else {
+            if (!fetchSubscriptionState()) {
+                billing = ACPremium(this, object : ACPremium.IState {
+                    override fun onError() {
+                        onUI {
                             saveSubscriptionState(true)
                             adsView.visibility = View.GONE
-                        } else {
-                            saveSubscriptionState(false)
+
+                            try {
+                                FirebaseAnalytics.getInstance(this@PreviewVideo).logEvent("PreviewBillingError", null)
+
+                            } catch (ex: Exception) {
+
+
+                            }
                         }
                     }
 
-                }
+                    override fun onUserCancelFlow() {
+                        try {
+                            FirebaseAnalytics.getInstance(this@PreviewVideo).logEvent("PreivewBillingUserCancel", null)
 
-            })
+                        } catch (ex: Exception) {
+                        }
+                    }
+
+                    override fun onPremiumChanged(isPremium: Boolean) {
+                        onUI {
+                            if (isPremium) {
+                                saveSubscriptionState(true)
+                                adsView.visibility = View.GONE
+                            } else {
+                                saveSubscriptionState(false)
+                            }
+                        }
+
+                    }
+
+                })
 
 
-            adsView.visibility=View.VISIBLE
-            MobileAds.initialize(this, ApiKey.ADMOB_APPID);
-            val adRequest = AdRequest.Builder()
-            adRequest.addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
-            adView.setAdListener(object : AdListener() {
-            override fun onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
+                adsView.visibility = View.VISIBLE
+                MobileAds.initialize(this, ApiKey.ADMOB_APPID);
+                val adRequest = AdRequest.Builder()
+                adRequest.addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
+                adView.setAdListener(object : AdListener() {
+                    override fun onAdLoaded() {
+                        // Code to be executed when an ad finishes loading.
+                    }
+
+                    override fun onAdFailedToLoad(errorCode: Int) {
+                        // Code to be executed when an ad request fails.
+                    }
+
+                    override fun onAdOpened() {
+                        // Code to be executed when an ad opens an overlay that
+                        // covers the screen.
+                    }
+
+                    override fun onAdLeftApplication() {
+                        // Code to be executed when the user has left the app.
+                    }
+
+                    override fun onAdClosed() {
+                        // Code to be executed when when the user is about to return
+                        // to the app after tapping on an ad.
+                    }
+                })
+                adView.loadAd(adRequest.build())
             }
 
-            override fun onAdFailedToLoad(errorCode: Int) {
-                // Code to be executed when an ad request fails.
-            }
-
-            override fun onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-            }
-
-            override fun onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            override fun onAdClosed() {
-                // Code to be executed when when the user is about to return
-                // to the app after tapping on an ad.
-            }
-        })
-            adView.loadAd(adRequest.build())
         }
-
-
 
         captionPrimary.setOnClickListener {
             currentPrimaryText?.let {
