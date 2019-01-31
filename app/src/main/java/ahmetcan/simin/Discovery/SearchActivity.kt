@@ -21,6 +21,10 @@ import android.widget.TextView
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.reward.RewardItem
+import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.google.gson.JsonArray
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_search.*
@@ -38,7 +42,8 @@ class SearchActivity : ActivityBase() {
         val has: Boolean = subscription.getBoolean("has", false)
         return has;
     }
-    private  var mInterstitialAd: InterstitialAd? = null
+   // private  var mInterstitialAd: InterstitialAd? = null
+    private  var mRewardedVideoAd: RewardedVideoAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,27 +134,65 @@ class SearchActivity : ActivityBase() {
 
 
                    try {
-                       mInterstitialAd = InterstitialAd(this@SearchActivity);
-                       mInterstitialAd?.let {
-                           it.setAdUnitId(getString(R.string.ads_inter))
-                           it.adListener = object : AdListener() {
-                               override fun onAdLoaded() {
-                                   super.onAdLoaded()
+                       mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+                       mRewardedVideoAd?.let {
+
+                           it.rewardedVideoAdListener = object :RewardedVideoAdListener {
+                               override fun onRewardedVideoAdClosed() {
+                               }
+
+                               override fun onRewardedVideoAdLeftApplication() {
+                               }
+
+                               override fun onRewardedVideoAdLoaded() {
                                    it.show()
                                }
 
-                               override fun onAdFailedToLoad(p0: Int) {
-                                   Log.e("SİMİN ADS",p0.toString())
+                               override fun onRewardedVideoAdOpened() {
+                               }
+
+                               override fun onRewardedVideoCompleted() {
+                               }
+
+                               override fun onRewarded(p0: RewardItem?) {
+                               }
+
+                               override fun onRewardedVideoStarted() {
+                               }
+
+                               override fun onRewardedVideoAdFailedToLoad(p0: Int) {
                                }
                            }
-                           it.loadAd(AdRequest.Builder()
-                                   .addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
-                                   .build())
+
+                           it.loadAd(getString(R.string.rewarded_search),AdRequest.Builder().build())
 
                        }
+
                    }catch (ex:Exception){
                        ex.printStackTrace()
                    }
+
+
+//                       mInterstitialAd = InterstitialAd(this@SearchActivity);
+//                       mInterstitialAd?.let {
+//                           it.setAdUnitId(getString(R.string.ads_inter))
+//                           it.adListener = object : AdListener() {
+//                               override fun onAdLoaded() {
+//                                   super.onAdLoaded()
+//                                   it.show()
+//                               }
+//
+//                               override fun onAdFailedToLoad(p0: Int) {
+//                                   Log.e("SİMİN ADS",p0.toString())
+//                               }
+//                           }
+//                           it.loadAd(AdRequest.Builder()
+//                                   .addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
+//                                   .build())
+
+                           //     }
+  //                     }
+
 
 
             }

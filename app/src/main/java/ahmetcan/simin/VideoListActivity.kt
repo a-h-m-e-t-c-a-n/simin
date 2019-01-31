@@ -13,6 +13,10 @@ import android.widget.ArrayAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.reward.RewardItem
+import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_video_list.*
 import kotlinx.coroutines.android.UI
@@ -23,7 +27,8 @@ class VideoListActivity : ActivityBase() {
     var loading: Boolean = false
     var isHasLoadedAll: Boolean = false
     var nextPageToken: String? = null
-    private  var mInterstitialAd: InterstitialAd? = null
+    private  var mRewardedVideoAd: RewardedVideoAd? = null
+    //private  var mInterstitialAd: InterstitialAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
     private var channelid: String? = null
@@ -56,18 +61,58 @@ class VideoListActivity : ActivityBase() {
         }
         else{
             if(!fetchSubscriptionState()) {
-                mInterstitialAd = InterstitialAd(this@VideoListActivity);
-                mInterstitialAd?.let {
-                    it.setAdUnitId(getString(R.string.ads_inter))
-                    it.loadAd(AdRequest.Builder().build())
-                    it.adListener = object : AdListener() {
-                        override fun onAdLoaded() {
-                            super.onAdLoaded()
-                            it.show()
+
+                try {
+                    mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+                    mRewardedVideoAd?.let {
+
+                        it.rewardedVideoAdListener = object : RewardedVideoAdListener {
+                            override fun onRewardedVideoAdClosed() {
+                            }
+
+                            override fun onRewardedVideoAdLeftApplication() {
+                            }
+
+                            override fun onRewardedVideoAdLoaded() {
+                                it.show()
+                            }
+
+                            override fun onRewardedVideoAdOpened() {
+                            }
+
+                            override fun onRewardedVideoCompleted() {
+                            }
+
+                            override fun onRewarded(p0: RewardItem?) {
+                            }
+
+                            override fun onRewardedVideoStarted() {
+                            }
+
+                            override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+                            }
                         }
+
+                        it.loadAd(getString(R.string.rewarded_search),AdRequest.Builder().build())
+
                     }
 
+                }catch (ex:Exception){
+                    ex.printStackTrace()
                 }
+
+//                mInterstitialAd = InterstitialAd(this@VideoListActivity);
+//                mInterstitialAd?.let {
+//                    it.setAdUnitId(getString(R.string.ads_inter))
+//                    it.loadAd(AdRequest.Builder().build())
+//                    it.adListener = object : AdListener() {
+//                        override fun onAdLoaded() {
+//                            super.onAdLoaded()
+//                            it.show()
+//                        }
+//                    }
+//
+//                }
             }
         }
     }
