@@ -309,7 +309,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         backButton.setOnClickListener {
             finish()
         }
-        button_buy.setOnClickListener{
+        buyButton.setOnClickListener{
             try{
                 FirebaseAnalytics.getInstance(this).logEvent("PreviewBuyEvent",null)
 
@@ -358,16 +358,36 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
 //            }
 //        }
 
-        if (BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
         }
         else {
             if (!fetchSubscriptionState()) {
+
+                try {
+                    val tooltip = Tooltip.Builder(this@PreviewVideo, buyButton)
+                            .setText(R.string.subscription_intro)
+                            .setPadding(30f)
+                            .setCornerRadius(10f)
+                            .setTextSize(13f)
+                            .setBackgroundColor(Color.rgb(170, 60, 57))
+                            .setDismissOnClick(true)
+                            .setCancelable(true)
+                            .show()
+                }
+                catch(ex:Exception){
+
+                }
+
+
+
+
+
                 billing = ACPremium(this, object : ACPremium.IState {
                     override fun onError() {
                         onUI {
                             saveSubscriptionState(true)
-                            adsView.visibility = View.GONE
+                          //  adsView.visibility = View.GONE
 
                             try {
                                 FirebaseAnalytics.getInstance(this@PreviewVideo).logEvent("PreviewBillingError", null)

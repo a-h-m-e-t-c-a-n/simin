@@ -4,12 +4,15 @@ import ahmetcan.simin.Discovery.Model.Paged
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
+import android.arch.lifecycle.ViewModel
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -39,6 +42,9 @@ class VideoListActivity : ActivityBase() {
         return has;
     }
 
+    fun saveAds(){
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,65 +62,7 @@ class VideoListActivity : ActivityBase() {
 
         InitList()
 
-        if (BuildConfig.DEBUG) {
-            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
-        }
-        else{
-            if(!fetchSubscriptionState()) {
 
-                try {
-                    mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
-                    mRewardedVideoAd?.let {
-
-                        it.rewardedVideoAdListener = object : RewardedVideoAdListener {
-                            override fun onRewardedVideoAdClosed() {
-                            }
-
-                            override fun onRewardedVideoAdLeftApplication() {
-                            }
-
-                            override fun onRewardedVideoAdLoaded() {
-                                it.show()
-                            }
-
-                            override fun onRewardedVideoAdOpened() {
-                            }
-
-                            override fun onRewardedVideoCompleted() {
-                            }
-
-                            override fun onRewarded(p0: RewardItem?) {
-                            }
-
-                            override fun onRewardedVideoStarted() {
-                            }
-
-                            override fun onRewardedVideoAdFailedToLoad(p0: Int) {
-                            }
-                        }
-
-                        it.loadAd(getString(R.string.rewarded_search),AdRequest.Builder().build())
-
-                    }
-
-                }catch (ex:Exception){
-                    ex.printStackTrace()
-                }
-
-//                mInterstitialAd = InterstitialAd(this@VideoListActivity);
-//                mInterstitialAd?.let {
-//                    it.setAdUnitId(getString(R.string.ads_inter))
-//                    it.loadAd(AdRequest.Builder().build())
-//                    it.adListener = object : AdListener() {
-//                        override fun onAdLoaded() {
-//                            super.onAdLoaded()
-//                            it.show()
-//                        }
-//                    }
-//
-//                }
-            }
-        }
     }
 
     override fun onStart() {
@@ -122,6 +70,78 @@ class VideoListActivity : ActivityBase() {
 
     }
 
+    fun checkAds(itemModel:VideoModel){
+        if(doesAdsReview()) {
+        if (BuildConfig.DEBUG) {
+            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
+            goNext(itemModel);
+        }
+        else{
+
+                if(!fetchSubscriptionState()) {
+
+
+                    try {
+                        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+                        mRewardedVideoAd?.let {
+
+                            it.rewardedVideoAdListener = object : RewardedVideoAdListener {
+                                override fun onRewardedVideoAdClosed() {
+                                }
+
+                                override fun onRewardedVideoAdLeftApplication() {
+                                }
+
+                                override fun onRewardedVideoAdLoaded() {
+                                    it.show()
+                                }
+
+                                override fun onRewardedVideoAdOpened() {
+                                }
+
+                                override fun onRewardedVideoCompleted() {
+                                }
+
+                                override fun onRewarded(reward: RewardItem?) {
+                                    adsCheckpoint()
+                                    goNext(itemModel);
+                                }
+
+                                override fun onRewardedVideoStarted() {
+                                }
+
+                                override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+                                    goNext(itemModel);
+                                }
+                            }
+
+                            it.loadAd(getString(R.string.rewarded_search), AdRequest.Builder().build())
+
+                        }
+
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                        goNext(itemModel);
+                    }
+                }
+                else{
+                    goNext(itemModel);
+                }
+            }
+
+        }
+        else{
+            goNext(itemModel)
+        }
+    }
+    fun goNext(itemModel:VideoModel){
+        var intent = Intent(this@VideoListActivity, PreviewVideo::class.java)
+        intent.putExtra("videoid", itemModel.videoid)
+        intent.putExtra("title", itemModel.title)
+        intent.putExtra("description", itemModel.description)
+        intent.putExtra("cover", itemModel.cover)
+        startActivity(intent)
+    }
     fun InitList() {
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
@@ -131,12 +151,8 @@ class VideoListActivity : ActivityBase() {
         rvList.adapter = adapter
         adapter.onClickItem = object : YoutubeVideoAdapter.OnItemClickListener {
             override fun onClick(itemModel: VideoModel) {
-                var intent = Intent(this@VideoListActivity, PreviewVideo::class.java)
-                intent.putExtra("videoid", itemModel.videoid)
-                intent.putExtra("title", itemModel.title)
-                intent.putExtra("description", itemModel.description)
-                intent.putExtra("cover", itemModel.cover)
-                startActivity(intent)
+                progress.visibility= View.VISIBLE
+                checkAds(itemModel)
             }
 
         }

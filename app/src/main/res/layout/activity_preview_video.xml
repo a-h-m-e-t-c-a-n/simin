@@ -40,6 +40,19 @@
                     android:layout_alignParentRight="true"
                     android:orientation="horizontal">
 
+
+                    <ImageButton
+                        android:id="@+id/buyButton"
+                        android:layout_marginRight="25dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:padding="0dp"
+                        android:src="@drawable/buy"
+                        android:text="" />
+
+
                     <ImageButton
                         android:id="@+id/video_FavoryButton"
                         android:layout_width="40dp"
@@ -259,18 +272,18 @@
             android:visibility="gone">
 
 
-            <Button
-                android:id="@+id/button_buy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFD328"
-                android:text="GET PREMIUM(ONE TIME PURCHASE)"
-                android:paddingBottom="15dp"
-                android:paddingTop="5dp"
-                android:textColor="#000000"
-                android:textSize="18dp"
-                android:drawableLeft="@drawable/hand_icon_50"
-                />
+            <!--<Button-->
+                <!--android:id="@+id/button_buy"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="#FFD328"-->
+                <!--android:text="GET PREMIUM(ONE TIME PURCHASE)"-->
+                <!--android:paddingBottom="15dp"-->
+                <!--android:paddingTop="5dp"-->
+                <!--android:textColor="#000000"-->
+                <!--android:textSize="18dp"-->
+                <!--android:drawableLeft="@drawable/hand_icon_50"-->
+                <!--/>-->
 
 
             <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"

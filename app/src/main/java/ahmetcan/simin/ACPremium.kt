@@ -40,7 +40,7 @@ class ACPremium(activity: Activity,callback:IState) {
 
     fun buyPremium() {
 
-        billingManager.initiatePurchaseFlow("premium",BillingClient.SkuType.INAPP)
+        billingManager.initiatePurchaseFlow("premiumy",BillingClient.SkuType.INAPP)
     }
 
 

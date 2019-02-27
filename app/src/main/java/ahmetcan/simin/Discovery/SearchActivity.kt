@@ -33,17 +33,18 @@ import kotlinx.coroutines.launch
 
 
 class SearchActivity : ActivityBase() {
-    var adapter= YoutubeVideoAdapter()
-    var loading:Boolean=false
-    var isHasLoadedAll:Boolean=true
-    var nextPageToken:String?=null
+    var adapter = YoutubeVideoAdapter()
+    var loading: Boolean = false
+    var isHasLoadedAll: Boolean = true
+    var nextPageToken: String? = null
     fun fetchSubscriptionState(): Boolean {
         val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
         val has: Boolean = subscription.getBoolean("has", false)
         return has;
     }
-   // private  var mInterstitialAd: InterstitialAd? = null
-    private  var mRewardedVideoAd: RewardedVideoAd? = null
+
+    // private  var mInterstitialAd: InterstitialAd? = null
+    private var mRewardedVideoAd: RewardedVideoAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +106,7 @@ class SearchActivity : ActivityBase() {
 
         listAdapter = ArrayAdapter<String>(this, R.layout.search_autocomplete_listitem, arrayListOf(""))
         autocompleteList.adapter = listAdapter
-        autocompleteEdit.setOnEditorActionListener(object :TextView.OnEditorActionListener {
+        autocompleteEdit.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(p0: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     autocompleteList.visibility = View.GONE
@@ -125,99 +126,94 @@ class SearchActivity : ActivityBase() {
 //        adView.loadAd(adRequest)
 
         InitList()
+    }
 
-        if (BuildConfig.DEBUG) {
-            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
-        }
-        else{
-            if(!fetchSubscriptionState()) {
-
-
-                   try {
-                       mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
-                       mRewardedVideoAd?.let {
-
-                           it.rewardedVideoAdListener = object :RewardedVideoAdListener {
-                               override fun onRewardedVideoAdClosed() {
-                               }
-
-                               override fun onRewardedVideoAdLeftApplication() {
-                               }
-
-                               override fun onRewardedVideoAdLoaded() {
-                                   it.show()
-                               }
-
-                               override fun onRewardedVideoAdOpened() {
-                               }
-
-                               override fun onRewardedVideoCompleted() {
-                               }
-
-                               override fun onRewarded(p0: RewardItem?) {
-                               }
-
-                               override fun onRewardedVideoStarted() {
-                               }
-
-                               override fun onRewardedVideoAdFailedToLoad(p0: Int) {
-                               }
-                           }
-
-                           it.loadAd(getString(R.string.rewarded_search),AdRequest.Builder().build())
-
-                       }
-
-                   }catch (ex:Exception){
-                       ex.printStackTrace()
-                   }
+    fun checkAds(itemModel: VideoModel) {
+        if (doesAdsReview()) {
+            if (BuildConfig.DEBUG) {
+                Log.e("SİMİN WARNING", "Debug olduğu  için reklam kaldırıldı")
+                goNext(itemModel);
+            } else {
+                if (!fetchSubscriptionState()) {
 
 
-//                       mInterstitialAd = InterstitialAd(this@SearchActivity);
-//                       mInterstitialAd?.let {
-//                           it.setAdUnitId(getString(R.string.ads_inter))
-//                           it.adListener = object : AdListener() {
-//                               override fun onAdLoaded() {
-//                                   super.onAdLoaded()
-//                                   it.show()
-//                               }
-//
-//                               override fun onAdFailedToLoad(p0: Int) {
-//                                   Log.e("SİMİN ADS",p0.toString())
-//                               }
-//                           }
-//                           it.loadAd(AdRequest.Builder()
-//                                   .addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
-//                                   .build())
+                    try {
+                        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+                        mRewardedVideoAd?.let {
 
-                           //     }
-  //                     }
+                            it.rewardedVideoAdListener = object : RewardedVideoAdListener {
+                                override fun onRewardedVideoAdClosed() {
+                                }
 
+                                override fun onRewardedVideoAdLeftApplication() {
+                                }
 
+                                override fun onRewardedVideoAdLoaded() {
+                                    it.show()
+                                }
 
+                                override fun onRewardedVideoAdOpened() {
+                                }
+
+                                override fun onRewardedVideoCompleted() {
+                                }
+
+                                override fun onRewarded(reward: RewardItem?) {
+                                    adsCheckpoint()
+                                    goNext(itemModel);
+                                }
+
+                                override fun onRewardedVideoStarted() {
+                                }
+
+                                override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+                                    goNext(itemModel);
+                                }
+                            }
+
+                            it.loadAd(getString(R.string.rewarded_search), AdRequest.Builder().build())
+
+                        }
+
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                        goNext(itemModel);
+                    }
+                }
+                else{
+                    goNext(itemModel);
+                }
             }
+        } else {
+            goNext(itemModel)
         }
+    }
+
+    fun goNext(itemModel: VideoModel) {
+        var intent = Intent(this@SearchActivity, PreviewVideo::class.java)
+        intent.putExtra("videoid", itemModel.videoid)
+        intent.putExtra("title", itemModel.title)
+        intent.putExtra("description", itemModel.description)
+        intent.putExtra("cover", itemModel.cover)
+        startActivity(intent)
     }
 
     override fun onStart() {
         super.onStart()
 
     }
+
     fun InitList() {
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
 
 
         rvList.setLayoutManager(linearLayoutManager)
-        rvList.adapter=adapter
-        adapter.onClickItem=object :YoutubeVideoAdapter.OnItemClickListener{
+        rvList.adapter = adapter
+        adapter.onClickItem = object : YoutubeVideoAdapter.OnItemClickListener {
             override fun onClick(itemModel: VideoModel) {
-                var intent=Intent(this@SearchActivity, PreviewVideo::class.java)
-                intent.putExtra("videoid",itemModel.videoid)
-                intent.putExtra("title",itemModel.title)
-                intent.putExtra("description",itemModel.description)
-                intent.putExtra("cover",itemModel.cover)
-                startActivity(intent)
+                progressBar.visibility = View.VISIBLE
+                checkAds(itemModel)
             }
 
         }
@@ -245,32 +241,33 @@ class SearchActivity : ActivityBase() {
                 .build()
 
     }
-    fun loadMore() =safeAsync {
-        loading=true
-        var result = DiscoveryRepository.search(autocompleteEdit.text.toString(),nextPageToken)
-        if(result.isLastPage){
-            isHasLoadedAll=true
-        }
-        nextPageToken=result.index
 
-        launch(UI){
+    fun loadMore() = safeAsync {
+        loading = true
+        var result = DiscoveryRepository.search(autocompleteEdit.text.toString(), nextPageToken)
+        if (result.isLastPage) {
+            isHasLoadedAll = true
+        }
+        nextPageToken = result.index
+
+        launch(UI) {
             result.items?.let {
                 adapter.addData(it)
                 adapter.notifyDataSetChanged()
             }
         }.join()
-        loading=false
+        loading = false
     }
 
-    fun performSearch(){
-        loading=false
-        isHasLoadedAll=false
-        nextPageToken=null
+    fun performSearch() {
+        loading = false
+        isHasLoadedAll = false
+        nextPageToken = null
 
         adapter.clearData()
         adapter.notifyDataSetChanged()
 
 
-       loadMore()
+        loadMore()
     }
 }

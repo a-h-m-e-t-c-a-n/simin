@@ -1,5 +1,7 @@
 package ahmetcan.simin
 
+import ahmetcan.simin.Discovery.Real.DiscoveryRepository
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -9,6 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 
@@ -55,5 +59,28 @@ open class ActivityBase : AppCompatActivity(), CoroutineScope {
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0)
     }
+    fun adsCheckpoint() {
+        val subscription = getSharedPreferences("ads", Context.MODE_PRIVATE)
+        val edit = subscription.edit()
+        edit.putLong("last", Date().time)
+        edit.commit()
+    }
+    fun doesAdsReview():Boolean {
+        val subscription = getSharedPreferences("ads", Context.MODE_PRIVATE)
 
+        var last =subscription.getLong("last", 0)
+        if(last==0L){
+            adsCheckpoint()
+            return true
+        };
+        var now=Date().time;
+        var mindif=(now-last)/60000
+        if(mindif>10){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
 }
