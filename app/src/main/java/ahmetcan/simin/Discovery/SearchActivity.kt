@@ -7,6 +7,7 @@ import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
@@ -128,6 +129,7 @@ class SearchActivity : ActivityBase() {
         InitList()
     }
 
+
     fun checkAds(itemModel: VideoModel) {
         if (doesAdsReview()) {
             if (BuildConfig.DEBUG) {
@@ -190,6 +192,7 @@ class SearchActivity : ActivityBase() {
     }
 
     fun goNext(itemModel: VideoModel) {
+        progressBar.visibility=View.GONE
         var intent = Intent(this@SearchActivity, PreviewVideo::class.java)
         intent.putExtra("videoid", itemModel.videoid)
         intent.putExtra("title", itemModel.title)

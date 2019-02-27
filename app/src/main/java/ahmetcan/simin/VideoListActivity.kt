@@ -21,6 +21,7 @@ import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.paginate.Paginate
+import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_video_list.*
 import kotlinx.coroutines.android.UI
 import kotlinx.coroutines.launch
@@ -135,6 +136,7 @@ class VideoListActivity : ActivityBase() {
         }
     }
     fun goNext(itemModel:VideoModel){
+        progressBar.visibility=View.GONE
         var intent = Intent(this@VideoListActivity, PreviewVideo::class.java)
         intent.putExtra("videoid", itemModel.videoid)
         intent.putExtra("title", itemModel.title)

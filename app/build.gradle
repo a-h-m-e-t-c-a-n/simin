@@ -12,8 +12,8 @@ android {
         applicationId "ahmetcan.simin"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 38
-        versionName "1.38"
+        versionCode 39
+        versionName "1.39"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
