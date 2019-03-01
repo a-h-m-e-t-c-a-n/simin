@@ -73,9 +73,8 @@ open class ActivityBase : AppCompatActivity(), CoroutineScope {
             adsCheckpoint()
             return false
         };
-        var now=Date().time;
-        var mindif=(now-last)/60000
-        if(mindif>10){
+        var asMinute = TimeUnit.MILLISECONDS.toMinutes(Calendar.getInstance().timeInMillis - last)
+        if(asMinute>3){
             return true;
         }
         else{

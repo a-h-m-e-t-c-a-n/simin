@@ -38,6 +38,8 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.tooltip.Tooltip
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener, YouTubePlayer.OnFullscreenListener {
@@ -258,7 +260,23 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         }
     }
 
+    fun doIShowIntro(): Boolean {
+        val subscription = getSharedPreferences("subscription_preview", Context.MODE_PRIVATE)
+        var introTimeMs = subscription.getLong("introtime", 0)
 
+        if (introTimeMs > 0) {
+            var asDay = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().timeInMillis - introTimeMs)
+            if (asDay <= 1) {
+                return false;
+            }
+        }
+
+        val edit = subscription.edit()
+        edit.putLong("introtime", Calendar.getInstance().timeInMillis)
+        edit.commit()
+        return true
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -321,7 +339,8 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
 
 
         if (!fetchSubscriptionState()) {
-
+            buyButton.visibility=View.VISIBLE
+            if (doIShowIntro()) {
                 try {
                     val tooltip = Tooltip.Builder(this@PreviewVideo, buyButton)
                             .setText(R.string.subscription_intro)
@@ -332,11 +351,10 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
                             .setDismissOnClick(true)
                             .setCancelable(true)
                             .show()
-                }
-                catch(ex:Exception){
+                } catch (ex: Exception) {
 
                 }
-
+            }
 
 
 

@@ -43,6 +43,7 @@
 
                     <ImageButton
                         android:id="@+id/buyButton"
+                        android:visibility="gone"
                         android:layout_marginRight="25dp"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
