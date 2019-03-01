@@ -72,63 +72,55 @@ class VideoListActivity : ActivityBase() {
 
     fun checkAds(itemModel:VideoModel){
         if(doesAdsReview()) {
-        if (BuildConfig.DEBUG) {
-            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
-            goNext(itemModel);
-        }
-        else{
-
-                if(!fetchSubscriptionState()) {
+            if(!fetchSubscriptionState()) {
 
 
-                    try {
-                        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
-                        mRewardedVideoAd?.let {
+                try {
+                    mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+                    mRewardedVideoAd?.let {
 
-                            it.rewardedVideoAdListener = object : RewardedVideoAdListener {
-                                override fun onRewardedVideoAdClosed() {
-                                }
-
-                                override fun onRewardedVideoAdLeftApplication() {
-                                }
-
-                                override fun onRewardedVideoAdLoaded() {
-                                    it.show()
-                                }
-
-                                override fun onRewardedVideoAdOpened() {
-                                }
-
-                                override fun onRewardedVideoCompleted() {
-                                }
-
-                                override fun onRewarded(reward: RewardItem?) {
-                                    adsCheckpoint()
-                                    goNext(itemModel);
-                                }
-
-                                override fun onRewardedVideoStarted() {
-                                }
-
-                                override fun onRewardedVideoAdFailedToLoad(p0: Int) {
-                                    goNext(itemModel);
-                                }
+                        it.rewardedVideoAdListener = object : RewardedVideoAdListener {
+                            override fun onRewardedVideoAdClosed() {
                             }
 
-                            it.loadAd(getString(R.string.rewarded_search), AdRequest.Builder().build())
+                            override fun onRewardedVideoAdLeftApplication() {
+                            }
 
+                            override fun onRewardedVideoAdLoaded() {
+                                it.show()
+                            }
+
+                            override fun onRewardedVideoAdOpened() {
+                            }
+
+                            override fun onRewardedVideoCompleted() {
+                            }
+
+                            override fun onRewarded(reward: RewardItem?) {
+                                adsCheckpoint()
+                                goNext(itemModel);
+                            }
+
+                            override fun onRewardedVideoStarted() {
+                            }
+
+                            override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+                                goNext(itemModel);
+                            }
                         }
 
-                    } catch (ex: Exception) {
-                        ex.printStackTrace()
-                        goNext(itemModel);
+                        it.loadAd(getString(R.string.rewarded_search), AdRequest.Builder().build())
+
                     }
-                }
-                else{
+
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
                     goNext(itemModel);
                 }
             }
-
+            else{
+                goNext(itemModel);
+            }
         }
         else{
             goNext(itemModel)

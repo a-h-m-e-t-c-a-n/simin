@@ -71,7 +71,7 @@ open class ActivityBase : AppCompatActivity(), CoroutineScope {
         var last =subscription.getLong("last", 0)
         if(last==0L){
             adsCheckpoint()
-            return true
+            return false
         };
         var now=Date().time;
         var mindif=(now-last)/60000

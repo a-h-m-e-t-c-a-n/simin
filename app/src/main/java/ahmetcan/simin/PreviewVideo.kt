@@ -318,51 +318,9 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
 
             billing?.let { it.buyPremium()  }
         }
-//        if (!fetchSubscriptionState()) {
-//            banner.visibility = View.VISIBLE
-//            when (Random.nextInt() % 2) {
-//                0 -> {
-//                    banner_text.setText("Echo: WhatsApp Facebook Messenger Auto Quick Reply")
-//                    banner_logo.setImageResource(R.drawable.echo_logo)
-//                    banner.setOnClickListener {
-//
-//                        try {
-//                            var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-//                            val params = Bundle()
-//                            params.putString("EchoClickedStr", "strClick")
-//                            firebaseAnalytics.logEvent("EchoClicked", params)
-//
-//                        } catch (ex: Exception) {
-//                        }
-//
-//                        var link = "https://play.google.com/store/apps/details?id=ahmetcan.echo"
-//                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
-//                    }
-//                }
-//                1 -> {
-//                    banner_text.setText("Meta: Video Downloader For Facebook and Instagram")
-//                    banner_logo.setImageResource(R.drawable.metadownloader_logo)
-//                    banner.setOnClickListener {
-//                        try {
-//                            var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-//                            val params = Bundle()
-//                            params.putString("MetaClickedStr", "strClick")
-//                            firebaseAnalytics.logEvent("MetaClicked", params)
-//
-//                        } catch (ex: Exception) {
-//                        }
-//                        var link = "https://play.google.com/store/apps/details?id=ahmetcan.videodownloader"
-//                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
-//                    }
-//                }
-//            }
-//        }
 
-        if (!BuildConfig.DEBUG) {
-            Log.e("SİMİN WARNING","Debug olduğu  için reklam kaldırıldı")
-        }
-        else {
-            if (!fetchSubscriptionState()) {
+
+        if (!fetchSubscriptionState()) {
 
                 try {
                     val tooltip = Tooltip.Builder(this@PreviewVideo, buyButton)
@@ -452,7 +410,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
                 adView.loadAd(adRequest.build())
             }
 
-        }
+
 
         captionPrimary.setOnClickListener {
             currentPrimaryText?.let {
