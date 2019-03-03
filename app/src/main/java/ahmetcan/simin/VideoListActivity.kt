@@ -145,7 +145,8 @@ class VideoListActivity : ActivityBase() {
         adapter.onClickItem = object : YoutubeVideoAdapter.OnItemClickListener {
             override fun onClick(itemModel: VideoModel) {
                 progress.visibility= View.VISIBLE
-                checkAds(itemModel)
+                //checkAds(itemModel)
+                goNext(itemModel)
             }
 
         }

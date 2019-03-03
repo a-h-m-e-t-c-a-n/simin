@@ -213,7 +213,8 @@ class SearchActivity : ActivityBase() {
         adapter.onClickItem = object : YoutubeVideoAdapter.OnItemClickListener {
             override fun onClick(itemModel: VideoModel) {
                 progressBar.visibility = View.VISIBLE
-                checkAds(itemModel)
+               // checkAds(itemModel)
+                goNext(itemModel)
             }
 
         }
