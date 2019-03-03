@@ -266,7 +266,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
 
         if (introTimeMs > 0) {
             var asDay = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().timeInMillis - introTimeMs)
-            if (asDay <= 1) {
+            if (asDay <= 5) {
                 return false;
             }
         }
@@ -340,21 +340,21 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
 
         if (!fetchSubscriptionState()) {
             buyButton.visibility=View.VISIBLE
-            if (doIShowIntro()) {
-                try {
-                    val tooltip = Tooltip.Builder(this@PreviewVideo, buyButton)
-                            .setText(R.string.subscription_intro)
-                            .setPadding(30f)
-                            .setCornerRadius(10f)
-                            .setTextSize(13f)
-                            .setBackgroundColor(Color.rgb(170, 60, 57))
-                            .setDismissOnClick(true)
-                            .setCancelable(true)
-                            .show()
-                } catch (ex: Exception) {
-
-                }
-            }
+//            if (doIShowIntro()) {
+//                try {
+//                    val tooltip = Tooltip.Builder(this@PreviewVideo, buyButton)
+//                            .setText(R.string.subscription_intro)
+//                            .setPadding(30f)
+//                            .setCornerRadius(10f)
+//                            .setTextSize(13f)
+//                            .setBackgroundColor(Color.rgb(170, 60, 57))
+//                            .setDismissOnClick(true)
+//                            .setCancelable(true)
+//                            .show()
+//                } catch (ex: Exception) {
+//
+//                }
+//            }
 
 
 
