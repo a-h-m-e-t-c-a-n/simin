@@ -108,7 +108,8 @@ class MainActivity() : AppCompatActivity(){
             var NetworkCountryOperator: String? = "",
             var LocaleCountyIso:String="",
             var LocaleLanguage:String="",
-            var packageList: MutableList<PackageData> = mutableListOf<PackageData>()
+            var packageList: MutableList<PackageData> = mutableListOf<PackageData>(),
+            var checkDates: MutableList<String> = mutableListOf<String>()
     )
     @IgnoreExtraProperties
     data class PackageData(
@@ -159,7 +160,6 @@ class MainActivity() : AppCompatActivity(){
 
         }
 
-
         val pm = getPackageManager()
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
@@ -169,25 +169,26 @@ class MainActivity() : AppCompatActivity(){
             override fun onCancelled(p0: DatabaseError) {
                 Log.e("ahmetcan","firebase cancelll")
             }
-
+            val format = SimpleDateFormat("yyyy:MM:dd:HH:mm:ss ")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 var deviceModel=dataSnapshot.getValue(Device::class.java)
                 deviceModel?.let {
                     for(item in packages){
                         if(it.packageList.count {f->f.Name== item.activityInfo.packageName && f.RemoveDate==null}==0){
                             //add
-                            val format = SimpleDateFormat("yyyy:MM:dd:mm:ss ")
                             it.packageList.add(PackageData(item.activityInfo.packageName,format.format(Date())))
                         }
                     }
                     for (packageInfo in deviceModel.packageList.filter { f->f.RemoveDate==null }) {
                         if(packages.count {f->f.activityInfo.packageName== packageInfo.Name }==0){
                             //add
-                            val format = SimpleDateFormat("yyyy:MM:dd:mm:ss ")
                            packageInfo.RemoveDate=format.format(Date());
                         }
 
                     }
+
+                    it.checkDates.add(format.format(Date()))
+
                     ref.setValue(it)
                     ref.push()
                 }
