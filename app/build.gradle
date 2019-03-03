@@ -82,6 +82,7 @@ dependencies {
 
 
 
+    implementation 'com.google.firebase:firebase-database:16.0.1'
 }
 
 
@@ -89,3 +90,4 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 //com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+

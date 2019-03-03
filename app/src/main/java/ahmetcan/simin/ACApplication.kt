@@ -4,6 +4,7 @@ import ahmetcan.simin.Discovery.Model.persistent.YoutubeSubscriptionResult
 import android.app.Application
 import android.util.Log
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.google.firebase.FirebaseApp
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
@@ -17,6 +18,9 @@ open class ACApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        FirebaseApp.initializeApp(this)
+
         Fresco.initialize(this);
 
         Realm.init(this);

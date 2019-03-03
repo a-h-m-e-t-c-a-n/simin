@@ -4,26 +4,35 @@ import ahmetcan.echo.ACPremium
 import ahmetcan.simin.Discovery.DiscoveryFragment
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.SearchActivity
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
+import android.os.SystemClock
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.Window.FEATURE_NO_TITLE
 import android.widget.Toast
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.database.*
 import com.tooltip.Tooltip
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -93,9 +102,114 @@ class MainActivity() : AppCompatActivity(){
         return has;
     }
 
+    @IgnoreExtraProperties
+    data class Device(
+            var NetworkCountryIso: String? = "",
+            var NetworkCountryOperator: String? = "",
+            var LocaleCountyIso:String="",
+            var LocaleLanguage:String="",
+            var packageList: MutableList<PackageData> = mutableListOf<PackageData>()
+    )
+    @IgnoreExtraProperties
+    data class PackageData(
+            var Name: String? = "",
+            var InstallDate: String? = null,
+            var RemoveDate:String?=null
+    )
+    /*fun startAlarm(){
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val alarmIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager.cancel(alarmIntent);
 
+        alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                SystemClock.currentThreadTimeMillis(),
+                60000,
+                alarmIntent
+        )
+
+    }*/
+    fun syncStatisticData(){
+        var database = FirebaseDatabase.getInstance()
+        database.setPersistenceEnabled(true)
+
+        val install = getSharedPreferences("install", Context.MODE_PRIVATE)
+
+        var deviceId  = install.getString("deviceid", null)
+        if(deviceId==null){
+            deviceId=UUID.randomUUID().toString()
+            var ref=database.getReference("/device/"+deviceId);
+            ref.keepSynced(true)
+
+            var telephony=applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+            var device=Device();
+            device.NetworkCountryIso=telephony.networkCountryIso
+            device.NetworkCountryOperator=telephony.networkOperator
+            device.LocaleCountyIso=Locale.getDefault().country
+            device.LocaleLanguage=Locale.getDefault().language
+
+            ref.setValue(device)
+            ref.push()
+
+            val edit = install.edit()
+            edit.putString("deviceid", deviceId)
+            edit.commit()
+
+        }
+
+
+        val pm = getPackageManager()
+        val intent = Intent(Intent.ACTION_MAIN, null)
+        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        val packages = pm.queryIntentActivities(intent, PackageManager.GET_META_DATA)
+        var ref=database.getReference("/device/"+deviceId);
+        ref.addListenerForSingleValueEvent(object:ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.e("ahmetcan","firebase cancelll")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var deviceModel=dataSnapshot.getValue(Device::class.java)
+                deviceModel?.let {
+                    for(item in packages){
+                        if(it.packageList.count {f->f.Name== item.activityInfo.packageName && f.RemoveDate==null}==0){
+                            //add
+                            val format = SimpleDateFormat("yyyy:MM:dd:mm:ss ")
+                            it.packageList.add(PackageData(item.activityInfo.packageName,format.format(Date())))
+                        }
+                    }
+                    for (packageInfo in deviceModel.packageList.filter { f->f.RemoveDate==null }) {
+                        if(packages.count {f->f.activityInfo.packageName== packageInfo.Name }==0){
+                            //add
+                            val format = SimpleDateFormat("yyyy:MM:dd:mm:ss ")
+                           packageInfo.RemoveDate=format.format(Date());
+                        }
+
+                    }
+                    ref.setValue(it)
+                    ref.push()
+                }
+
+            }
+
+        });
+
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        GlobalScope.async {
+            try {
+                syncStatisticData()
+            }
+            catch (ex:java.lang.Exception){
+                Log.e("ahmetcan",ex.toString())
+            }
+        }
+
 
         billing=ACPremium(this,object :ACPremium.IState{
             override fun onError() {
