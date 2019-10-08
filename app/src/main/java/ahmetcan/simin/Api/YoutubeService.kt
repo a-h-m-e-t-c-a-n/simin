@@ -47,7 +47,7 @@ interface YoutubeService {
             val retrofit = Retrofit.Builder()
                     .addConverterFactory(SimpleXmlConverterFactory.create())
                     .client(client)
-                    .baseUrl("http://video.google.com/")
+                    .baseUrl("https://video.google.com/")
                     .build()
 
             retrofit.create(YoutubeService::class.java)

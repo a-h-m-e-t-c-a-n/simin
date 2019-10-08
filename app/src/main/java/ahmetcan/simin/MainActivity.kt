@@ -27,7 +27,6 @@ import android.view.View
 import android.view.Window.FEATURE_NO_TITLE
 import android.widget.Toast
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.database.*
 import com.tooltip.Tooltip
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
@@ -102,114 +101,9 @@ class MainActivity() : AppCompatActivity(){
         return has;
     }
 
-    @IgnoreExtraProperties
-    data class Device(
-            var NetworkCountryIso: String? = "",
-            var NetworkCountryOperator: String? = "",
-            var LocaleCountyIso:String="",
-            var LocaleLanguage:String="",
-            var packageList: MutableList<PackageData> = mutableListOf<PackageData>(),
-            var checkDates: MutableList<String> = mutableListOf<String>()
-    )
-    @IgnoreExtraProperties
-    data class PackageData(
-            var Name: String? = "",
-            var InstallDate: String? = null,
-            var RemoveDate:String?=null
-    )
-    /*fun startAlarm(){
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(this, AlarmReceiver::class.java)
-        val alarmIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager.cancel(alarmIntent);
 
-        alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP,
-                SystemClock.currentThreadTimeMillis(),
-                60000,
-                alarmIntent
-        )
-
-    }*/
-    fun syncStatisticData(){
-        var database = FirebaseDatabase.getInstance()
-        database.setPersistenceEnabled(true)
-
-        val install = getSharedPreferences("install", Context.MODE_PRIVATE)
-
-        var deviceId  = install.getString("deviceid", null)
-        if(deviceId==null){
-            deviceId=UUID.randomUUID().toString()
-            var ref=database.getReference("/device/"+deviceId);
-            ref.keepSynced(true)
-
-            var telephony=applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-
-            var device=Device();
-            device.NetworkCountryIso=telephony.networkCountryIso
-            device.NetworkCountryOperator=telephony.networkOperator
-            device.LocaleCountyIso=Locale.getDefault().country
-            device.LocaleLanguage=Locale.getDefault().language
-
-            ref.setValue(device)
-            ref.push()
-
-            val edit = install.edit()
-            edit.putString("deviceid", deviceId)
-            edit.commit()
-
-        }
-
-        val pm = getPackageManager()
-        val intent = Intent(Intent.ACTION_MAIN, null)
-        intent.addCategory(Intent.CATEGORY_LAUNCHER)
-        val packages = pm.queryIntentActivities(intent, PackageManager.GET_META_DATA)
-        var ref=database.getReference("/device/"+deviceId);
-        ref.addListenerForSingleValueEvent(object:ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-                Log.e("ahmetcan","firebase cancelll")
-            }
-            val format = SimpleDateFormat("yyyy:MM:dd:HH:mm:ss ")
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var deviceModel=dataSnapshot.getValue(Device::class.java)
-                deviceModel?.let {
-                    for(item in packages){
-                        if(it.packageList.count {f->f.Name== item.activityInfo.packageName && f.RemoveDate==null}==0){
-                            //add
-                            it.packageList.add(PackageData(item.activityInfo.packageName,format.format(Date())))
-                        }
-                    }
-                    for (packageInfo in deviceModel.packageList.filter { f->f.RemoveDate==null }) {
-                        if(packages.count {f->f.activityInfo.packageName== packageInfo.Name }==0){
-                            //add
-                           packageInfo.RemoveDate=format.format(Date());
-                        }
-
-                    }
-
-                    it.checkDates.add(format.format(Date()))
-
-                    ref.setValue(it)
-                    ref.push()
-                }
-
-            }
-
-        });
-
-
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        GlobalScope.async {
-            try {
-                syncStatisticData()
-            }
-            catch (ex:java.lang.Exception){
-                Log.e("ahmetcan",ex.toString())
-            }
-        }
 
 
         billing=ACPremium(this,object :ACPremium.IState{

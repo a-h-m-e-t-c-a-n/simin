@@ -12,8 +12,8 @@ android {
         applicationId "ahmetcan.simin"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 41
-        versionName "1.41"
+        versionCode 42
+        versionName "1.42"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -82,7 +82,6 @@ dependencies {
 
 
 
-    implementation 'com.google.firebase:firebase-database:16.0.1'
 }
 
 
