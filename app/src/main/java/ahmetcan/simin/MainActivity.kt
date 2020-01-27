@@ -22,9 +22,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.telephony.TelephonyManager
 import android.util.Log
-import android.view.Menu
-import android.view.View
+import android.view.*
 import android.view.Window.FEATURE_NO_TITLE
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.Toast
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.tooltip.Tooltip
@@ -39,8 +41,8 @@ import java.util.concurrent.TimeUnit
 class MainActivity() : AppCompatActivity(){
     lateinit var billing:ACPremium
     var isSubscripted: Boolean = false
-
-
+    var  popupWindow:PopupWindow?=null
+    var backgroundPop:PopupWindow?=null
 
     fun saveSubscriptionState(has: Boolean) {
         val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
@@ -109,9 +111,6 @@ class MainActivity() : AppCompatActivity(){
         billing=ACPremium(this,object :ACPremium.IState{
             override fun onError() {
                 onUI {
-                    saveSubscriptionState(true)
-                    main_buyButton.visibility = View.GONE
-
                     try{
                         FirebaseAnalytics.getInstance(this@MainActivity).logEvent("BillingError", null)
 
@@ -137,28 +136,10 @@ class MainActivity() : AppCompatActivity(){
                 onUI {
                     if (isPremium) {
                         saveSubscriptionState(true)
-                        main_buyButton.visibility = View.GONE
+                        HideShowPremiumDialog()
                     } else {
                         saveSubscriptionState(false)
-                        if (doIShowIntro()) {
-                            try {
-                                val tooltip = Tooltip.Builder(this@MainActivity, main_buyButton)
-                                        .setText(R.string.subscription_intro)
-                                        .setPadding(30f)
-                                        .setCornerRadius(10f)
-                                        .setTextSize(13f)
-                                        .setBackgroundColor(Color.rgb(170, 60, 57))
-                                        .setDismissOnClick(true)
-                                        .setCancelable(true)
-                                        .show()
-                            }
-                            catch(ex:Exception){
-
-                            }
-
-
-                        }
-
+                        ShowGetPremimumDialog()
                     }
                 }
 
@@ -212,20 +193,7 @@ class MainActivity() : AppCompatActivity(){
 
         isSubscripted = fetchSubscriptionState(this)
         if (isSubscripted) {
-            main_buyButton.visibility = View.GONE
-        }
-
-        main_buyButton.setOnClickListener {
-            try{
-                var firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-                val params = Bundle()
-                params.putString("MainBuyClickedStr","strMainBuy")
-                firebaseAnalytics.logEvent("MainBuyEvent", params)
-
-            }catch (ex:Exception){}
-
-
-            billing.buyPremium()
+            HideShowPremiumDialog()
         }
 
         button_privacypolicy.setOnClickListener {
@@ -288,7 +256,37 @@ class MainActivity() : AppCompatActivity(){
 
     }
 
-    //InAppBilling
+    fun ShowGetPremimumDialog(){
 
+         var  inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+         var popupView = inflater.inflate(R.layout.view_getpremium, null);
+         popupView.findViewById<Button>(R.id.button_getpremium).setOnClickListener {
+             billing.buyPremium()
+         }
+
+
+        var backgroundView=View(this)
+        backgroundView.setBackgroundColor(Color.TRANSPARENT)
+        backgroundView.setOnClickListener {
+            billing.buyPremium()
+
+        }
+        backgroundPop=PopupWindow(backgroundView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, false)
+        backgroundPop!!.showAtLocation(tab_layout, Gravity.CENTER, 0, 0);
+
+
+        var width = LinearLayout.LayoutParams.WRAP_CONTENT;
+         var  height = LinearLayout.LayoutParams.WRAP_CONTENT;
+         var focusable = false; // lets taps outside the popup also dismiss it
+         popupWindow = PopupWindow(popupView, width, height, focusable);
+         popupWindow!!.showAtLocation(tab_layout, Gravity.CENTER, 0, 0);
+
+
+    }
+    fun HideShowPremiumDialog(){
+        if(popupWindow!=null) popupWindow!!.dismiss()
+        if(backgroundPop!=null) backgroundPop!!.dismiss()
+
+    }
 
 }

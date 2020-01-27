@@ -44,7 +44,7 @@ class ACPremium(var activity: Activity,callback:IState) {
     fun buyPremium() {
         billingManager.querySkuDetailsAsync(BillingClient.SkuType.SUBS, listOf(skuId),object : SkuDetailsResponseListener {
             override fun onSkuDetailsResponse(result: BillingResult?, skuDetails:  MutableList<SkuDetails>?) {
-                if(skuDetails!=null){
+                if(skuDetails!=null && skuDetails.count()>0){
                     billingManager.initiatePurchaseFlow(skuDetails!!.first())
 
                     val params = Bundle()

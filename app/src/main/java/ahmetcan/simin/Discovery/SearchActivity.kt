@@ -19,13 +19,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.reward.RewardItem
-import com.google.android.gms.ads.reward.RewardedVideoAd
-import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.google.gson.JsonArray
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_search.*
@@ -44,8 +37,6 @@ class SearchActivity : ActivityBase() {
         return has;
     }
 
-    // private  var mInterstitialAd: InterstitialAd? = null
-    private var mRewardedVideoAd: RewardedVideoAd? = null
 
     lateinit var listAdapter: ArrayAdapter<String>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,62 +121,6 @@ class SearchActivity : ActivityBase() {
     }
 
 
-    fun checkAds(itemModel: VideoModel) {
-        if (doesAdsReview()) {
-            if (!fetchSubscriptionState()) {
-
-
-                try {
-                    mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
-                    mRewardedVideoAd?.let {
-
-                        it.rewardedVideoAdListener = object : RewardedVideoAdListener {
-                            override fun onRewardedVideoAdClosed() {
-                            }
-
-                            override fun onRewardedVideoAdLeftApplication() {
-                            }
-
-                            override fun onRewardedVideoAdLoaded() {
-                                it.show()
-                            }
-
-                            override fun onRewardedVideoAdOpened() {
-                            }
-
-                            override fun onRewardedVideoCompleted() {
-                            }
-
-                            override fun onRewarded(reward: RewardItem?) {
-                                adsCheckpoint()
-                                goNext(itemModel);
-
-                            }
-
-                            override fun onRewardedVideoStarted() {
-                            }
-
-                            override fun onRewardedVideoAdFailedToLoad(p0: Int) {
-                                goNext(itemModel);
-                            }
-                        }
-
-                        it.loadAd(getString(R.string.rewarded_search), AdRequest.Builder().build())
-
-                    }
-
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                    goNext(itemModel);
-                }
-            }
-            else{
-                goNext(itemModel);
-            }
-        } else {
-            goNext(itemModel)
-        }
-    }
 
     fun goNext(itemModel: VideoModel) {
         progressBar.visibility=View.GONE

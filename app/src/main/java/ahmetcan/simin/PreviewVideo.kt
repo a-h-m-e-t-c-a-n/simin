@@ -33,9 +33,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 import android.util.StatsLog.logEvent
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
 import com.tooltip.Tooltip
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -327,106 +324,8 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         backButton.setOnClickListener {
             finish()
         }
-        buyButton.setOnClickListener{
-            try{
-                FirebaseAnalytics.getInstance(this).logEvent("PreviewBuyEvent",null)
-
-            }catch (ex:Exception){}
 
 
-            billing?.let { it.buyPremium()  }
-        }
-
-
-        if (!fetchSubscriptionState()) {
-            buyButton.visibility=View.VISIBLE
-//            if (doIShowIntro()) {
-//                try {
-//                    val tooltip = Tooltip.Builder(this@PreviewVideo, buyButton)
-//                            .setText(R.string.subscription_intro)
-//                            .setPadding(30f)
-//                            .setCornerRadius(10f)
-//                            .setTextSize(13f)
-//                            .setBackgroundColor(Color.rgb(170, 60, 57))
-//                            .setDismissOnClick(true)
-//                            .setCancelable(true)
-//                            .show()
-//                } catch (ex: Exception) {
-//
-//                }
-//            }
-
-
-
-
-                billing = ACPremium(this, object : ACPremium.IState {
-                    override fun onError() {
-                        onUI {
-                            saveSubscriptionState(true)
-                          //  adsView.visibility = View.GONE
-
-                            try {
-                                FirebaseAnalytics.getInstance(this@PreviewVideo).logEvent("PreviewBillingError", null)
-
-                            } catch (ex: Exception) {
-
-
-                            }
-                        }
-                    }
-
-                    override fun onUserCancelFlow() {
-                        try {
-                            FirebaseAnalytics.getInstance(this@PreviewVideo).logEvent("PreivewBillingUserCancel", null)
-
-                        } catch (ex: Exception) {
-                        }
-                    }
-
-                    override fun onPremiumChanged(isPremium: Boolean) {
-                        onUI {
-                            if (isPremium) {
-                                saveSubscriptionState(true)
-                                adsView.visibility = View.GONE
-                            } else {
-                                saveSubscriptionState(false)
-                            }
-                        }
-
-                    }
-
-                })
-
-
-                adsView.visibility = View.VISIBLE
-                MobileAds.initialize(this, ApiKey.ADMOB_APPID);
-                val adRequest = AdRequest.Builder()
-                adRequest.addTestDevice("0CCBF425EA2828FA093D1115E3C8A3F2")
-                adView.setAdListener(object : AdListener() {
-                    override fun onAdLoaded() {
-                        // Code to be executed when an ad finishes loading.
-                    }
-
-                    override fun onAdFailedToLoad(errorCode: Int) {
-                        // Code to be executed when an ad request fails.
-                    }
-
-                    override fun onAdOpened() {
-                        // Code to be executed when an ad opens an overlay that
-                        // covers the screen.
-                    }
-
-                    override fun onAdLeftApplication() {
-                        // Code to be executed when the user has left the app.
-                    }
-
-                    override fun onAdClosed() {
-                        // Code to be executed when when the user is about to return
-                        // to the app after tapping on an ad.
-                    }
-                })
-                adView.loadAd(adRequest.build())
-            }
 
 
 

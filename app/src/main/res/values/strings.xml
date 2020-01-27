@@ -2,10 +2,6 @@
     <string name="app_name">Simin</string>
 
 
-    <string name="ads_appid" translatable="false">ca-app-pub-3353784488411814~2328933720</string>
-    <string name="ads_banner" translatable="false">ca-app-pub-3353784488411814/7476909502</string>
-    <string name="ads_inter" translatable="false">ca-app-pub-3353784488411814/5438312790</string>
-
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -85,9 +81,7 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
-    <!--<string name="subscription_intro">Reklamlar bu uygulamanın geliştirilmesine katkıda bulunmaktadır.-->
-        <!--Eğer reklamlardan rahatsızlık duyuyorsunız  bu butonu tıklayarak reklamsız versiyonunu satın alabilirsiniz</string>  -->
-    <string name="subscription_intro">Advertisements contribute to the development of this app.If you are uncomfortable with the advertisements, you can purchase the ad-free version by clicking on this button</string>
+      <string name="subscription_intro">Advertisements contribute to the development of this app.If you are uncomfortable with the advertisements, you can purchase the ad-free version by clicking on this button</string>
     <string name="clicktoshow">[Press to show]</string>
     <string name="speakerror">Opps! Your device doesn\'t support Speech to Text</string>
     <string name="title_activity_language">Language</string>
@@ -99,5 +93,6 @@
     <string name="search_youtube">Search YouTube</string>
     <string name="hard_mode">Hard Mode</string>
     <string name="challenge">challenge</string>
-    <string name="rewarded_search">ca-app-pub-3353784488411814/5514131465</string>
+    <string name="get_premium_text">If you want to continue using the application unlimitedly, you need to start a subscription. A free 1-day trial is offered.</string>
+    <string name="get_premium">get premium</string>
 </resources>

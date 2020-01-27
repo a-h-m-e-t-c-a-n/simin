@@ -68,16 +68,6 @@
                                 android:padding="0dp"
                                 android:src="@drawable/privacy_policy"
                                 android:text="" />
-                            <ImageButton
-                                android:id="@+id/main_buyButton"
-                                android:layout_marginRight="25dp"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:padding="0dp"
-                                android:src="@drawable/buy"
-                                android:text="" />
 
                         </LinearLayout>
 
