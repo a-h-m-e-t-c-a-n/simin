@@ -4,7 +4,7 @@ import ahmetcan.simin.ACApplication
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.R
 import android.app.Application
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +14,7 @@ import android.widget.LinearLayout
 
 
 
-open class YoutubeVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+open class YoutubeVideoAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
     private var items :ArrayList<VideoModel> = ArrayList()
 
     interface OnItemClickListener {
@@ -33,14 +33,14 @@ open class YoutubeVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     override fun getItemCount(): Int =items.count()
 
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
        if(position<items.count()) {
            (holder as DefaultItemHolder).bindView(items[position])
        }
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent?.context)
                 .inflate(R.layout.item_video, parent, false)
 //        if(viewType==1){
@@ -68,7 +68,7 @@ open class YoutubeVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         }
     }
 
-    inner class DefaultItemHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class DefaultItemHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         lateinit var item: VideoModel
         init{
             view.setOnClickListener {

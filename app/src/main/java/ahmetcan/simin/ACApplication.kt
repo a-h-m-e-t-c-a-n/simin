@@ -5,6 +5,8 @@ import android.app.Application
 import android.util.Log
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
@@ -31,15 +33,10 @@ open class ACApplication : Application() {
                 .build()
         Realm.setDefaultConfiguration(config)
 
-//        MobileAds.initialize(this, "ca-app-pub-3353784488411814~2328933720");
+        FirebaseAnalytics.getInstance(this).setUserId(DeviceId(this).getId())
+        FirebaseAnalytics.getInstance(this).setUserProperty("ACUserId",DeviceId(this).getId())
+        FirebaseCrashlytics.getInstance().setUserId(DeviceId(this).getId());
 
-
-//        Thread.setDefaultUncaughtExceptionHandler(object: Thread.UncaughtExceptionHandler{
-//            override fun uncaughtException(p0: Thread?, p1: Throwable?) {
-//                Log.e("Simin App Uncaught:",p1.toString())
-//            }
-//
-//        })
     }
 
 

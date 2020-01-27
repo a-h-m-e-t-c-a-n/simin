@@ -6,7 +6,7 @@ import ahmetcan.simin.Discovery.View.FavoritesAdapter
 import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
 import com.paginate.Paginate
 import com.simin.CategoryView.YoutubePlaylistAdapter
@@ -22,8 +22,8 @@ class FavoriesFragment : FragmentBase()  {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(false);
 
-        val linearLayoutManager = LinearLayoutManager(this@FavoriesFragment.context)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        val linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@FavoriesFragment.context)
+        linearLayoutManager.orientation = androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 
         rvList.setLayoutManager(linearLayoutManager)
         rvList.adapter=adapter

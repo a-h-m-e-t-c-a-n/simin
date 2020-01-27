@@ -1,17 +1,20 @@
 package ahmetcan.echo
 
 import android.app.Activity
+import android.os.Bundle
 import billing.BillingManager
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.*
+import com.google.firebase.analytics.FirebaseAnalytics
 
 
-class ACPremium(activity: Activity,callback:IState) {
+class ACPremium(var activity: Activity,callback:IState) {
     interface IState{
         fun onPremiumChanged(isPremium:Boolean)
         fun onUserCancelFlow()
         fun onError()
     }
+    var skuId="premium1"
+
     var callback:IState=callback
     var billingManager = BillingManager(activity, object : BillingManager.BillingUpdatesListener {
         override fun onError() {
@@ -39,8 +42,20 @@ class ACPremium(activity: Activity,callback:IState) {
 
 
     fun buyPremium() {
+        billingManager.querySkuDetailsAsync(BillingClient.SkuType.SUBS, listOf(skuId),object : SkuDetailsResponseListener {
+            override fun onSkuDetailsResponse(result: BillingResult?, skuDetails:  MutableList<SkuDetails>?) {
+                if(skuDetails!=null){
+                    billingManager.initiatePurchaseFlow(skuDetails!!.first())
 
-        billingManager.initiatePurchaseFlow("premiumy",BillingClient.SkuType.INAPP)
+                    val params = Bundle()
+                    params.putString("sku", skuDetails!!.first().sku)
+                    FirebaseAnalytics.getInstance(activity).logEvent("buyPremium_initiatePurchaseFlow", params)
+
+                }
+
+            }
+
+        });
     }
 
 

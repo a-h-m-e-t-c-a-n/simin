@@ -9,7 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.opengl.Visibility
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -204,8 +204,8 @@ class SearchActivity : ActivityBase() {
     }
 
     fun InitList() {
-        val linearLayoutManager = LinearLayoutManager(this)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        val linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        linearLayoutManager.orientation = androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 
 
         rvList.setLayoutManager(linearLayoutManager)

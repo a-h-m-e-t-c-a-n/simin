@@ -1,7 +1,7 @@
 package ahmetcan.simin
 
 import android.util.Log
-import com.google.firebase.crash.FirebaseCrash
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.*
 import kotlinx.coroutines.android.UI
 import kotlin.coroutines.CoroutineContext
@@ -15,10 +15,10 @@ fun logLaunch(block: suspend CoroutineScope.() -> Unit)
         }
         catch (ex:Exception){
             try{
-                FirebaseCrash.report(ex)
+                FirebaseCrashlytics.getInstance().recordException(ex)
             }
             finally {
-                Log.e("translationplayer logAsync:",ex.toString())
+                Log.e("logAsync:",ex.toString())
                 throw ex
             }
         }
@@ -33,10 +33,10 @@ fun logAsync(block: suspend CoroutineScope.() -> Unit)
         }
         catch (ex:Exception){
             try{
-                FirebaseCrash.report(ex)
+                FirebaseCrashlytics.getInstance().recordException(ex)
             }
             finally {
-                Log.e("translationplayer logAsync:",ex.toString())
+                Log.e("logAsync:",ex.toString())
                 throw ex
             }
         }

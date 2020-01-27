@@ -16,10 +16,10 @@ import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.Menu

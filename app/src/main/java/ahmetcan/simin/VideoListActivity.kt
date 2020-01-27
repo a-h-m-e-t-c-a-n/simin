@@ -4,11 +4,11 @@ import ahmetcan.simin.Discovery.Model.Paged
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
@@ -136,8 +136,8 @@ class VideoListActivity : ActivityBase() {
         startActivity(intent)
     }
     fun InitList() {
-        val linearLayoutManager = LinearLayoutManager(this)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        val linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        linearLayoutManager.orientation = androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 
 
         rvList.setLayoutManager(linearLayoutManager)

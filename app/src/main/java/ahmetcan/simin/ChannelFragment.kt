@@ -7,7 +7,7 @@ import ahmetcan.simin.Discovery.View.FavoritesAdapter
 import ahmetcan.simin.Discovery.View.YoutubeChannelAdapter
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
 import com.paginate.Paginate
 import com.simin.CategoryView.YoutubePlaylistAdapter
@@ -26,8 +26,8 @@ class ChannelFragment : FragmentBase()  {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true);
 
-        val linearLayoutManager = LinearLayoutManager(this@ChannelFragment.context)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        val linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@ChannelFragment.context)
+        linearLayoutManager.orientation = androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 
         rvList.setLayoutManager(linearLayoutManager)
         rvList.adapter=adapter

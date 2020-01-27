@@ -10,7 +10,7 @@ import ahmetcan.simin.VideoListActivity
 import ahmetcan.simin.onUI
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
 import com.paginate.Paginate
 import com.simin.CategoryView.YoutubePlaylistAdapter
@@ -31,8 +31,8 @@ class DiscoveryFragment : FragmentBase()  {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true);
 
-        val linearLayoutManager = LinearLayoutManager(this@DiscoveryFragment.context)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        val linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@DiscoveryFragment.context)
+        linearLayoutManager.orientation = androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 
         rvList.setLayoutManager(linearLayoutManager)
         rvList.adapter=adapter

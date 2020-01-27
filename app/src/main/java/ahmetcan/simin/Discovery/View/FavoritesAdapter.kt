@@ -2,13 +2,13 @@ package ahmetcan.simin.Discovery.View
 
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.R
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_video.view.*
 
-open class FavoritesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+open class FavoritesAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
     private var items :ArrayList<VideoModel> = ArrayList()
 
     interface OnItemClickListener {
@@ -27,14 +27,14 @@ open class FavoritesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int =items.count()
 
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
        if(position<items.count()) {
            (holder as DefaultItemHolder).bindView(items[position])
        }
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent?.context)
                 .inflate(R.layout.item_video, parent, false)
         return DefaultItemHolder(view)
@@ -49,7 +49,7 @@ open class FavoritesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    inner class DefaultItemHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class DefaultItemHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         lateinit var item: VideoModel
         init{
             view.setOnClickListener {
