@@ -31,8 +31,10 @@ import android.widget.Toast
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.tooltip.Tooltip
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -43,6 +45,7 @@ class MainActivity() : AppCompatActivity(){
     var isSubscripted: Boolean = false
     var  popupWindow:PopupWindow?=null
     var backgroundPop:PopupWindow?=null
+
 
     fun saveSubscriptionState(has: Boolean) {
         val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
@@ -80,29 +83,6 @@ class MainActivity() : AppCompatActivity(){
         return has;
     }
 
-    fun doIShowIntro(): Boolean {
-        val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
-        var introTimeMs = subscription.getLong("introtime", 0)
-
-        if (introTimeMs > 0) {
-            var asDay = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().timeInMillis - introTimeMs)
-            if (asDay <= 3) {
-                return false;
-            }
-        }
-        val edit = subscription.edit()
-        edit.putLong("introtime", Calendar.getInstance().timeInMillis)
-        edit.commit()
-        return true
-
-    }
-
-    fun fetchSubscriptionState(context: Context): Boolean {
-        val subscription = context.getSharedPreferences("subscription", Context.MODE_PRIVATE)
-        val has: Boolean = subscription.getBoolean("has", false)
-        return has;
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,16 +90,7 @@ class MainActivity() : AppCompatActivity(){
 
         billing=ACPremium(this,object :ACPremium.IState{
             override fun onError() {
-                onUI {
-                    try{
-                        FirebaseAnalytics.getInstance(this@MainActivity).logEvent("BillingError", null)
-
-                    }
-                    catch (ex:Exception){
-
-
-                    }
-                }
+                FirebaseAnalytics.getInstance(this@MainActivity).logEvent("BillingError", null)
             }
 
             override fun onUserCancelFlow() {
@@ -133,16 +104,13 @@ class MainActivity() : AppCompatActivity(){
             }
 
             override fun onPremiumChanged(isPremium: Boolean) {
-                onUI {
-                    if (isPremium) {
-                        saveSubscriptionState(true)
-                        HideShowPremiumDialog()
-                    } else {
-                        saveSubscriptionState(false)
-                        ShowGetPremimumDialog()
-                    }
+                if (isPremium) {
+                    saveSubscriptionState(true)
+                    HideShowPremiumDialog()
+                } else {
+                    saveSubscriptionState(false)
+                    ShowGetPremimumDialog()
                 }
-
             }
 
         })
@@ -185,13 +153,16 @@ class MainActivity() : AppCompatActivity(){
         tab_layout.getTabAt(0)?.icon?.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
         changeFragment(DiscoveryFragment())
 
+
         fab.setOnClickListener {
-            var intent: Intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
+             var intent: Intent = Intent(this, SearchActivity::class.java)
+             startActivity(intent)
+
+
         }
 
 
-        isSubscripted = fetchSubscriptionState(this)
+        isSubscripted = fetchSubscriptionState()
         if (isSubscripted) {
             HideShowPremiumDialog()
         }
@@ -224,11 +195,7 @@ class MainActivity() : AppCompatActivity(){
         }
     }
 
-    override fun onStart() {
-        super.onStart()
 
-
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
@@ -257,7 +224,6 @@ class MainActivity() : AppCompatActivity(){
     }
 
     fun ShowGetPremimumDialog(){
-
          var  inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
          var popupView = inflater.inflate(R.layout.view_getpremium, null);
          popupView.findViewById<Button>(R.id.button_getpremium).setOnClickListener {

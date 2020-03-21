@@ -1,6 +1,5 @@
 package ahmetcan.simin
 
-import ahmetcan.echo.ACPremium
 import ahmetcan.simin.Api.Text
 import ahmetcan.simin.Api.Transcript
 import ahmetcan.simin.Discovery.Model.persistent.Language
@@ -22,37 +21,34 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.google.android.youtube.player.YouTubeBaseActivity
-import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubePlayer
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.activity_preview_video.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlin.random.Random
-import android.util.StatsLog.logEvent
-import com.tooltip.Tooltip
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_preview_video.allcaptions
+import kotlinx.android.synthetic.main.activity_preview_video.backButton
+import kotlinx.android.synthetic.main.activity_preview_video.captionPrimary
+import kotlinx.android.synthetic.main.activity_preview_video.captionSecondary
+import kotlinx.android.synthetic.main.activity_preview_video.info
+import kotlinx.android.synthetic.main.activity_preview_video.progressBar1
+import kotlinx.android.synthetic.main.activity_preview_video.speakMatch
+import kotlinx.android.synthetic.main.activity_preview_video.video_FavoryButton
+import kotlinx.android.synthetic.main.activity_preview_video.video_SkipPrevious
+import kotlinx.android.synthetic.main.activity_preview_video.video_SpeechTest
+import kotlinx.android.synthetic.main.activity_preview_video.video_hardmodeButton
+import kotlinx.android.synthetic.main.activity_preview_video.video_hardmodeButtonText
+import kotlinx.android.synthetic.main.activity_preview_video.video_playButton
+import kotlinx.android.synthetic.main.activity_preview_video.video_secondSubTitleShow
+import kotlinx.android.synthetic.main.activity_preview_video.video_skipNext
+import kotlinx.android.synthetic.main.activity_preview_video.video_subTitleSync
+import kotlinx.android.synthetic.main.activity_preview_video.video_translateButton
+import kotlinx.android.synthetic.main.activity_preview_video_web.*
+import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener, YouTubePlayer.OnFullscreenListener {
-    var billing: ACPremium?=null
-
-    fun saveSubscriptionState(has: Boolean) {
-        val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
-        val edit = subscription.edit()
-        edit.putBoolean("has", has)
-        edit.commit()
-    }
-
+class PreviewVideoWeb : ActivityBase() {
+    var isPlaying: Boolean = false
     private var state: VideoViewState? = null
-    private var fullscreen: Boolean = false
-    private var player: YouTubePlayer? = null
-    private var listenPlayerJob: Job? = null
     private var videoId: String = ""
     private lateinit var languages: List<Language>
     private var defaultLanguge: Language = Language()
@@ -74,6 +70,11 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
     protected val RESULT_SPEECH = 2
     protected val RESULT_TRANSLATE = 3
 
+    var scope = MainScope() + CoroutineExceptionHandler { _, ex ->
+        FirebaseCrashlytics.getInstance().recordException(ex)
+        Log.e("ahmetcan", "PreviewVideoWeb main scope exception [blocked]", ex)
+    }
+
     companion object {
         const val RECOVERY_DIALOG_REQUEST = 1;
     }
@@ -84,31 +85,14 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         return has;
     }
 
-    fun listenPlayer(player: YouTubePlayer) = async {
-        var currentTime: Int = 0
-        while (this@PreviewVideo.playerView != null) {
-            if (player.isPlaying) {
-                var playerTime = player.currentTimeMillis
-                if (playerTime != currentTime) {
-                    currentTime = playerTime
-                    onUI {
-                        onPlayerTimeChanged(currentTime)
-                    }
 
-                }
-            }
-            delay(5)
-        }
-    }
-
-
-    fun onPlayerTimeChanged(time: Int) {
+    fun onPlayerTimeChanged(second: Double) {
         var primaryTextExist = false
         var secondaryTextExist = false
         primaryCaptionList.let {
             it?.texts?.let {
                 for ((index, value) in it.withIndex()) {
-                    if (time >= value.start && time <= value.start + value.duration) {
+                    if (second >= value.start && second <= value.start + value.duration) {
                         primaryTextExist = true
                         if (value?.sentence.toString().compareTo(currentPrimaryText?.sentence.toString()) != 0) {
                             currentPrimaryText = value
@@ -123,7 +107,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
             secondaryCaptionList.let {
                 it?.texts?.let {
                     for ((index, value) in it.withIndex()) {
-                        if (time >= value.start && time <= value.start + value.duration) {
+                        if (second >= value.start && second <= value.start + value.duration) {
                             secondaryTextExist = true
                             if (value?.sentence.toString().compareTo(currentSecondaryText?.sentence.toString()) != 0) {
                                 currentSecondaryText = value
@@ -163,48 +147,96 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         captionSecondary.setText(currentSecondaryText?.sentence ?: "")
     }
 
-    override fun onInitializationSuccess(p0: YouTubePlayer.Provider?, pl: YouTubePlayer?, wasRestored: Boolean) {
-        player = pl
-        player?.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE)
-        player?.setOnFullscreenListener(this)
-        player?.let {
-            listenPlayerJob = listenPlayer(it)
+    fun InitPlayer() {
+        video_playButton.setImageResource(R.drawable.ic_play_arrow_black_48dp)
+
+        player.loadFromHtml()
+        player.Callbacks.apply {
+            timeChanged = {
+                scope.launch(Dispatchers.Main) {
+                    onPlayerTimeChanged(it)
+                }
+            }
+            playing = {
+                isPlaying = true
+                scope.launch(Dispatchers.Main) {
+                    video_playButton.setImageResource(R.drawable.ic_pause_black_48dp)
+                }
+            }
+            paused = {
+                isPlaying = false
+                scope.launch(Dispatchers.Main) {
+                    video_playButton.setImageResource(R.drawable.ic_play_arrow_black_48dp)
+                }
+            }
+            ready = {
+                scope.launch(Dispatchers.Main) {
+                    player.loadVideo(videoId)
+                }
+            }
+            unstarted={
+                Log.w("ahmetcan","unstarted")
+
+            }
         }
-        if (!wasRestored) {
-            player?.loadVideo(videoId as? String);
+        scope.launch {
+            loadCaption()
+            state = DiscoveryRepository.getVideoViewState(videoId)
+            state?.let {
+                if (captionOffMode) video_hardmodeButton.callOnClick()
+                var secondaryIso = it.secondaryLanguageIso
+                if (!secondaryIso.isNullOrEmpty()) {
+                    secondaryLanguge = languages.filter { it.isoCode == secondaryIso }.firstOrNull()
+                    video_secondSubTitleShow.visibility = View.VISIBLE
+                }
+
+                loadSecondaryCaption()
+
+
+                if (it.showCaption) video_secondSubTitleShow.callOnClick()
+                if (it.syncSubtitle) video_subTitleSync.callOnClick()
+                if (it.showSecondSubtitle) video_secondSubTitleShow.callOnClick()
+            }
+            if (state != null) {
+                video_FavoryButton.setColorFilter(Color.RED)
+            } else if (syncSubtitle == false) {
+                video_subTitleSync.callOnClick()
+            }
+
+
         }
-        player?.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
-            override fun onSeekTo(p0: Int) {
-            }
-
-            override fun onBuffering(p0: Boolean) {
-            }
-
-            override fun onPlaying() {
-                video_playButton.setImageResource(R.drawable.ic_pause_black_48dp)
-            }
-
-            override fun onStopped() {
-            }
-
-            override fun onPaused() {
-                video_playButton.setImageResource(R.drawable.ic_play_arrow_black_48dp)
-            }
-
-        })
-        //startActivity(Intent(Settings.ACTION_CAPTIONING_SETTINGS));
-
     }
 
+    override fun onResume() {
+        super.onResume()
+        var fvideoId=""
+        if (intent.action == Intent.ACTION_SEND) {
 
-    override fun onInitializationFailure(provider: YouTubePlayer.Provider,
-                                         errorReason: YouTubeInitializationResult) {
-        if (errorReason.isUserRecoverableError) {
-            errorReason.getErrorDialog(this, RECOVERY_DIALOG_REQUEST).show()
+            var url = Uri.parse(intent.getStringExtra(Intent.EXTRA_TEXT))
+            var youtubeurl = intent.getStringExtra(Intent.EXTRA_TEXT)
+            if (youtubeurl.contains("youtu.be", true)) {
+                fvideoId = url.path.replace("/", "")
+                title = ""
+                description = ""
+                cover = ""
+            }
+
         } else {
-            val errorMessage = String.format(getString(R.string.error_player), errorReason.toString())
-            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+            fvideoId = intent.extras["videoid"] as String
+            title = intent.extras["title"] as String
+            description = intent.extras["description"] as String
+            cover = intent.extras["cover"] as String
+
         }
+       if(fetchSubscriptionState()==false){
+                  return
+       }
+        if(videoId!=fvideoId){
+            videoId=fvideoId
+            InitPlayer()
+        }
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -212,7 +244,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         when (requestCode) {
             RECOVERY_DIALOG_REQUEST -> {
                 // Retry initialization if user performed a recovery action
-                playerView.initialize(ApiKey.YOUTUBEDATAAPIV3_KEY, this)
+                InitPlayer()
             }
             RESULT_SPEECH -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -231,7 +263,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
                         secondaryLanguge = null
                         captionSecondary.visibility = View.GONE
                         video_secondSubTitleShow.visibility = View.GONE
-                        onUI {
+                        scope.launch(Dispatchers.Main) {
                             if (showSecondSubtitle) {
                                 video_secondSubTitleShow.callOnClick()
                             }
@@ -242,14 +274,12 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
                         video_secondSubTitleShow.visibility = View.VISIBLE
                         var translateiso = it.extras["iso"]
                         secondaryLanguge = languages.filter { it.isoCode == translateiso }.firstOrNull()
-                        onUI {
-                            if (!showSecondSubtitle) {
-                                video_secondSubTitleShow.callOnClick()
-                            }
+                        if (!showSecondSubtitle) {
+                            video_secondSubTitleShow.callOnClick()
                         }
-                        logAsync {
-                            loadSecondaryCaption()
-                        }
+                       scope.launch {
+                           loadSecondaryCaption()
+                       }
                     }
 
                 }
@@ -257,51 +287,16 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         }
     }
 
-    fun doIShowIntro(): Boolean {
-        val subscription = getSharedPreferences("subscription_preview", Context.MODE_PRIVATE)
-        var introTimeMs = subscription.getLong("introtime", 0)
 
-        if (introTimeMs > 0) {
-            var asDay = TimeUnit.MILLISECONDS.toDays(Calendar.getInstance().timeInMillis - introTimeMs)
-            if (asDay <= 5) {
-                return false;
-            }
-        }
-
-        val edit = subscription.edit()
-        edit.putLong("introtime", Calendar.getInstance().timeInMillis)
-        edit.commit()
-        return true
-
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
 
-        if (intent.action == Intent.ACTION_SEND) {
 
-            var url = Uri.parse(intent.getStringExtra(Intent.EXTRA_TEXT))
-            var youtubeurl = intent.getStringExtra(Intent.EXTRA_TEXT)
-            if (youtubeurl.contains("youtu.be", true)) {
-                videoId = url.path.replace("/", "")
-                title = ""
-                description = ""
-                cover = ""
-            }
-
-        } else {
-            videoId = intent.extras["videoid"] as String
-            title = intent.extras["title"] as String
-            description = intent.extras["description"] as String
-            cover = intent.extras["cover"] as String
-
-        }
-
-        setContentView(R.layout.activity_preview_video)
+        setContentView(R.layout.activity_preview_video_web)
 
 
-        playerView.initialize(ApiKey.YOUTUBEDATAAPIV3_KEY, this);
 
         video_SpeechTest.setOnClickListener {
 
@@ -331,7 +326,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
 
         captionPrimary.setOnClickListener {
             currentPrimaryText?.let {
-                player?.seekToMillis(it.start.toInt())
+                player?.seekTo(it.start)
                 if (captionOffMode) {
                     showCaption = 3
                 }
@@ -339,17 +334,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
             }
 
         }
-//        captionPrimary.setOnLongClickListener {
-//            currentPrimaryText?.let {
-//                player?.seekToMillis(it.start.toInt())
-//                if(captionOffMode){
-//                    showCaption=true
-//                }
-//                onCaptionChanged();
-//            }
-//
-//            true
-//        }
+
         if (captionOffMode) {
             captionPrimary.setText(getString(R.string.clicktoshow))
             showCaption = 0
@@ -363,7 +348,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
                     captionIndex--
                     primaryCaptionList?.let {
                         var prev = it.texts[captionIndex]
-                        player?.seekToMillis(prev.start.toInt())
+                        player?.seekTo(prev.start)
                     }
 
                     // onCaptionChanged()
@@ -378,7 +363,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
                     if (captionIndex < it.texts.count()) {
                         captionIndex++
                         var next = it.texts[captionIndex]
-                        player?.seekToMillis(next.start.toInt())
+                        player?.seekTo(next.start)
                         //  onCaptionChanged()
 
                     }
@@ -391,12 +376,10 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         }
         video_playButton.setOnClickListener {
             try {
-                player?.let {
-                    if (it.isPlaying) {
-                        it.pause()
-                    } else {
-                        it.play()
-                    }
+                if (isPlaying) {
+                    player?.pause()
+                } else {
+                    player?.play()
                 }
             } catch (ex: Throwable) {
 
@@ -456,7 +439,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
             override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 primaryCaptionList?.let {
                     var next = it.texts[p2]
-                    player?.seekToMillis(next.start.toInt())
+                    player?.seekTo(next.start)
                     onCaptionChanged()
                 }
 
@@ -494,32 +477,7 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
 
 
 
-        async(Dispatchers.IO) {
-            loadCaption()
 
-            onUI {
-                state = DiscoveryRepository.getVideoViewState(videoId)
-                state?.let {
-                    if (captionOffMode) video_hardmodeButton.callOnClick()
-                    var secondaryIso = it.secondaryLanguageIso
-                    if (!secondaryIso.isNullOrEmpty()) {
-                        secondaryLanguge = languages.filter { it.isoCode == secondaryIso }.firstOrNull()
-                        video_secondSubTitleShow.visibility = View.VISIBLE
-                    }
-                    logAsync { loadSecondaryCaption() }
-
-                    if (it.showCaption) video_secondSubTitleShow.callOnClick()
-                    if (it.syncSubtitle) video_subTitleSync.callOnClick()
-                    if (it.showSecondSubtitle) video_secondSubTitleShow.callOnClick()
-                }
-                if (state != null) {
-                    video_FavoryButton.setColorFilter(Color.RED)
-                } else if (syncSubtitle == false) {
-                    video_subTitleSync.callOnClick()
-                }
-            }
-
-        }
     }
 
     fun statePersist() {
@@ -541,49 +499,13 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         }
     }
 
-    private fun doLayout() {
-        val playerParams = playerView.getLayoutParams() as LinearLayout.LayoutParams
-        if (fullscreen) {
-//            // When in fullscreen, the visibility of all other views than the player should be set to
-//            // GONE and the player should be laid out across the whole screen.
-//            playerParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-//            playerParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-
-            info.setVisibility(View.GONE)
-        } else {
-            // This layout is up to you - this is just a simple example (vertically stacked boxes in
-            // portrait, horizontally stacked in landscape).
-            info.setVisibility(View.VISIBLE)
-//            val otherViewsParams = info.getLayoutParams()
-//            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//                otherViewsParams.width = 0
-//                playerParams.width = otherViewsParams.width
-//                playerParams.height = WRAP_CONTENT
-//                otherViewsParams.height = MATCH_PARENT
-//                playerParams.weight = 1f
-//                baseLayout.setOrientation(LinearLayout.HORIZONTAL)
-//            } else {
-//                otherViewsParams.width = MATCH_PARENT
-//                playerParams.width = otherViewsParams.width
-//                playerParams.height = WRAP_CONTENT
-//                playerParams.weight = 0f
-//                otherViewsParams.height = 0
-//                baseLayout.setOrientation(LinearLayout.VERTICAL)
-//            }
-        }
 
 
-    }
-
-    override fun onFullscreen(isFullscreen: Boolean) {
-        fullscreen = isFullscreen;
-        doLayout();
-    }
 
     override fun onDestroy() {
         super.onDestroy()
-        //  listenPlayerJob?.cancel()
         statePersist()
+        scope.cancel("ondestroy")
 
     }
 
@@ -603,11 +525,11 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
 
     }
 
-    fun loadCaption() {
+    suspend fun loadCaption() {
 
-        onUI { progressBar1.visibility = View.VISIBLE }
+        progressBar1.visibility = View.VISIBLE
 
-        languages = allLanguageges(videoId)
+        languages = withContext(Dispatchers.IO){allLanguageges(videoId)}
         if (languages.count() == 0) {
             return;
         }
@@ -625,35 +547,32 @@ class PreviewVideo : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
         }
 
 
-        primaryCaptionList = DiscoveryRepository.caption(videoId, defaultLanguge.isoCode, "")
-        onUI {
-            fillCaptionList()
-            progressBar1.visibility = View.GONE
-            if (captionIndex > 0) {
-                primaryCaptionList?.let {
-                    var seekToCption = it.texts[captionIndex]
-                    player?.seekToMillis(seekToCption.start.toInt())
-                }
-
+        primaryCaptionList = withContext(Dispatchers.IO) { DiscoveryRepository.caption(videoId, defaultLanguge.isoCode, "") }
+        fillCaptionList()
+        progressBar1.visibility = View.GONE
+        if (captionIndex > 0) {
+            primaryCaptionList?.let {
+                var seekToCption = it.texts[captionIndex]
+                player?.seekTo(seekToCption.start)
             }
+
         }
 
 
     }
 
-    fun loadSecondaryCaption() {
-        onUI { progressBar1.visibility = View.VISIBLE }
+    suspend fun loadSecondaryCaption() {
+        progressBar1.visibility = View.VISIBLE
         secondaryLanguge?.let {
             if (it.available) {
-                secondaryCaptionList = DiscoveryRepository.caption(videoId, it.isoCode, "")
+                secondaryCaptionList = withContext(Dispatchers.IO) { DiscoveryRepository.caption(videoId, it.isoCode, "") }
             } else {
-                secondaryCaptionList = DiscoveryRepository.caption(videoId, defaultLanguge.isoCode, it.isoCode)
+                secondaryCaptionList = withContext(Dispatchers.IO) { DiscoveryRepository.caption(videoId, defaultLanguge.isoCode, it.isoCode) }
             }
 
         }
-
-
-        onUI { progressBar1.visibility = View.GONE }
+        progressBar1.visibility = View.GONE
     }
+
 
 }

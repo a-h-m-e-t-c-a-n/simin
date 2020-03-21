@@ -7,9 +7,7 @@ import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
 import android.content.Context
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -19,11 +17,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.JsonArray
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_search.*
-import kotlinx.coroutines.android.UI
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class SearchActivity : ActivityBase() {
@@ -31,12 +29,10 @@ class SearchActivity : ActivityBase() {
     var loading: Boolean = false
     var isHasLoadedAll: Boolean = true
     var nextPageToken: String? = null
-    fun fetchSubscriptionState(): Boolean {
-        val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
-        val has: Boolean = subscription.getBoolean("has", false)
-        return has;
+    var scope = MainScope() + CoroutineExceptionHandler { _, ex ->
+        FirebaseCrashlytics.getInstance().recordException(ex)
+        Log.e("ahmetcan", "ChannelFragment main scope exception [blocked]", ex)
     }
-
 
     lateinit var listAdapter: ArrayAdapter<String>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,17 +44,17 @@ class SearchActivity : ActivityBase() {
         }
         autocompleteEdit.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
-                //listAdapter.clear()
-                safeAsync {
-                    var result = GoogleService.instance.youtube_suggest(autocompleteEdit.text.toString()).execute().body()
-                    onUI {
-                        listAdapter.clear()
-                        listAdapter.add(result?.get(0).toString().replace("\"", ""))
-                        (result?.get(1) as? JsonArray)?.forEach {
-                            listAdapter.add(it.toString().replace("\"", ""))
-                        }
+                scope.launch {
+                    var result = withContext(Dispatchers.IO) {
+                        GoogleService.instance.youtube_suggest(autocompleteEdit.text.toString()).execute().body()
+                    }
+                    listAdapter.clear()
+                    listAdapter.add(result?.get(0).toString().replace("\"", ""))
+                    (result?.get(1) as? JsonArray)?.forEach {
+                        listAdapter.add(it.toString().replace("\"", ""))
                     }
                 }
+
 
             }
 
@@ -69,48 +65,51 @@ class SearchActivity : ActivityBase() {
             }
 
         })
-        autocompleteEdit.setOnFocusChangeListener(object : View.OnFocusChangeListener {
-            override fun onFocusChange(v: View, hasFocus: Boolean) {
-                if (hasFocus) {
-                    autocompleteList.visibility = View.VISIBLE
-                }
+        autocompleteEdit.setOnFocusChangeListener(
+                object : View.OnFocusChangeListener {
+                    override fun onFocusChange(v: View, hasFocus: Boolean) {
+                        if (hasFocus) {
+                            autocompleteList.visibility = View.VISIBLE
+                        }
 
-            }
+                    }
 
-        })
+                })
         autocompleteEdit.setOnClickListener {
             autocompleteList.visibility = View.VISIBLE
 
 
         }
-        autocompleteList.setOnItemClickListener(object : AdapterView.OnItemClickListener {
-            override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, position: Long) {
-                val value = listAdapter.getItem(position.toInt()) as String
-                autocompleteEdit.setText(value)
-                autocompleteEdit.setSelection(autocompleteEdit.text.length);
-                autocompleteList.visibility = View.GONE
-                rvList.requestFocus()
-                hideSoftKeyboard()
-                performSearch()
-            }
+        autocompleteList.setOnItemClickListener(
+                object : AdapterView.OnItemClickListener {
+                    override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, position: Long) {
+                        val value = listAdapter.getItem(position.toInt()) as String
+                        autocompleteEdit.setText(value)
+                        autocompleteEdit.setSelection(autocompleteEdit.text.length);
+                        autocompleteList.visibility = View.GONE
+                        rvList.requestFocus()
+                        hideSoftKeyboard()
+                        performSearch()
+                    }
 
-        })
+                })
 
         listAdapter = ArrayAdapter<String>(this, R.layout.search_autocomplete_listitem, arrayListOf(""))
         autocompleteList.adapter = listAdapter
-        autocompleteEdit.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(p0: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    autocompleteList.visibility = View.GONE
-                    rvList.requestFocus()
-                    hideSoftKeyboard()
-                    performSearch()
-                    return true
-                }
+        autocompleteEdit.setOnEditorActionListener(
+                object : TextView.OnEditorActionListener {
+                    override fun onEditorAction(p0: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                            autocompleteList.visibility = View.GONE
+                            rvList.requestFocus()
+                            hideSoftKeyboard()
+                            performSearch()
+                            return true
+                        }
 
-                return false
-            }
-        })
+                        return false
+                    }
+                })
         autocompleteEdit.requestFocus()
 
 
@@ -121,10 +120,13 @@ class SearchActivity : ActivityBase() {
     }
 
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel("ondestroy")
+    }
     fun goNext(itemModel: VideoModel) {
-        progressBar.visibility=View.GONE
-        var intent = Intent(this@SearchActivity, PreviewVideo::class.java)
+        progressBar.visibility = View.GONE
+        var intent = Intent(this@SearchActivity, PreviewVideoWeb::class.java)
         intent.putExtra("videoid", itemModel.videoid)
         intent.putExtra("title", itemModel.title)
         intent.putExtra("description", itemModel.description)
@@ -133,10 +135,7 @@ class SearchActivity : ActivityBase() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
 
-    }
 
     fun InitList() {
         val linearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
@@ -148,7 +147,7 @@ class SearchActivity : ActivityBase() {
         adapter.onClickItem = object : YoutubeVideoAdapter.OnItemClickListener {
             override fun onClick(itemModel: VideoModel) {
                 progressBar.visibility = View.VISIBLE
-               // checkAds(itemModel)
+                // checkAds(itemModel)
                 goNext(itemModel)
             }
 
@@ -186,7 +185,7 @@ class SearchActivity : ActivityBase() {
         }
         nextPageToken = result.index
 
-        launch(UI) {
+        scope.launch {
             result.items?.let {
                 adapter.addData(it)
                 adapter.notifyDataSetChanged()

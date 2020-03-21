@@ -7,12 +7,13 @@ import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.activity_video_list.*
-import kotlinx.coroutines.android.UI
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class VideoListActivity : ActivityBase() {
     var adapter = YoutubeVideoAdapter()
@@ -23,14 +24,9 @@ class VideoListActivity : ActivityBase() {
     lateinit var listAdapter: ArrayAdapter<String>
     private var channelid: String? = null
     private var playlistid: String? = null
-    fun fetchSubscriptionState(): Boolean {
-        val subscription = getSharedPreferences("subscription", Context.MODE_PRIVATE)
-        val has: Boolean = subscription.getBoolean("has", false)
-        return has;
-    }
-
-    fun saveAds(){
-
+    var scope = MainScope() + CoroutineExceptionHandler { _, ex ->
+        FirebaseCrashlytics.getInstance().recordException(ex)
+        Log.e("ahmetcan", "VideoListActivity main scope exception [blocked]", ex)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,15 +48,14 @@ class VideoListActivity : ActivityBase() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
 
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel("ondestroy")
     }
-
-
     fun goNext(itemModel:VideoModel){
         progress.visibility=View.GONE
-        var intent = Intent(this@VideoListActivity, PreviewVideo::class.java)
+        var intent = Intent(this@VideoListActivity, PreviewVideoWeb::class.java)
         intent.putExtra("videoid", itemModel.videoid)
         intent.putExtra("title", itemModel.title)
         intent.putExtra("description", itemModel.description)
@@ -108,13 +103,14 @@ class VideoListActivity : ActivityBase() {
 
     }
 
-    fun loadMore() = safeAsync {
+    fun loadMore() = scope.launch {
         loading = true
         var result: Paged<String, VideoModel>
+
         if (!playlistid.isNullOrEmpty()) {
-            result = DiscoveryRepository.playlistItems(playlistid ?: "", nextPageToken)
+            result = withContext(Dispatchers.IO){DiscoveryRepository.playlistItems(playlistid ?: "", nextPageToken)}
         } else {
-            result = DiscoveryRepository.channelVideos(channelid ?: "", nextPageToken)
+            result =  withContext(Dispatchers.IO){DiscoveryRepository.channelVideos(channelid ?: "", nextPageToken)}
         }
 
 
@@ -123,12 +119,10 @@ class VideoListActivity : ActivityBase() {
         }
         nextPageToken = result.index
 
-        launch(UI) {
-            result.items?.let {
-                adapter.addData(it)
-                adapter.notifyDataSetChanged()
-            }
-        }.join()
+        result.items?.let {
+            adapter.addData(it)
+            adapter.notifyDataSetChanged()
+        }
         loading = false
     }
 

@@ -8,11 +8,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.JsonArray
 import kotlinx.android.synthetic.main.activity_language.*
+import kotlinx.coroutines.*
 
 class LanguageActivity :ActivityBase() {
     lateinit var listAvailableAdapter: ArrayAdapter<String>
@@ -21,7 +24,10 @@ class LanguageActivity :ActivityBase() {
     var availables: List<Language>?=null
     var frest:List<Language>?=null
     var rest:List<Language>?=null
-
+    var scope = MainScope() + CoroutineExceptionHandler { _, ex ->
+        FirebaseCrashlytics.getInstance().recordException(ex)
+        Log.e("ahmetcan", "LanguageActivity main scope exception [blocked]", ex)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_language)
@@ -47,6 +53,7 @@ class LanguageActivity :ActivityBase() {
             }
 
         })
+
         listRestAdapter =ArrayAdapter<String>(this, R.layout.language_listitem, arrayListOf(""))
         restList.adapter=listRestAdapter
         restList.setOnItemClickListener(object : AdapterView.OnItemClickListener{
@@ -91,8 +98,13 @@ class LanguageActivity :ActivityBase() {
 
         })
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel("ondestroy")
+    }
     fun displayList(){
-        onUI {
+        scope.launch {
             listAvailableAdapter.clear()
             listRestAdapter.clear()
             listAvailableAdapter.add(getString(R.string.none))
@@ -100,9 +112,9 @@ class LanguageActivity :ActivityBase() {
             listRestAdapter.addAll(frest?.map { it.DisplayName })
         }
     }
-    fun loadIso()= logAsync{
+    fun loadIso()= scope.launch{
         var videoId=intent.extras["videoid"] as String
-        var languages=DiscoveryRepository.allLanguageges(videoId).sortedBy { it.DisplayName }
+        var languages= withContext(Dispatchers.IO){DiscoveryRepository.allLanguageges(videoId).sortedBy { it.DisplayName }}
         availables=languages.filter { it.available==true }.toList();//.map { it.DisplayName }
         rest=languages.filter { it.available==false };//.map { it.DisplayName }
         favailables=availables

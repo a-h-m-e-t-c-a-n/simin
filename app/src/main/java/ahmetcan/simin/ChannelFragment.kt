@@ -1,22 +1,23 @@
 package ahmetcan.simin
 
 import ahmetcan.simin.Discovery.Model.PlayListModel
-import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
-import ahmetcan.simin.Discovery.View.FavoritesAdapter
 import ahmetcan.simin.Discovery.View.YoutubeChannelAdapter
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.util.Log
 import android.view.*
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.paginate.Paginate
-import com.simin.CategoryView.YoutubePlaylistAdapter
 import kotlinx.android.synthetic.main.fragment_channel.*
-import kotlinx.coroutines.android.UI
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class ChannelFragment : FragmentBase()  {
+    var scope = MainScope() + CoroutineExceptionHandler { _, ex ->
+        FirebaseCrashlytics.getInstance().recordException(ex)
+        Log.e("ahmetcan", "ChannelFragment main scope exception [blocked]", ex)
+    }
 
     var adapter= YoutubeChannelAdapter()
     var loading:Boolean=false
@@ -65,44 +66,44 @@ class ChannelFragment : FragmentBase()  {
             }
         }
     }
-    fun loadMore() =safeAsync {
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel("destroyed")
+    }
+    fun loadMore() =scope.launch {
         loading=true
-        var result = DiscoveryRepository.loadChannelList(page)
+        var result = withContext(Dispatchers.IO){DiscoveryRepository.loadChannelList(page)}
         if(result.isLastPage){
             isHasLoadedAll=true
         }
 
-        launch(UI) {
-            result.items?.let {
-                adapter.addData(it)
-                adapter.notifyDataSetChanged()
-            }
-        }.join()
+
+        result.items?.let {
+            adapter.addData(it)
+            adapter.notifyDataSetChanged()
+        }
         page++
         loading=false
     }
-    fun clear() =safeAsync {
 
-    }
 
-   fun refresh()= safeAsync {
+   fun refresh()= scope.launch {
        loading=true
        page=0
        isHasLoadedAll=false
        DiscoveryRepository.invalidateChannelLists()
-       var result = DiscoveryRepository.loadChannelList(page)
+       var result = withContext(Dispatchers.IO){DiscoveryRepository.loadChannelList(page)}
        isHasLoadedAll=result.isLastPage
 
 
-       launch(UI) {
-           result.items?.let {
-               adapter.clearData()
-               adapter.addData(it)
-               adapter.notifyDataSetChanged()
-           }
-           page++
-           loading = false
-       }.join()
+       result.items?.let {
+           adapter.clearData()
+           adapter.addData(it)
+           adapter.notifyDataSetChanged()
+       }
+       page++
+       loading = false
 
     }
 

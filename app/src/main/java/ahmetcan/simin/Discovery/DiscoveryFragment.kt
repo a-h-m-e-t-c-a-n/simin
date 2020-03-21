@@ -1,28 +1,26 @@
 package ahmetcan.simin.Discovery
 
 import ahmetcan.simin.Discovery.Model.PlayListModel
-import ahmetcan.simin.Discovery.Model.persistent.VideoViewState
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
-import ahmetcan.simin.Discovery.View.YoutubeChannelAdapter
 import ahmetcan.simin.FragmentBase
 import ahmetcan.simin.R
 import ahmetcan.simin.VideoListActivity
-import ahmetcan.simin.onUI
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.util.Log
 import android.view.*
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.paginate.Paginate
 import com.simin.CategoryView.YoutubePlaylistAdapter
-import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_discovery.*
-import kotlinx.coroutines.android.UI
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class DiscoveryFragment : FragmentBase()  {
-
+    var scope = MainScope() + CoroutineExceptionHandler { _, ex ->
+        FirebaseCrashlytics.getInstance().recordException(ex)
+        Log.e("ahmetcan", "ChannelFragment main scope exception [blocked]", ex)
+    }
     var adapter= YoutubePlaylistAdapter()
     var loading:Boolean=false
     var isHasLoadedAll:Boolean=false
@@ -70,74 +68,56 @@ class DiscoveryFragment : FragmentBase()  {
         }
 
     }
-    fun loadMore() =safeAsync {
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel("ondestroy")
+    }
+    fun loadMore() = scope.launch {
         loading=true
-        var result = DiscoveryRepository.loadLists(page)
+        var result = withContext(Dispatchers.IO){DiscoveryRepository.loadLists(page)}
         if(result.isLastPage){
             isHasLoadedAll=true
         }
 
-        launch(UI) {
-            result.items?.let {
-                adapter.addData(it)
-                adapter.notifyDataSetChanged()
-            }
-        }.join()
+        result.items?.let {
+            adapter.addData(it)
+            adapter.notifyDataSetChanged()
+        }
         page++
         loading=false
     }
-    fun clear() =safeAsync {
 
-    }
-
-   fun refresh()= safeAsync {
+   fun refresh()= scope.launch {
        loading=true
        page=0
        isHasLoadedAll=false
        DiscoveryRepository.invalidateLists()
-       var result = DiscoveryRepository.loadLists(page)
+       var result = withContext(Dispatchers.IO){DiscoveryRepository.loadLists(page)}
        isHasLoadedAll=result.isLastPage
 
 
-       launch(UI) {
-           result.items?.let {
-               adapter.clearData()
-               adapter.addData(it)
-               adapter.notifyDataSetChanged()
-           }
-           page++
-           loading=false
-       }.join()
+       result.items?.let {
+           adapter.clearData()
+           adapter.addData(it)
+           adapter.notifyDataSetChanged()
+       }
+       page++
+       loading=false
 
-//        page=0
-//        isHasLoadedAll=false;
-//        DiscoveryRepository.invalidateLists().join()
-//        adapter.clearData()
-//        launch(UI) {
-//            clear().join()
-//            loadMore().join()
-//        }
+
 
     }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater!!.inflate(R.layout.fragment_discovery, container, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         activity?.menuInflater?.inflate(R.menu.home, menu)
-//        var inboxMenuItem = menu?.findItem(R.id.action_inbox)
-//        inboxMenuItem?.setOnMenuItemClickListener {
-//            async {
-//                DiscoveryRepository.downloadCaption()
-//            }
-//
-//            true
-//        }
-        //inboxMenuItem?.setActionView(R.layout.menu_item_view)
+
     }
 
 

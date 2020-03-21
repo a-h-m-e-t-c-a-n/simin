@@ -3,20 +3,20 @@ package ahmetcan.simin
 import ahmetcan.simin.Discovery.Model.VideoModel
 import ahmetcan.simin.Discovery.Real.DiscoveryRepository
 import ahmetcan.simin.Discovery.View.FavoritesAdapter
-import ahmetcan.simin.Discovery.View.YoutubeVideoAdapter
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.util.Log
 import android.view.*
-import com.paginate.Paginate
-import com.simin.CategoryView.YoutubePlaylistAdapter
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.fragment_favories.*
-import kotlinx.coroutines.android.UI
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+
 
 class FavoriesFragment : FragmentBase()  {
-
+    var scope = MainScope() + CoroutineExceptionHandler { _, ex ->
+        FirebaseCrashlytics.getInstance().recordException(ex)
+        Log.e("ahmetcan", "FavoriesFragment main scope exception [blocked]", ex)
+    }
     var adapter= FavoritesAdapter()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -29,7 +29,7 @@ class FavoriesFragment : FragmentBase()  {
         rvList.adapter=adapter
         adapter.onClickItem=object :  FavoritesAdapter.OnItemClickListener{
             override fun onClick(itemModel: VideoModel) {
-                var intent= Intent(this@FavoriesFragment.activity, PreviewVideo::class.java)
+                var intent= Intent(this@FavoriesFragment.activity, PreviewVideoWeb::class.java)
                 intent.putExtra("videoid",itemModel.videoid)
                 intent.putExtra("title",itemModel.title)
                 intent.putExtra("description",itemModel.description)
@@ -39,27 +39,30 @@ class FavoriesFragment : FragmentBase()  {
 
         }
         swipeRefreshLayout.setOnRefreshListener {
-            safeAsync {
-                var favs=DiscoveryRepository.favorites()
-                onUI {
+            scope.launch {
+                var favs= withContext(Dispatchers.IO){DiscoveryRepository.favorites()}
                     adapter.clearData()
                     adapter.addData(favs)
                     adapter.notifyDataSetChanged()
                     swipeRefreshLayout.setRefreshing(false);
 
                 }
-            }
+
         }
-        safeAsync {
-            var favs=DiscoveryRepository.favorites()
-            onUI {
-                adapter.clearData()
-                adapter.addData(favs)
-                adapter.notifyDataSetChanged()
-            }
+        scope.launch {
+            var favs= withContext(Dispatchers.IO){DiscoveryRepository.favorites()}
+            adapter.clearData()
+            adapter.addData(favs)
+            adapter.notifyDataSetChanged()
+            swipeRefreshLayout.setRefreshing(false);
+
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel("ondestroy")
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater!!.inflate(R.layout.fragment_favories, container, false)

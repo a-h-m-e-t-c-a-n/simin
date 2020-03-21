@@ -1,52 +1,21 @@
-package ahmetcan.simin
-
 import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import kotlinx.coroutines.*
-import kotlinx.coroutines.android.UI
-import kotlin.coroutines.CoroutineContext
+import java.lang.Exception
+import java.math.BigInteger
+import java.security.MessageDigest
 
-//async exception fırlattığında uygulama crash olmuyor ama launc da oluyor
-fun logLaunch(block: suspend CoroutineScope.() -> Unit)
-        : Job {
-    return launch(Dispatchers.IO) {
-        try {
-            block()
-        }
-        catch (ex:Exception){
-            try{
-                FirebaseCrashlytics.getInstance().recordException(ex)
-            }
-            finally {
-                Log.e("logAsync:",ex.toString())
-                throw ex
-            }
-        }
+fun <R> absorbError(block: () -> R): R? {
+    try {
+        return block();
     }
-
+    catch (ex: Exception){
+        var absorbedException= Exception((block.javaClass?.enclosingMethod?.name?:"")+"[absorbed]",ex)
+        FirebaseCrashlytics.getInstance().recordException(absorbedException)
+        Log.e("ahmetcan","absorbError",absorbedException)
+    }
+    return null
 }
-fun logAsync(block: suspend CoroutineScope.() -> Unit)
-        : Job {
-    return async(Dispatchers.IO) {
-        try {
-            block()
-        }
-        catch (ex:Exception){
-            try{
-                FirebaseCrashlytics.getInstance().recordException(ex)
-            }
-            finally {
-                Log.e("logAsync:",ex.toString())
-                throw ex
-            }
-        }
-    }
-
-}
-fun onUI(block: suspend CoroutineScope.() -> Unit)
-        : Job {
-    return async(Dispatchers.Main) {
-        block()
-    }
-
+fun String.md5(): String {
+    val md = MessageDigest.getInstance("MD5")
+    return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
 }

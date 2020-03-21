@@ -20,7 +20,6 @@ import io.realm.Realm
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
-import com.google.android.youtube.player.internal.i
 import android.R.attr.name
 import com.google.api.services.youtube.model.SubscriptionListResponse
 import com.google.api.services.youtube.model.Video
@@ -30,14 +29,6 @@ object DiscoveryRepository {
     //const val CHANNEL_ID = "UCAuUUnT6oDeKwE6v1NGQxug" //TED
     const val CHANNEL_ID = "UChk2As5_2Q_c_o5QiCJB8vw" //simin application channel
 
-//    private fun youtubeService(): YouTube {
-//        var youtube = YouTube.Builder(NetHttpTransport(), JacksonFactory(), object : HttpRequestInitializer {
-//            @Throws(IOException::class)
-//            override fun initialize(request: HttpRequest) {
-//            }
-//        }).setApplicationName("simin").build()
-//        return youtube
-//    }
 
     private fun loadListOnline(nextToken: String? = null): PlaylistListResponse? {
         var youtube = YoutubeApiHelper.YoutubeService()
@@ -329,8 +320,8 @@ object DiscoveryRepository {
         var caption = YoutubeService.instance.caption_text(videoId, languageCode, translateCode).execute().body()
         caption?.texts?.forEach {
             it.sentence=it.sentence?:""
-            it.start*=1000
-            it.duration*=1000
+           // it.start*=1000
+          //  it.duration*=1000
             it.sentence = if (Build.VERSION.SDK_INT >= 24) Html.fromHtml(it.sentence, Html.FROM_HTML_MODE_LEGACY).toString() else Html.fromHtml(it?.sentence).toString()
 
         }
