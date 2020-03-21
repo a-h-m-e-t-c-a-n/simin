@@ -13,7 +13,7 @@ class ACPremium(var activity: Activity,callback:IState) {
         fun onUserCancelFlow()
         fun onError()
     }
-    var skuId="premium1"
+    var skuId="premium2"
 
     var callback:IState=callback
     var billingManager = BillingManager(activity, object : BillingManager.BillingUpdatesListener {
