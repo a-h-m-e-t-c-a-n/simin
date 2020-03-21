@@ -93,6 +93,6 @@
     <string name="search_youtube">Search YouTube</string>
     <string name="hard_mode">Hard Mode</string>
     <string name="challenge">challenge</string>
-    <string name="get_premium_text">If you want to continue using the application unlimitedly, you need to start a subscription. A free 1-day trial is offered.</string>
+    <string name="get_premium_text">If you want to continue using the application unlimitedly, you need to start a subscription.</string>
     <string name="get_premium">get premium</string>
 </resources>
